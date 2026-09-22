@@ -60,6 +60,7 @@ export default function DashboardScreen() {
   });
   const [weeklyReview, setWeeklyReview] = useState<WeeklyReview | null>(null);
   const [rule, setRule] = useState<AlertRule>({ changePercent: 5, volumeRatio: 3 });
+  const [refreshedAt, setRefreshedAt] = useState(0);
   const [loading, setLoading] = useState(true);
 
   const refresh = useCallback(async () => {
@@ -87,6 +88,7 @@ export default function DashboardScreen() {
       setEngagement(engagementData);
       setWeeklyReview(reviewData);
       setCalendar(calendarData);
+      setRefreshedAt(Date.now());
     } finally {
       setLoading(false);
     }
@@ -101,7 +103,9 @@ export default function DashboardScreen() {
     () => [...focusStocks].sort((a, b) => Math.abs(b.changePercent) - Math.abs(a.changePercent))[0],
     [focusStocks],
   );
-  const nextEvent = calendar.find((event) => Date.parse(event.startsAt) >= Date.now()) ?? calendar[0];
+  const nextEvent = calendar.find(
+    (event) => Date.parse(event.startsAt) >= refreshedAt,
+  ) ?? calendar[0];
   const latestReport = reports[0];
 
   return (
