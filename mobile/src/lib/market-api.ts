@@ -154,8 +154,9 @@ export async function recordStockView(item: {
 export async function getCalendarEvents(days = 14): Promise<CalendarEvent[]> {
   try {
     return await request<CalendarEvent[]>('/api/calendar?days=' + encodeURIComponent(String(days)));
-  } catch {
-    return [];
+  } catch (error) {
+    if (DEMO_MODE) return [];
+    throw error;
   }
 }
 
@@ -184,8 +185,8 @@ export async function getWatchlist(): Promise<Quote[]> {
 export async function getWatchlistItems(): Promise<WatchlistItem[]> {
   try {
     return await request<WatchlistItem[]>('/api/watchlist/items');
-  } catch {
-    if (!DEMO_MODE) return [];
+  } catch (error) {
+    if (!DEMO_MODE) throw error;
     return sampleWatchlist.map((quote) => ({
       market: quote.market,
       code: quote.naverCode,
@@ -221,8 +222,8 @@ export async function searchStocks(query: string): Promise<StockSearchResult[]> 
 
   try {
     return await request<StockSearchResult[]>(`/api/search?q=${encodeURIComponent(clean)}`);
-  } catch {
-    if (!DEMO_MODE) return [];
+  } catch (error) {
+    if (!DEMO_MODE) throw error;
     const lowered = clean.toLocaleLowerCase();
     return sampleWatchlist.flatMap((quote) => (
       quote.name.toLocaleLowerCase().includes(lowered)
@@ -291,8 +292,8 @@ export async function getMovers(market?: Market): Promise<MarketMover[]> {
   try {
     const query = market ? `?market=${market}` : '';
     return await request<MarketMover[]>(`/api/movers${query}`);
-  } catch {
-    if (!DEMO_MODE) return [];
+  } catch (error) {
+    if (!DEMO_MODE) throw error;
     return market ? sampleMovers.filter((item) => item.market === market) : sampleMovers;
   }
 }
@@ -309,8 +310,9 @@ export async function getReports(): Promise<Report[]> {
   try {
     const reports = await request<Report[]>('/api/reports');
     return reports.map(resolveReportLinks);
-  } catch {
-    return DEMO_MODE ? sampleReports : [];
+  } catch (error) {
+    if (!DEMO_MODE) throw error;
+    return sampleReports;
   }
 }
 
@@ -319,8 +321,9 @@ export async function getReport(id: string): Promise<Report | null> {
     return resolveReportLinks(
       await request<Report>(`/api/reports/${encodeURIComponent(id)}`),
     );
-  } catch {
-    return DEMO_MODE ? sampleReports.find((report) => report.id === id) ?? null : null;
+  } catch (error) {
+    if (!DEMO_MODE) throw error;
+    return sampleReports.find((report) => report.id === id) ?? null;
   }
 }
 
