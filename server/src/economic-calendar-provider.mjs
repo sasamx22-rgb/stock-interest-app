@@ -252,9 +252,14 @@ export class EconomicCalendarProvider {
       return time >= now.getTime() - 86_400_000 && time <= end.getTime();
     });
 
+    let externalSuccesses = 0;
+    let externalFailures = 0;
     try {
       events.push(...parseBlsIcs(await this.fetchText(BLS_ICS_URL)));
-    } catch {}
+      externalSuccesses += 1;
+    } catch {
+      externalFailures += 1;
+    }
 
     const dates = [];
     for (let i = 0; i <= Math.min(boundedDays, 7); i += 1) {
@@ -263,17 +268,27 @@ export class EconomicCalendarProvider {
 
     const requests = dates.flatMap((date) => [
       this.fetchJson(`https://api.nasdaq.com/api/calendar/earnings?date=${date}`)
-        .then((payload) => normalizeNasdaqCalendar(payload, 'earnings', date))
-        .catch(() => []),
+        .then((payload) => ({ ok: true, events: normalizeNasdaqCalendar(payload, 'earnings', date) }))
+        .catch(() => ({ ok: false, events: [] })),
       this.fetchJson(`https://api.nasdaq.com/api/calendar/dividends?date=${date}`)
-        .then((payload) => normalizeNasdaqCalendar(payload, 'dividends', date))
-        .catch(() => []),
+        .then((payload) => ({ ok: true, events: normalizeNasdaqCalendar(payload, 'dividends', date) }))
+        .catch(() => ({ ok: false, events: [] })),
     ]);
 
-    const corporate = (await Promise.all(requests)).flat()
+    const requestResults = await Promise.all(requests);
+    for (const result of requestResults) {
+      if (result.ok) externalSuccesses += 1;
+      else externalFailures += 1;
+    }
+
+    const corporate = requestResults.flatMap((result) => result.events)
       .filter((event) => symbolSet.size === 0 || event.tickers.some((ticker) => symbolSet.has(ticker.toUpperCase())));
 
     events.push(...corporate);
+
+    if (externalFailures > 0 && externalSuccesses === 0 && events.length === 0) {
+      throw new Error('Economic calendar providers failed');
+    }
 
     const result = events
       .filter((event) => {
