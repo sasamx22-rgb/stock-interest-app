@@ -4,6 +4,7 @@ import {
   AlertRule,
   CalendarEvent,
   EngagementSummary,
+  HomeBriefing,
   Market,
   MarketMover,
   Quote,
@@ -45,6 +46,49 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
   }
 
   return response.json() as Promise<T>;
+}
+
+export async function getHomeBriefing(): Promise<HomeBriefing> {
+  try {
+    return await request<HomeBriefing>('/api/home/briefing');
+  } catch {
+    const [
+      focusStocks,
+      reports,
+      engagement,
+      weeklyReview,
+      calendar,
+      alertRule,
+      ai,
+    ] = await Promise.all([
+      getTodayFocus(),
+      getReports(),
+      getEngagementSummary(),
+      getWeeklyReview(),
+      getCalendarEvents(7),
+      getAlertSettings(),
+      getAiStatus(),
+    ]);
+
+    return {
+      generatedAt: new Date().toISOString(),
+      focusStocks,
+      reports,
+      engagement,
+      weeklyReview: weeklyReview ?? {
+        periodDays: 7,
+        stockViewCount: 0,
+        uniqueStockCount: 0,
+        topViewed: [],
+        currentWatchlistCount: 0,
+        reportsRead: 0,
+        reportsPublished: reports.length,
+      },
+      calendar,
+      alertRule,
+      ai,
+    };
+  }
 }
 
 export async function getAiStatus(): Promise<AiStatus> {
