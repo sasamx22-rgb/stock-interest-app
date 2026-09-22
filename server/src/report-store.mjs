@@ -23,6 +23,7 @@ function normalizeStringArray(value, maxItems = 20, maxLength = 120) {
 function normalizeUrl(value) {
   const clean = cleanString(value, 1000);
   if (!clean) return undefined;
+  if (clean.startsWith('/api/reports/')) return clean;
 
   try {
     const url = new URL(clean);
