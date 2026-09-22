@@ -96,7 +96,9 @@ async function loadMarketMovers(markets) {
     markets.map((value) => provider.movers(value, config.moverUrls[value])),
   )).flat();
 
-  return quotes.map((quote) => ({
+  const enrichedQuotes = await provider.enrichVolumeRatios(quotes);
+
+  return enrichedQuotes.map((quote) => ({
     ...quote,
     alertEligible: isAlertEligible(quote),
     reason: describeAlert(quote),
