@@ -101,6 +101,10 @@ export type StockDetail = {
   quote: Quote;
   prices: PricePoint[];
   news: StockNews[];
+  availability?: {
+    prices: 'ok' | 'unavailable';
+    news: 'ok' | 'unavailable';
+  };
   movementReason?: MovementReason;
   source: 'naver' | 'sample';
 };
@@ -160,6 +164,9 @@ export type HomeBriefing = {
   engagement: EngagementSummary;
   weeklyReview: WeeklyReview;
   calendar: CalendarEvent[];
+  dataStatus?: {
+    calendar: 'ok' | 'unavailable';
+  };
   alertRule: AlertRule;
   ai: AiStatus;
 };
