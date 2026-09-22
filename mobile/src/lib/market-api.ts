@@ -20,6 +20,7 @@ import {
 
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL?.replace(/\/$/, '');
 const API_KEY = process.env.EXPO_PUBLIC_API_KEY?.trim();
+const DEMO_MODE = process.env.EXPO_PUBLIC_DEMO_MODE === 'true';
 
 type RequestOptions = {
   method?: 'GET' | 'POST' | 'DELETE';
@@ -58,7 +59,8 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
 export async function getHomeBriefing(): Promise<HomeBriefing> {
   try {
     return await request<HomeBriefing>('/api/home/briefing');
-  } catch {
+  } catch (error) {
+    if (!DEMO_MODE) throw error;
     const [
       focusStocks,
       reports,
@@ -161,6 +163,7 @@ export async function getTodayFocus(): Promise<TodayFocusStock[]> {
   try {
     return await request<TodayFocusStock[]>('/api/today-focus');
   } catch {
+    if (!DEMO_MODE) return [];
     return sampleWatchlist.map((quote, index) => ({
       ...quote,
       sources: ['watchlist'],
@@ -174,7 +177,7 @@ export async function getWatchlist(): Promise<Quote[]> {
   try {
     return await request<Quote[]>('/api/watchlist');
   } catch {
-    return sampleWatchlist;
+    return DEMO_MODE ? sampleWatchlist : [];
   }
 }
 
@@ -182,6 +185,7 @@ export async function getWatchlistItems(): Promise<WatchlistItem[]> {
   try {
     return await request<WatchlistItem[]>('/api/watchlist/items');
   } catch {
+    if (!DEMO_MODE) return [];
     return sampleWatchlist.map((quote) => ({
       market: quote.market,
       code: quote.naverCode,
@@ -201,6 +205,7 @@ export async function getStockDetail(
       `/api/stocks/${market}/${encodeURIComponent(code)}${query}`,
     );
   } catch {
+    if (!DEMO_MODE) return null;
     const quote = sampleWatchlist.find(
       (item) => item.market === market && item.naverCode === code,
     );
@@ -217,6 +222,7 @@ export async function searchStocks(query: string): Promise<StockSearchResult[]> 
   try {
     return await request<StockSearchResult[]>(`/api/search?q=${encodeURIComponent(clean)}`);
   } catch {
+    if (!DEMO_MODE) return [];
     const lowered = clean.toLocaleLowerCase();
     return sampleWatchlist.flatMap((quote) => (
       quote.name.toLocaleLowerCase().includes(lowered)
@@ -286,6 +292,7 @@ export async function getMovers(market?: Market): Promise<MarketMover[]> {
     const query = market ? `?market=${market}` : '';
     return await request<MarketMover[]>(`/api/movers${query}`);
   } catch {
+    if (!DEMO_MODE) return [];
     return market ? sampleMovers.filter((item) => item.market === market) : sampleMovers;
   }
 }
@@ -303,7 +310,7 @@ export async function getReports(): Promise<Report[]> {
     const reports = await request<Report[]>('/api/reports');
     return reports.map(resolveReportLinks);
   } catch {
-    return sampleReports;
+    return DEMO_MODE ? sampleReports : [];
   }
 }
 
@@ -313,10 +320,28 @@ export async function getReport(id: string): Promise<Report | null> {
       await request<Report>(`/api/reports/${encodeURIComponent(id)}`),
     );
   } catch {
-    return sampleReports.find((report) => report.id === id) ?? null;
+    return DEMO_MODE ? sampleReports.find((report) => report.id === id) ?? null : null;
+  }
+}
+
+export async function getReportPdfUrl(id: string): Promise<string | null> {
+  try {
+    const result = await request<{ url: string }>(
+      `/api/reports/${encodeURIComponent(id)}/pdf-link`,
+    );
+    if (!result.url) return null;
+    return result.url.startsWith('/') && API_BASE_URL
+      ? `${API_BASE_URL}${result.url}`
+      : result.url;
+  } catch {
+    return null;
   }
 }
 
 export function isLiveDataConfigured() {
-  return Boolean(API_BASE_URL);
+  return Boolean(API_BASE_URL) && !DEMO_MODE;
+}
+
+export function isDemoMode() {
+  return DEMO_MODE;
 }
