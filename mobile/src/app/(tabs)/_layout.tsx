@@ -34,16 +34,16 @@ export default function TabLayout() {
         options={{ title: '급등', tabBarIcon: ({ color }) => icon('↗', color) }}
       />
       <Tabs.Screen
-        name="reports"
-        options={{ title: '보고서', tabBarIcon: ({ color }) => icon('▤', color) }}
-      />
-      <Tabs.Screen
         name="calendar"
         options={{ title: '일정', tabBarIcon: ({ color }) => icon('◷', color) }}
       />
       <Tabs.Screen
+        name="reports"
+        options={{ title: '보고서', tabBarIcon: ({ color }) => icon('▤', color) }}
+      />
+      <Tabs.Screen
         name="settings"
-        options={{ title: '설정', tabBarIcon: ({ color }) => icon('⚙', color) }}
+        options={{ href: null }}
       />
     </Tabs>
   );
