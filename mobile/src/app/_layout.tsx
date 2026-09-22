@@ -1,10 +1,10 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 
-import { useSurgeAlerts } from '@/hooks/use-surge-alerts';
+import { usePushNotifications } from '@/hooks/use-push-notifications';
 
 export default function RootLayout() {
-  useSurgeAlerts();
+  usePushNotifications();
 
   return (
     <>
