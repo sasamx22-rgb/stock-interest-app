@@ -15,10 +15,12 @@ export default function MoversScreen() {
   const [rule, setRule] = useState<AlertRule>({ changePercent: 5, volumeRatio: 3 });
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [loadError, setLoadError] = useState(false);
 
   const refresh = useCallback(async () => {
     const requestId = ++generation.current;
     setLoading(true);
+    setLoadError(false);
     try {
       const [nextItems, nextRule] = await Promise.all([
         getMovers(market),
@@ -28,6 +30,8 @@ export default function MoversScreen() {
       setItems(nextItems);
       setRule(nextRule);
       setLastUpdated(new Date());
+    } catch {
+      if (requestId === generation.current) setLoadError(true);
     } finally {
       if (requestId === generation.current) setLoading(false);
     }
@@ -81,7 +85,9 @@ export default function MoversScreen() {
 
       {loading && items.length === 0 ? <ActivityIndicator color={palette.primary} /> : null}
 
-      {items.length === 0 && !loading ? (
+      {loadError && !loading ? (
+        <View style={styles.empty}><Text style={styles.emptyText}>급등 데이터를 불러오지 못했습니다. 서버 연결을 확인해주세요.</Text></View>
+      ) : items.length === 0 && !loading ? (
         <View style={styles.empty}><Text style={styles.emptyText}>현재 표시할 종목이 없습니다.</Text></View>
       ) : items.map((item) => (
         <View key={`${item.market}-${item.symbol}`} style={[styles.moverCard, item.alertEligible && styles.alertCard]}>
