@@ -29,6 +29,15 @@ export type MarketMover = Quote & {
   alertEligible: boolean;
 };
 
+export type FocusSource = 'watchlist' | 'report' | 'surge';
+
+export type TodayFocusStock = Quote & {
+  sources: FocusSource[];
+  reportIds: string[];
+  priorityScore: number;
+  alertEligible?: boolean;
+};
+
 export type Report = {
   id: string;
   title: string;
