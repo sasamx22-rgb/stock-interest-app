@@ -1,4 +1,5 @@
-import { Linking, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useRouter } from 'expo-router';
 
 import { palette, spacing } from '@/constants/market-theme';
 import { Quote } from '@/types/market';
@@ -10,15 +11,20 @@ function formatPrice(quote: Quote) {
 }
 
 export function QuoteRow({ quote }: { quote: Quote }) {
+  const router = useRouter();
   const positive = quote.changePercent >= 0;
-  const naverUrl = quote.market === 'KR'
-    ? `https://stock.naver.com/domestic/stock/${quote.naverCode}/total`
-    : `https://stock.naver.com/worldstock/stock/${quote.naverCode}/total`;
 
   return (
     <Pressable
-      accessibilityRole="link"
-      onPress={() => Linking.openURL(naverUrl)}
+      accessibilityRole="button"
+      onPress={() => router.push({
+        pathname: '/stock/[market]/[code]',
+        params: {
+          market: quote.market,
+          code: quote.naverCode,
+          name: quote.name,
+        },
+      })}
       style={({ pressed }) => [styles.row, pressed && styles.pressed]}>
       <View style={styles.identity}>
         <View style={styles.badge}>
