@@ -81,6 +81,13 @@ test('HTTP preserves UTF-8 and handles invalid Host without terminating', async 
     });
     assert.equal(authorizedRead.status, 200);
 
+    const reportReadState = await fetch(`http://127.0.0.1:${port}/api/reports/read-state`, {
+      headers: { 'X-Market-Pulse-Key': 'test-only-key' },
+    });
+    assert.equal(reportReadState.status, 200);
+    const reportReadStateBody = await reportReadState.json();
+    assert.ok(Array.isArray(reportReadStateBody.unreadReportIds));
+
     const forbiddenPublish = await fetch(`http://127.0.0.1:${port}/api/reports`, {
       method: 'POST',
       headers: {
@@ -138,7 +145,7 @@ test('HTTP preserves UTF-8 and handles invalid Host without terminating', async 
     const health = await fetch(`http://127.0.0.1:${port}/health`);
     assert.deepEqual(await health.json(), { ok: true });
     for (const path of ['/api/home/briefing', '/api/ai/status', '/api/engagement/summary',
-      '/api/review/weekly', '/api/reports/signed-pdf-test', '/api/reports/signed-pdf-test/pdf',
+      '/api/review/weekly', '/api/reports/read-state', '/api/reports/signed-pdf-test', '/api/reports/signed-pdf-test/pdf',
       '/api/reports/signed-pdf-test/pdf-link', '/api/watchlist/items', '/api/watchlist',
       '/api/stocks/US/NVDA.O', '/api/search?q=NVDA', '/api/calendar', '/api/settings/alerts',
       '/api/push/status', '/api/alerts', '/api/movers']) {
