@@ -43,32 +43,42 @@ export default function StockDetailScreen() {
   const name = Array.isArray(params.name) ? params.name[0] : params.name;
   const market: Market | null = marketParam === 'KR' || marketParam === 'US' ? marketParam : null;
 
+  const resourceKey = market && code ? `${market}:${code}` : undefined;
   const [state, setState] = useState<{
-    status: 'loading' | 'ready';
+    key?: string;
+    status: 'ready' | 'error';
     detail: StockDetail | null;
-  }>({ status: 'loading', detail: null });
+  }>({ key: undefined, status: 'ready', detail: null });
 
   useEffect(() => {
     if (!market || !code) return;
 
     let active = true;
-    getStockDetail(market, code, name).then((detail) => {
-      if (detail) {
-        void recordStockView({
-          market,
-          code,
-          name: detail.quote.name,
-        });
-      }
-      if (active) setState({ status: 'ready', detail });
-    });
+    const key = `${market}:${code}`;
+    getStockDetail(market, code, name)
+      .then((detail) => {
+        if (!active) return;
+        setState({ key, status: 'ready', detail });
+        if (detail) {
+          void recordStockView({
+            market,
+            code,
+            name: detail.quote.name,
+          });
+        }
+      })
+      .catch(() => {
+        if (active) setState({ key, status: 'error', detail: null });
+      });
 
     return () => {
       active = false;
     };
   }, [market, code, name]);
 
-  const detail = state.detail;
+  const loading = Boolean(resourceKey) && state.key !== resourceKey;
+  const loadError = Boolean(resourceKey) && state.key === resourceKey && state.status === 'error';
+  const detail = state.key === resourceKey ? state.detail : null;
   const flow = useMemo(() => {
     if (!detail || detail.prices.length < 2) return null;
 
@@ -105,13 +115,13 @@ export default function StockDetailScreen() {
         <Text style={styles.backText}>‹ 뒤로</Text>
       </Pressable>
 
-      {state.status === 'loading' ? (
+      {loading ? (
         <View style={styles.empty}>
           <Text style={styles.emptyText}>종목 정보를 불러오는 중입니다.</Text>
         </View>
       ) : null}
 
-      {state.status === 'ready' && !detail ? (
+      {loadError || (!loading && !detail) ? (
         <View style={styles.empty}>
           <Text style={styles.emptyTitle}>종목 정보를 불러오지 못했습니다.</Text>
           <Text style={styles.emptyText}>서버 연결 또는 네이버 응답 상태를 확인해주세요.</Text>
