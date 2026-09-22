@@ -1,0 +1,95 @@
+import { MarketMover, Quote, Report } from '@/types/market';
+
+export const sampleWatchlist: Quote[] = [
+  {
+    symbol: '005930',
+    naverCode: '005930',
+    name: '삼성전자',
+    market: 'KR',
+    price: 84200,
+    currency: 'KRW',
+    changePercent: 2.31,
+    volumeRatio: 1.42,
+    updatedAt: new Date().toISOString(),
+    source: 'sample',
+  },
+  {
+    symbol: '000660',
+    naverCode: '000660',
+    name: 'SK하이닉스',
+    market: 'KR',
+    price: 294500,
+    currency: 'KRW',
+    changePercent: 5.84,
+    volumeRatio: 3.36,
+    updatedAt: new Date().toISOString(),
+    source: 'sample',
+  },
+  {
+    symbol: 'NVDA',
+    naverCode: 'NVDA.O',
+    name: 'NVIDIA',
+    market: 'US',
+    price: 184.62,
+    currency: 'USD',
+    changePercent: 1.76,
+    volumeRatio: 1.18,
+    updatedAt: new Date().toISOString(),
+    source: 'sample',
+  },
+];
+
+export const sampleMovers: MarketMover[] = [
+  {
+    ...sampleWatchlist[1],
+    reason: '전일 종가 대비 5% 이상 상승하고 거래량이 평소보다 3배 증가했습니다.',
+    alertEligible: true,
+  },
+  {
+    symbol: 'AAPL',
+    naverCode: 'AAPL.O',
+    name: 'Apple',
+    market: 'US',
+    price: 267.44,
+    currency: 'USD',
+    changePercent: 5.19,
+    volumeRatio: 3.08,
+    updatedAt: new Date().toISOString(),
+    source: 'sample',
+    reason: '상승률과 거래량 조건을 동시에 충족했습니다.',
+    alertEligible: true,
+  },
+  {
+    symbol: '035420',
+    naverCode: '035420',
+    name: 'NAVER',
+    market: 'KR',
+    price: 318500,
+    currency: 'KRW',
+    changePercent: 4.74,
+    volumeRatio: 3.62,
+    updatedAt: new Date().toISOString(),
+    source: 'sample',
+    reason: '거래량은 급증했지만 상승률 기준에는 아직 미달했습니다.',
+    alertEligible: false,
+  },
+];
+
+export const sampleReports: Report[] = [
+  {
+    id: '2026-09-22-morning',
+    title: '미국 증시 마감·한국장 체크포인트',
+    publishedAt: '2026-09-22T08:00:00+09:00',
+    type: 'morning',
+    summary: '반도체 흐름과 국내 연계 종목, 오늘 확인할 세 가지를 정리했습니다.',
+    tickers: ['SK하이닉스', '삼성전자', '대한항공'],
+  },
+  {
+    id: '2026-09-22-premarket',
+    title: '한국 프리마켓 업데이트',
+    publishedAt: '2026-09-22T08:50:00+09:00',
+    type: 'premarket',
+    summary: '오전 보고서 핵심 종목의 프리마켓 변동과 추가 관찰 종목입니다.',
+    tickers: ['SK하이닉스', '삼성전자'],
+  },
+];

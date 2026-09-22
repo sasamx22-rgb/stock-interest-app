@@ -1,0 +1,25 @@
+{
+  "expo": {
+    "name": "Market Pulse",
+    "slug": "market-pulse",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "marketpulse",
+    "userInterfaceStyle": "dark",
+    "ios": {},
+    "android": {
+      "package": "com.sasamx22.marketpulse",
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "output": "static"
+    },
+    "plugins": [
+      "expo-router"
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    }
+  }
+}

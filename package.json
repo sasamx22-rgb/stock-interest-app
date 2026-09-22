@@ -1,0 +1,17 @@
+{
+  "name": "stock-interest-app",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "mobile",
+    "server"
+  ],
+  "scripts": {
+    "mobile": "npm --workspace mobile run start",
+    "server": "npm --workspace server run start",
+    "typecheck": "npm --workspace mobile run typecheck",
+    "lint": "npm --workspace mobile run lint",
+    "test": "npm --workspace server test"
+  }
+}
+
