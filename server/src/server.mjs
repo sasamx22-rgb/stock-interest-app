@@ -11,6 +11,7 @@ import { ReportPdfStore } from './report-pdf-store.mjs';
 import { ReportStore } from './report-store.mjs';
 import { sampleReports } from './sample.mjs';
 import { SurgePushMonitor } from './surge-push-monitor.mjs';
+import { buildTodayFocus } from './today-focus.mjs';
 import { WatchlistStore } from './watchlist-store.mjs';
 
 const provider = new NaverMarketProvider();
@@ -226,6 +227,26 @@ async function handler(request, response) {
       return sendJson(response, 405, { error: 'Method not allowed' });
     }
 
+    if (url.pathname === '/api/today-focus') {
+      if (request.method !== 'GET') return sendJson(response, 405, { error: 'Method not allowed' });
+
+      const [watchlistItems, reports, movers] = await Promise.all([
+        watchlistStore.getAll(),
+        reportStore.getAll(),
+        loadMarketMovers(['KR', 'US']),
+      ]);
+
+      return sendJson(
+        response,
+        200,
+        await buildTodayFocus({
+          provider,
+          watchlistItems,
+          reports,
+          movers,
+        }),
+      );
+    }
     if (url.pathname === '/api/watchlist/items') {
       if (request.method !== 'GET') return sendJson(response, 405, { error: 'Method not allowed' });
       return sendJson(response, 200, await watchlistStore.getAll());
