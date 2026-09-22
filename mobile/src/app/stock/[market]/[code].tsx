@@ -144,6 +144,22 @@ export default function StockDetailScreen() {
             </View>
           </View>
 
+          <View style={styles.reasonCard}>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>상승·하락 원인</Text>
+              <Text style={styles.reasonBadge}>
+                {detail.movementReason?.label ?? '원인 확인 중'}
+              </Text>
+            </View>
+            <Text style={styles.reasonSummary}>
+              {detail.movementReason?.summary
+                ?? '현재 수집된 뉴스만으로는 변동 원인을 특정하기 어렵습니다.'}
+            </Text>
+            <Text style={styles.reasonNote}>
+              뉴스·시세를 기반으로 한 참고용 요약이며 단일 원인으로 확정한 내용은 아닙니다.
+            </Text>
+          </View>
+
           {flow ? (
             <View style={styles.card}>
               <Text style={styles.sectionTitle}>최근 흐름</Text>
@@ -240,6 +256,25 @@ const styles = StyleSheet.create({
   },
   metricLabel: { color: palette.textMuted, fontSize: 11 },
   metricValue: { color: palette.text, fontSize: 18, fontWeight: '900', marginTop: spacing.sm },
+  reasonCard: {
+    backgroundColor: '#162A2B',
+    borderRadius: 20,
+    padding: spacing.lg,
+    borderWidth: 1,
+    borderColor: palette.primary,
+  },
+  reasonBadge: {
+    color: palette.primary,
+    backgroundColor: palette.primaryMuted,
+    fontSize: 10,
+    fontWeight: '900',
+    paddingHorizontal: 8,
+    paddingVertical: 5,
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+  reasonSummary: { color: palette.text, fontSize: 14, lineHeight: 22, marginTop: spacing.md },
+  reasonNote: { color: palette.textMuted, fontSize: 10, lineHeight: 16, marginTop: spacing.sm },
   card: {
     backgroundColor: palette.surface,
     borderRadius: 20,
