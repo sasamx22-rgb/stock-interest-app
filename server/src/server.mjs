@@ -6,6 +6,7 @@ import { config } from './config.mjs';
 import { sendExpoPushNotifications } from './expo-push.mjs';
 import { NaverMarketProvider } from './naver-provider.mjs';
 import { PushTokenStore } from './push-token-store.mjs';
+import { ReportPdfStore } from './report-pdf-store.mjs';
 import { ReportStore } from './report-store.mjs';
 import { sampleReports } from './sample.mjs';
 import { SurgePushMonitor } from './surge-push-monitor.mjs';
@@ -27,6 +28,10 @@ const reportStore = new ReportStore({
   defaults: sampleReports,
 });
 
+const reportPdfStore = new ReportPdfStore({
+  directory: join(config.dataDir, 'report-pdfs'),
+});
+
 function requireWriteAccess(request) {
   if (!config.apiKey) return;
 
@@ -45,6 +50,24 @@ function sendJson(response, status, body) {
     'Content-Type': 'application/json; charset=utf-8',
   });
   response.end(JSON.stringify(body));
+}
+
+async function readBinaryBody(request, maxBytes = 25 * 1024 * 1024) {
+  const chunks = [];
+  let size = 0;
+
+  for await (const chunk of request) {
+    const buffer = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
+    size += buffer.length;
+    if (size > maxBytes) {
+      const error = new Error('Request body too large');
+      error.statusCode = 413;
+      throw error;
+    }
+    chunks.push(buffer);
+  }
+
+  return Buffer.concat(chunks);
 }
 
 async function readJsonBody(request, maxBytes = 10_000) {
@@ -133,6 +156,45 @@ async function handler(request, response) {
       return sendJson(response, 405, { error: 'Method not allowed' });
     }
 
+    if (url.pathname.startsWith('/api/reports/') && url.pathname.endsWith('/pdf')) {
+      const encodedId = url.pathname.slice('/api/reports/'.length, -'/pdf'.length);
+      const id = decodeURIComponent(encodedId);
+      if (!id || id.includes('/')) return sendJson(response, 404, { error: 'Not found' });
+
+      if (request.method === 'GET') {
+        const bytes = await reportPdfStore.read(id);
+        if (!bytes) return sendJson(response, 404, { error: 'PDF not found' });
+
+        response.writeHead(200, {
+          'Access-Control-Allow-Origin': '*',
+          'Cache-Control': 'private, max-age=300',
+          'Content-Type': 'application/pdf',
+          'Content-Length': bytes.length,
+          'Content-Disposition': `inline; filename="${id}.pdf"`,
+        });
+        return response.end(bytes);
+      }
+
+      if (request.method === 'POST') {
+        requireWriteAccess(request);
+        const report = await reportStore.getById(id);
+        if (!report) return sendJson(response, 404, { error: 'Report not found' });
+
+        const bytes = await readBinaryBody(request);
+        const saved = await reportPdfStore.save(id, bytes);
+        const updated = await reportStore.upsert({
+          ...report,
+          pdfUrl: `/api/reports/${encodeURIComponent(id)}/pdf`,
+        });
+        return sendJson(response, 201, {
+          report: updated,
+          size: saved.size,
+        });
+      }
+
+      return sendJson(response, 405, { error: 'Method not allowed' });
+    }
+
     if (url.pathname.startsWith('/api/reports/')) {
       const id = decodeURIComponent(url.pathname.slice('/api/reports/'.length));
       if (!id || id.includes('/')) return sendJson(response, 404, { error: 'Not found' });
@@ -147,6 +209,7 @@ async function handler(request, response) {
       if (request.method === 'DELETE') {
         requireWriteAccess(request);
         await reportStore.remove(id);
+        await reportPdfStore.remove(id);
         return sendJson(response, 200, { removed: true });
       }
 
