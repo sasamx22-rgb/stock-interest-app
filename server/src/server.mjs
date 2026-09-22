@@ -97,6 +97,16 @@ function requireWriteAccess(request) {
   requireApiAccess(request);
 }
 
+function requirePublishAccess(request) {
+  if (!config.publishKey) return;
+  const provided = request.headers['x-market-pulse-key'];
+  if (provided !== config.publishKey) {
+    const error = new Error('Unauthorized');
+    error.statusCode = 401;
+    throw error;
+  }
+}
+
 function requestIdentity(request) {
   const forwarded = String(request.headers['x-forwarded-for'] ?? '').split(',')[0].trim();
   return forwarded || request.socket?.remoteAddress || 'unknown';
@@ -354,7 +364,7 @@ async function handler(request, response) {
       }
 
       if (request.method === 'POST') {
-        requireWriteAccess(request);
+        requirePublishAccess(request);
         const payload = await readJsonBody(request, 50_000);
         const report = await withFileLock(reportOperationKey(payload?.id), () => reportStore.upsert(payload));
         return sendJson(response, 201, report);
@@ -411,7 +421,7 @@ async function handler(request, response) {
       }
 
       if (request.method === 'POST') {
-        requireWriteAccess(request);
+        requirePublishAccess(request);
         const bytes = await readBinaryBody(request);
         const result = await withFileLock(reportOperationKey(id), async () => {
           const report = await reportStore.getById(id);
@@ -446,7 +456,7 @@ async function handler(request, response) {
       }
 
       if (request.method === 'DELETE') {
-        requireWriteAccess(request);
+        requirePublishAccess(request);
         await withFileLock(reportOperationKey(id), async () => {
           await reportStore.remove(id);
           await reportPdfStore.remove(id);
@@ -606,7 +616,7 @@ async function handler(request, response) {
       }
 
       if (request.method === 'POST') {
-        requireWriteAccess(request);
+        requirePublishAccess(request);
         const event = await calendarEventStore.upsert(await readJsonBody(request));
         return sendJson(response, 201, event);
       }
