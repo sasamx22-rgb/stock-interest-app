@@ -21,6 +21,10 @@ test('normalizes report payloads and safe PDF URLs', () => {
   assert.equal(report.id, '2026-09-22-morning');
   assert.deepEqual(report.tickers, ['삼성전자', 'NVDA']);
   assert.equal(report.pdfUrl, 'https://example.com/report.pdf');
+  assert.equal(
+    normalizeReport({ ...report, pdfUrl: '/api/reports/2026-09-22-morning/pdf' }).pdfUrl,
+    '/api/reports/2026-09-22-morning/pdf',
+  );
   assert.equal(normalizeReport({ ...report, pdfUrl: 'file:///tmp/report.pdf' }).pdfUrl, undefined);
 });
 
