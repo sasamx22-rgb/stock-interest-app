@@ -1,4 +1,5 @@
 import { readBinaryBody, readJsonBody } from './http-body.mjs';
+import { createHmac, timingSafeEqual } from 'node:crypto';
 import { createServer } from 'node:http';
 import { join } from 'node:path';
 
@@ -11,6 +12,7 @@ import { buildDailyPicks } from './daily-picks.mjs';
 import { EconomicCalendarProvider } from './economic-calendar-provider.mjs';
 import { buildEngagementSummary, buildWeeklyReview } from './engagement-service.mjs';
 import { EngagementStore } from './engagement-store.mjs';
+import { withFileLock } from './file-storage.mjs';
 import { sendExpoPushNotifications } from './expo-push.mjs';
 import { NaverMarketProvider } from './naver-provider.mjs';
 import { OpenAiAnalysisService } from './openai-analysis.mjs';
@@ -55,7 +57,7 @@ const pushTokenStore = new PushTokenStore({
 
 const reportStore = new ReportStore({
   filePath: join(config.dataDir, 'reports.json'),
-  defaults: sampleReports,
+  defaults: process.env.NODE_ENV === 'production' ? [] : sampleReports,
 });
 
 const reportPdfStore = new ReportPdfStore({
@@ -70,7 +72,11 @@ const engagementStore = new EngagementStore({
   filePath: join(config.dataDir, 'engagement.json'),
 });
 
-function requireWriteAccess(request) {
+const apiRateBuckets = new Map();
+const API_RATE_LIMIT = 240;
+const API_RATE_WINDOW_MS = 60_000;
+
+function requireApiAccess(request) {
   if (!config.apiKey) return;
 
   const provided = request.headers['x-market-pulse-key'];
@@ -79,6 +85,62 @@ function requireWriteAccess(request) {
     error.statusCode = 401;
     throw error;
   }
+}
+
+function requireWriteAccess(request) {
+  requireApiAccess(request);
+}
+
+function requestIdentity(request) {
+  const forwarded = String(request.headers['x-forwarded-for'] ?? '').split(',')[0].trim();
+  return forwarded || request.socket?.remoteAddress || 'unknown';
+}
+
+function enforceApiRateLimit(request) {
+  const now = Date.now();
+  const key = requestIdentity(request);
+  const current = apiRateBuckets.get(key);
+  if (!current || now - current.startedAt >= API_RATE_WINDOW_MS) {
+    apiRateBuckets.set(key, { startedAt: now, count: 1 });
+    return;
+  }
+  current.count += 1;
+  if (current.count > API_RATE_LIMIT) {
+    const error = new Error('Too many requests');
+    error.statusCode = 429;
+    throw error;
+  }
+  if (apiRateBuckets.size > 500) {
+    for (const [bucketKey, bucket] of apiRateBuckets) {
+      if (now - bucket.startedAt >= API_RATE_WINDOW_MS) apiRateBuckets.delete(bucketKey);
+    }
+  }
+}
+
+function signPdfAccess(id, expiresAt) {
+  return createHmac('sha256', config.apiKey).update(`${id}:${expiresAt}`).digest('hex');
+}
+
+function isValidPdfSignature(id, url) {
+  if (!config.apiKey) return false;
+  const expiresAt = Number(url.searchParams.get('expires'));
+  const provided = url.searchParams.get('signature') ?? '';
+  if (!Number.isInteger(expiresAt) || expiresAt < Date.now() || expiresAt > Date.now() + 10 * 60_000) return false;
+  const expected = signPdfAccess(id, expiresAt);
+  if (provided.length !== expected.length) return false;
+  return timingSafeEqual(Buffer.from(provided), Buffer.from(expected));
+}
+
+function signedPdfRequestAllowed(request, url) {
+  if (request.method !== 'GET' || !url.pathname.startsWith('/api/reports/') || !url.pathname.endsWith('/pdf')) return false;
+  const encodedId = url.pathname.slice('/api/reports/'.length, -'/pdf'.length);
+  const id = decodeURIComponent(encodedId);
+  return Boolean(id && !id.includes('/') && isValidPdfSignature(id, url));
+}
+
+function reportOperationKey(id) {
+  const safe = String(id ?? 'invalid').replace(/[^A-Za-z0-9._-]/g, '').slice(0, 80) || 'invalid';
+  return join(config.dataDir, 'report-operations', `${safe}.lock`);
 }
 
 function sendJson(response, status, body) {
@@ -157,6 +219,12 @@ async function handler(request, response) {
 
   try {
     const url = new URL(request.url ?? '/', 'http://localhost');
+    const signedPdfAccess = signedPdfRequestAllowed(request, url);
+    if (url.pathname.startsWith('/api/')) {
+      enforceApiRateLimit(request);
+      if (!signedPdfAccess) requireApiAccess(request);
+    }
+
     if (url.pathname === '/health') {
       if (request.method !== 'GET') return sendJson(response, 405, { error: 'Method not allowed' });
       const [pushTokens, aiStatus] = await Promise.all([
@@ -270,7 +338,8 @@ async function handler(request, response) {
 
       if (request.method === 'POST') {
         requireWriteAccess(request);
-        const report = await reportStore.upsert(await readJsonBody(request, 50_000));
+        const payload = await readJsonBody(request, 50_000);
+        const report = await withFileLock(reportOperationKey(payload?.id), () => reportStore.upsert(payload));
         return sendJson(response, 201, report);
       }
 
@@ -288,6 +357,23 @@ async function handler(request, response) {
       await engagementStore.markReportRead(id);
       return sendJson(response, 200, { read: true });
     }
+    if (url.pathname.startsWith('/api/reports/') && url.pathname.endsWith('/pdf-link')) {
+      if (request.method !== 'GET') return sendJson(response, 405, { error: 'Method not allowed' });
+      const encodedId = url.pathname.slice('/api/reports/'.length, -'/pdf-link'.length);
+      const id = decodeURIComponent(encodedId);
+      if (!id || id.includes('/')) return sendJson(response, 404, { error: 'Not found' });
+      const report = await reportStore.getById(id);
+      if (!report?.pdfUrl || !(await reportPdfStore.read(id))) {
+        return sendJson(response, 404, { error: 'PDF not found' });
+      }
+      const expires = Date.now() + 5 * 60_000;
+      const signature = signPdfAccess(id, expires);
+      return sendJson(response, 200, {
+        url: `/api/reports/${encodeURIComponent(id)}/pdf?expires=${expires}&signature=${signature}`,
+        expiresAt: new Date(expires).toISOString(),
+      });
+    }
+
     if (url.pathname.startsWith('/api/reports/') && url.pathname.endsWith('/pdf')) {
       const encodedId = url.pathname.slice('/api/reports/'.length, -'/pdf'.length);
       const id = decodeURIComponent(encodedId);
@@ -309,19 +395,23 @@ async function handler(request, response) {
 
       if (request.method === 'POST') {
         requireWriteAccess(request);
-        const report = await reportStore.getById(id);
-        if (!report) return sendJson(response, 404, { error: 'Report not found' });
-
         const bytes = await readBinaryBody(request);
-        const saved = await reportPdfStore.save(id, bytes);
-        const updated = await reportStore.upsert({
-          ...report,
-          pdfUrl: `/api/reports/${encodeURIComponent(id)}/pdf`,
+        const result = await withFileLock(reportOperationKey(id), async () => {
+          const report = await reportStore.getById(id);
+          if (!report) {
+            const error = new Error('Report not found');
+            error.statusCode = 404;
+            throw error;
+          }
+          const saved = await reportPdfStore.save(id, bytes);
+          const latest = await reportStore.getById(id);
+          const updated = await reportStore.upsert({
+            ...latest,
+            pdfUrl: `/api/reports/${encodeURIComponent(id)}/pdf`,
+          });
+          return { report: updated, size: saved.size };
         });
-        return sendJson(response, 201, {
-          report: updated,
-          size: saved.size,
-        });
+        return sendJson(response, 201, result);
       }
 
       return sendJson(response, 405, { error: 'Method not allowed' });
@@ -340,8 +430,10 @@ async function handler(request, response) {
 
       if (request.method === 'DELETE') {
         requireWriteAccess(request);
-        await reportStore.remove(id);
-        await reportPdfStore.remove(id);
+        await withFileLock(reportOperationKey(id), async () => {
+          await reportStore.remove(id);
+          await reportPdfStore.remove(id);
+        });
         return sendJson(response, 200, { removed: true });
       }
 
