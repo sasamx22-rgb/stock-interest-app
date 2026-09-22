@@ -175,6 +175,128 @@ export function normalizeSearchPayload(payload) {
   }).slice(0, 12);
 }
 
+
+function walkObjects(value, output = []) {
+  if (!value || typeof value !== 'object') return output;
+  if (Array.isArray(value)) {
+    for (const child of value) walkObjects(child, output);
+    return output;
+  }
+  output.push(value);
+  for (const child of Object.values(value)) walkObjects(child, output);
+  return output;
+}
+
+export function normalizePriceHistory(payload) {
+  const seen = new Set();
+  return walkObjects(payload).flatMap((item) => {
+    const date = String(
+      item.localDate
+      ?? item.bizdate
+      ?? item.bizDate
+      ?? item.tradeDate
+      ?? item.date
+      ?? item.priceDate
+      ?? '',
+    ).trim();
+
+    const rawPrice =
+      item.closePrice
+      ?? item.close
+      ?? item.currentPrice
+      ?? item.price;
+
+    const price = numberFrom(rawPrice, Number.NaN);
+    if (!date || !Number.isFinite(price)) return [];
+
+    const key = `${date}:${price}`;
+    if (seen.has(key)) return [];
+    seen.add(key);
+
+    return [{
+      date,
+      closePrice: price,
+      changePercent: numberFrom(
+        item.fluctuationsRatio
+        ?? item.changeRate
+        ?? item.changePercent
+        ?? item.prevChangeRate,
+        0,
+      ),
+      volume: numberFrom(
+        item.accumulatedTradingVolume
+        ?? item.tradingVolume
+        ?? item.volume,
+        0,
+      ),
+    }];
+  }).slice(0, 30);
+}
+
+function newsTitleFrom(item) {
+  return item.title
+    ?? item.articleTitle
+    ?? item.newsTitle
+    ?? item.headline;
+}
+
+export function normalizeNewsPayload(payload) {
+  const seen = new Set();
+
+  return walkObjects(payload).flatMap((item) => {
+    const title = String(newsTitleFrom(item) ?? '').trim();
+    if (!title || title.length < 4) return [];
+
+    const publishedAt = String(
+      item.publishedAt
+      ?? item.articleDateTime
+      ?? item.datetime
+      ?? item.dateTime
+      ?? item.createdAt
+      ?? item.date
+      ?? '',
+    ).trim();
+
+    const publisher = String(
+      item.officeName
+      ?? item.press
+      ?? item.publisher
+      ?? item.provider
+      ?? item.source
+      ?? '',
+    ).trim();
+
+    const rawUrl = String(
+      item.url
+      ?? item.linkUrl
+      ?? item.articleUrl
+      ?? item.newsUrl
+      ?? '',
+    ).trim();
+
+    const key = `${title}:${publishedAt}`;
+    if (seen.has(key)) return [];
+    seen.add(key);
+
+    let url;
+    if (rawUrl) {
+      try {
+        const parsed = new URL(rawUrl);
+        if (['http:', 'https:'].includes(parsed.protocol)) url = parsed.toString();
+      } catch {
+        // Some Naver payloads expose only an article id, so URL is optional.
+      }
+    }
+
+    return [{
+      title: title.slice(0, 240),
+      ...(publishedAt ? { publishedAt } : {}),
+      ...(publisher ? { publisher: publisher.slice(0, 80) } : {}),
+      ...(url ? { url } : {}),
+    }];
+  }).slice(0, 10);
+}
+
 export class NaverMarketProvider {
   constructor({ fetchImpl = fetch, timeoutMs = DEFAULT_TIMEOUT_MS } = {}) {
     this.fetchImpl = fetchImpl;
@@ -217,6 +339,41 @@ export class NaverMarketProvider {
     const url = `https://stock.naver.com/api/autocomplete/search/autoComplete?query=${encodeURIComponent(clean)}&target=stock`;
     const payload = await this.fetchJson(url);
     return normalizeSearchPayload(payload);
+  }
+
+  async priceHistory(naverCode, market = marketFromCode(naverCode)) {
+    const url = market === 'KR'
+      ? `https://stock.naver.com/api/stockSecurity/items/v2/domestic/${encodeURIComponent(naverCode)}/daily-prices?size=30`
+      : `https://stock.naver.com/api/securityService/stock/${encodeURIComponent(naverCode)}/price?page=1&pageSize=30`;
+
+    return normalizePriceHistory(await this.fetchJson(url));
+  }
+
+  async news(naverCode, market = marketFromCode(naverCode)) {
+    const url = market === 'KR'
+      ? `https://stock.naver.com/api/domestic/detail/news?itemCode=${encodeURIComponent(naverCode)}&page=1&pageSize=10`
+      : `https://stock.naver.com/api/foreign/worldStock/list?reutersCode=${encodeURIComponent(naverCode)}&page=1&pageSize=10`;
+
+    return normalizeNewsPayload(await this.fetchJson(url));
+  }
+
+  async stockDetail(naverCode, fallbackName, market = marketFromCode(naverCode)) {
+    const [quoteResult, priceResult, newsResult] = await Promise.allSettled([
+      this.quote(naverCode, fallbackName),
+      this.priceHistory(naverCode, market),
+      this.news(naverCode, market),
+    ]);
+
+    if (quoteResult.status !== 'fulfilled') {
+      throw quoteResult.reason;
+    }
+
+    return {
+      quote: quoteResult.value,
+      prices: priceResult.status === 'fulfilled' ? priceResult.value : [],
+      news: newsResult.status === 'fulfilled' ? newsResult.value : [],
+      source: 'naver',
+    };
   }
 
   async movers(market, url) {
