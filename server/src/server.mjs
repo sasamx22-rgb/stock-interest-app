@@ -7,7 +7,6 @@ import { CalendarEventStore } from './calendar-event-store.mjs';
 import { describeAlert, isAlertEligible } from './alerts.mjs';
 import { config } from './config.mjs';
 import { buildDailyPicks } from './daily-picks.mjs';
-import { DailyReportScheduler } from './daily-report-scheduler.mjs';
 import { EconomicCalendarProvider } from './economic-calendar-provider.mjs';
 import { buildEngagementSummary, buildWeeklyReview } from './engagement-service.mjs';
 import { EngagementStore } from './engagement-store.mjs';
@@ -172,76 +171,6 @@ async function loadCalendarEvents(days, watchlistItems, now = new Date()) {
     .sort((a, b) => Date.parse(a.startsAt) - Date.parse(b.startsAt));
 }
 
-async function loadCalendarForReport(focusStocks, now = new Date()) {
-  const [manualEvents, automaticEvents] = await Promise.all([
-    calendarEventStore.getAll().catch(() => []),
-    calendarProvider.upcoming({
-      days: 2,
-      symbols: focusStocks
-        .filter((item) => item.market === 'US')
-        .map((item) => item.symbol)
-        .slice(0, 10),
-      now,
-    }).catch(() => []),
-  ]);
-
-  return [...automaticEvents, ...manualEvents]
-    .filter((event, index, items) => items.findIndex((candidate) => candidate.id === event.id) === index)
-    .filter((event) => Date.parse(event.startsAt) >= now.getTime() - 6 * 60 * 60 * 1000)
-    .sort((a, b) => Date.parse(a.startsAt) - Date.parse(b.startsAt))
-    .slice(0, 15);
-}
-
-async function generateAiDailyReport(type, { force = false } = {}) {
-  if (!aiService.enabled || !['morning', 'premarket'].includes(type)) return null;
-
-  const now = new Date();
-  const dateKey = new Intl.DateTimeFormat('en-CA', {
-    timeZone: 'Asia/Seoul',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).format(now);
-  const reportId = `${dateKey}-${type}`;
-
-  if (!force) {
-    const existing = await reportStore.getById(reportId);
-    if (existing) return existing;
-  }
-
-  const [watchlistItems, reports, movers, alertRule] = await Promise.all([
-    watchlistStore.getAll(),
-    reportStore.getAll(),
-    loadMarketMovers(['KR', 'US']),
-    alertSettingsStore.get(),
-  ]);
-
-  const focusStocks = await buildTodayFocus({
-    provider,
-    watchlistItems,
-    reports,
-    movers,
-    now,
-  });
-  const calendarEvents = await loadCalendarForReport(focusStocks, now);
-
-  const generated = await aiService.generateReport({
-    type,
-    publishedAt: now.toISOString(),
-    focusStocks,
-    calendarEvents,
-    alertRule,
-  });
-  if (!generated) return null;
-
-  return reportStore.upsert({
-    id: reportId,
-    type,
-    publishedAt: now.toISOString(),
-    ...generated,
-  });
-}
-
 const pushMonitor = new SurgePushMonitor({
   loadAlerts: loadEligibleAlerts,
   getTokens: () => pushTokenStore.getAll(),
@@ -250,10 +179,6 @@ const pushMonitor = new SurgePushMonitor({
   intervalMs: config.pushIntervalMs,
 });
 
-const reportScheduler = new DailyReportScheduler({
-  generateReport: (type) => generateAiDailyReport(type),
-  enabled: aiService.enabled,
-});
 
 async function handler(request, response) {
   const url = new URL(request.url ?? '/', `http://${request.headers.host ?? 'localhost'}`);
@@ -280,7 +205,6 @@ async function handler(request, response) {
         pushMonitor: pushMonitor.active ? 'active' : 'inactive',
         registeredDevices: pushTokens.length,
         ai: aiStatus,
-        reportScheduler: reportScheduler.active ? 'active' : 'inactive',
       });
     }
 
@@ -345,23 +269,6 @@ async function handler(request, response) {
     if (url.pathname === '/api/ai/status') {
       if (request.method !== 'GET') return sendJson(response, 405, { error: 'Method not allowed' });
       return sendJson(response, 200, await aiService.status());
-    }
-
-    if (url.pathname === '/api/ai/reports/generate') {
-      if (request.method !== 'POST') return sendJson(response, 405, { error: 'Method not allowed' });
-      requireWriteAccess(request);
-
-      const body = await readJsonBody(request);
-      const type = body.type === 'premarket' ? 'premarket' : body.type === 'morning' ? 'morning' : null;
-      if (!type) return sendJson(response, 400, { error: 'Report type must be morning or premarket' });
-
-      const report = await generateAiDailyReport(type, { force: Boolean(body.force) });
-      if (!report) {
-        return sendJson(response, 503, {
-          error: 'AI report generation is disabled or daily AI budget is exhausted',
-        });
-      }
-      return sendJson(response, body.force ? 201 : 200, report);
     }
 
     if (url.pathname === '/api/engagement/summary') {
@@ -715,13 +622,11 @@ const server = createServer(handler);
 server.listen(config.port, '0.0.0.0', () => {
   console.log(`Market Pulse API listening on http://0.0.0.0:${config.port}`);
   pushMonitor.start();
-  reportScheduler.start();
 });
 
 for (const signal of ['SIGINT', 'SIGTERM']) {
   process.on(signal, () => {
     pushMonitor.stop();
-    reportScheduler.stop();
     server.close(() => process.exit(0));
   });
 }
