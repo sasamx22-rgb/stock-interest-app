@@ -243,7 +243,7 @@
 - `npm run typecheck`, `npm run lint` 통과.
 - `CI=1 npx expo export --platform android --output-dir /tmp/stock-interest-final-android` 통과, Hermes bundle 약2.9MB. 모바일 소스는 이번 PR에서 변경하지 않았다.
 - 로컬 런타임 Node24.19.0. CI/Docker는 Node22.13 계열이므로 같다고 간주하지 않았다.
-- **Docker build는 실행 시도했으나 이 환경에 docker 명령이 없어 exit127; 성공으로 기록하지 않는다.** CI에 Docker build job은 존재한다. 이번 PR의 실제 CI 결과는 별도로 확인해야 한다.
+- 로컬 Docker build는 docker 명령이 없어 exit127이었다. 이후 **GitHub CI에서 동일 수정 코드 a3ca9c6의 Node22 서버 테스트·TypeScript·lint·Docker build가 모두 통과**했다. [실제 실행 결과](https://github.com/sasamx22-rgb/stock-interest-app/actions/runs/35794957465). 컨테이너 build 성공은 실제 Railway 배포/Volume 검증과 구분한다.
 - EAS native APK, FCM 송수신, Railway 실제 Volume mount·재시작·부하·요금, OpenAI 유료 실호출은 실행하지 않았다. 계정/credential이 필요한 검증을 mock 테스트로 대체하여 완료 표시하지 않았다.
 - 아직 빠진 중요한 테스트: UI deferred-response 경합·PDF 오류 interaction, PDF/metadata 단계별 process kill 및 복구, 실제 파일시스템 ENOSPC/fsync 오류, nested same-lock Promise.all 금지 계약, push batch별 부분 성공/outbox 재시도, 장중/장후/휴장/미국 DST 세션 fixtures, schema 변경/error-shaped200, 장시간 자원 계측.
 
@@ -277,7 +277,7 @@
 - [ ] H5/H6: 시세 전체 실패를 정상 빈 결과로 표시하지 않기; 시세 장애에도 보고서 목록 접근 가능하게 하기.
 - [ ] M6/M7: 이전 요청이 새 종목/가격 상태를 덮거나 다른 종목과 함께 표시되는 경로 차단.
 - [ ] M8: 외부 PDF를 사용한다면 열기 회귀 수정. 내부 PDF도 실패 원인 표시.
-- [ ] 실제 APK/FCM, 현재 commit의 Docker/CI, Railway Volume 영속화·백업 복원 확인.
+- [ ] 실제 APK/FCM, Railway Volume 영속화·백업 복원 확인. 수정 코드의 Docker/CI는 통과했다.
 
 ## 개인용 APK 베타에서 수용 가능한 잔여 위험
 
