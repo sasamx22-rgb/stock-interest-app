@@ -532,6 +532,10 @@ export class NaverMarketProvider {
       quote: quoteResult.value,
       prices: priceResult.status === 'fulfilled' ? priceResult.value : [],
       news,
+      availability: {
+        prices: priceResult.status === 'fulfilled' ? 'ok' : 'unavailable',
+        news: newsResult.status === 'fulfilled' ? 'ok' : 'unavailable',
+      },
       movementReason: summarizeMovementReason(quoteResult.value, news, calendarEvents),
       source: 'naver',
     };
