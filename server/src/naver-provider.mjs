@@ -179,6 +179,7 @@ export class NaverMarketProvider {
   constructor({ fetchImpl = fetch, timeoutMs = DEFAULT_TIMEOUT_MS } = {}) {
     this.fetchImpl = fetchImpl;
     this.timeoutMs = timeoutMs;
+    this.moverCache = new Map();
   }
 
   async fetchJson(url) {
@@ -220,7 +221,16 @@ export class NaverMarketProvider {
 
   async movers(market, url) {
     if (!url) return [];
+
+    const now = Date.now();
+    const cached = this.moverCache.get(url);
+    if (cached && now - cached.fetchedAt < 45_000) {
+      return cached.items;
+    }
+
     const payload = await this.fetchJson(url);
-    return normalizeRankingPayload(payload, market);
+    const items = normalizeRankingPayload(payload, market);
+    this.moverCache.set(url, { fetchedAt: now, items });
+    return items;
   }
 }
