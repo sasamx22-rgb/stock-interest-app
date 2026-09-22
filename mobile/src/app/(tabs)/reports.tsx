@@ -10,15 +10,21 @@ import { Report } from '@/types/market';
 export default function ReportsScreen() {
   const [reports, setReports] = useState<Report[]>([]);
   const [unreadReportIds, setUnreadReportIds] = useState<string[]>([]);
+  const [loadError, setLoadError] = useState(false);
   const router = useRouter();
 
   useFocusEffect(useCallback(() => {
     let active = true;
-    Promise.all([getReports(), getEngagementSummary()]).then(([items, engagement]) => {
-      if (!active) return;
-      setReports(items);
-      setUnreadReportIds(engagement.unreadReportIds);
-    });
+    setLoadError(false);
+    Promise.all([getReports(), getEngagementSummary()])
+      .then(([items, engagement]) => {
+        if (!active) return;
+        setReports(items);
+        setUnreadReportIds(engagement.unreadReportIds);
+      })
+      .catch(() => {
+        if (active) setLoadError(true);
+      });
     return () => {
       active = false;
     };
@@ -32,10 +38,15 @@ export default function ReportsScreen() {
         <Text style={styles.description}>08:00 모닝 브리프와 08:50 프리마켓 보고서를 날짜별로 모아봅니다.</Text>
       </View>
 
-      {reports.length === 0 ? (
+      {loadError ? (
+        <View style={styles.empty}>
+          <Text style={styles.emptyTitle}>보고서를 불러오지 못했습니다.</Text>
+          <Text style={styles.emptyText}>서버 연결 또는 API 키 설정을 확인해주세요.</Text>
+        </View>
+      ) : reports.length === 0 ? (
         <View style={styles.empty}>
           <Text style={styles.emptyTitle}>저장된 보고서가 없습니다.</Text>
-          <Text style={styles.emptyText}>보고서 생성 파이프라인에서 새 보고서를 저장하면 여기에 표시됩니다.</Text>
+          <Text style={styles.emptyText}>새 보고서를 저장하면 여기에 표시됩니다.</Text>
         </View>
       ) : reports.map((report) => (
         <View key={report.id} style={styles.card}>
