@@ -125,9 +125,18 @@ export async function getMovers(market?: Market): Promise<MarketMover[]> {
   }
 }
 
+function resolveReportLinks(report: Report): Report {
+  if (!report.pdfUrl || !report.pdfUrl.startsWith('/') || !API_BASE_URL) return report;
+  return {
+    ...report,
+    pdfUrl: `${API_BASE_URL}${report.pdfUrl}`,
+  };
+}
+
 export async function getReports(): Promise<Report[]> {
   try {
-    return await request<Report[]>('/api/reports');
+    const reports = await request<Report[]>('/api/reports');
+    return reports.map(resolveReportLinks);
   } catch {
     return sampleReports;
   }
@@ -135,7 +144,9 @@ export async function getReports(): Promise<Report[]> {
 
 export async function getReport(id: string): Promise<Report | null> {
   try {
-    return await request<Report>(`/api/reports/${encodeURIComponent(id)}`);
+    return resolveReportLinks(
+      await request<Report>(`/api/reports/${encodeURIComponent(id)}`),
+    );
   } catch {
     return sampleReports.find((report) => report.id === id) ?? null;
   }
