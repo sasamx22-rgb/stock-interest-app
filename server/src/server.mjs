@@ -245,6 +245,29 @@ async function handler(request, response) {
       return sendJson(response, 405, { error: 'Method not allowed' });
     }
 
+    if (url.pathname.startsWith('/api/stocks/')) {
+      if (request.method !== 'GET') return sendJson(response, 405, { error: 'Method not allowed' });
+
+      const parts = url.pathname.slice('/api/stocks/'.length).split('/').filter(Boolean);
+      if (parts.length !== 2) return sendJson(response, 404, { error: 'Not found' });
+
+      const [market, encodedCode] = parts;
+      const code = decodeURIComponent(encodedCode);
+      const name = url.searchParams.get('name')?.trim() || code;
+
+      if (!['KR', 'US'].includes(market)) {
+        return sendJson(response, 400, { error: 'Market must be KR or US' });
+      }
+      if (market === 'KR' && !/^\d{6}$/.test(code)) {
+        return sendJson(response, 400, { error: 'Invalid Korean stock code' });
+      }
+      if (market === 'US' && !/^[A-Za-z0-9._-]{1,40}$/.test(code)) {
+        return sendJson(response, 400, { error: 'Invalid US stock code' });
+      }
+
+      return sendJson(response, 200, await provider.stockDetail(code, name, market));
+    }
+
     if (url.pathname === '/api/search') {
       if (request.method !== 'GET') return sendJson(response, 405, { error: 'Method not allowed' });
 
