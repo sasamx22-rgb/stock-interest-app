@@ -5,12 +5,13 @@ import { useFocusEffect } from 'expo-router';
 import { ScreenShell } from '@/components/screen-shell';
 import { palette, spacing } from '@/constants/market-theme';
 import {
+  getAiStatus,
   getAlertSettings,
   getPushStatus,
   isLiveDataConfigured,
   updateAlertSettings,
 } from '@/lib/market-api';
-import { AlertRule, PushStatus } from '@/types/market';
+import { AiStatus, AlertRule, PushStatus } from '@/types/market';
 
 const CHANGE_OPTIONS = [3, 5, 7, 10];
 const VOLUME_OPTIONS = [2, 3, 4, 5];
@@ -65,18 +66,23 @@ function RuleSelector({
 
 export default function SettingsScreen() {
   const [pushStatus, setPushStatus] = useState<PushStatus | null>(null);
+  const [aiStatus, setAiStatus] = useState<AiStatus | null>(null);
   const [rule, setRule] = useState<AlertRule>({ changePercent: 5, volumeRatio: 3 });
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
 
   useFocusEffect(useCallback(() => {
     let active = true;
-    Promise.all([getPushStatus().catch(() => null), getAlertSettings()])
-      .then(([status, currentRule]) => {
-        if (!active) return;
-        setPushStatus(status);
-        setRule(currentRule);
-      });
+    Promise.all([
+      getPushStatus().catch(() => null),
+      getAlertSettings(),
+      getAiStatus(),
+    ]).then(([status, currentRule, currentAiStatus]) => {
+      if (!active) return;
+      setPushStatus(status);
+      setRule(currentRule);
+      setAiStatus(currentAiStatus);
+    });
 
     return () => {
       active = false;
@@ -149,6 +155,18 @@ export default function SettingsScreen() {
           label="등록 기기"
           value={pushStatus ? `${pushStatus.registeredDevices}대` : '-'}
         />
+      </View>
+
+      <View style={styles.card}>
+        <SettingRow label="AI 분석" value={aiStatus?.enabled ? '사용 중' : '비활성'} />
+        <SettingRow label="AI 모델" value={aiStatus?.model ?? 'gpt-5.6-terra'} />
+        <SettingRow
+          label="오늘 AI 호출"
+          value={aiStatus?.enabled
+            ? `${aiStatus.callsToday} / ${aiStatus.dailyLimit}회`
+            : 'API 키 미설정'}
+        />
+        <SettingRow label="AI 사용 범위" value="변동 원인 · 보고서" />
       </View>
 
       <View style={styles.notice}>
