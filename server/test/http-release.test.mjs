@@ -62,6 +62,43 @@ test('HTTP preserves UTF-8 and handles invalid Host without terminating', async 
       headers: { 'X-Market-Pulse-Key': 'test-only-key' },
     });
     assert.equal(authorizedRead.status, 200);
+
+    const reportResponse = await fetch(`http://127.0.0.1:${port}/api/reports`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Market-Pulse-Key': 'test-only-key',
+      },
+      body: JSON.stringify({
+        id: 'signed-pdf-test',
+        title: 'Signed PDF test',
+        publishedAt: '2026-09-23T08:00:00+09:00',
+        type: 'morning',
+        summary: 'test',
+        tickers: [],
+      }),
+    });
+    assert.equal(reportResponse.status, 201);
+
+    const pdfResponse = await fetch(`http://127.0.0.1:${port}/api/reports/signed-pdf-test/pdf`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/pdf',
+        'X-Market-Pulse-Key': 'test-only-key',
+      },
+      body: Buffer.from('%PDF-1.4\n%%EOF'),
+    });
+    assert.equal(pdfResponse.status, 201);
+
+    const linkResponse = await fetch(`http://127.0.0.1:${port}/api/reports/signed-pdf-test/pdf-link`, {
+      headers: { 'X-Market-Pulse-Key': 'test-only-key' },
+    });
+    assert.equal(linkResponse.status, 200);
+    const link = await linkResponse.json();
+
+    const signedPdf = await fetch(`http://127.0.0.1:${port}${link.url}`);
+    assert.equal(signedPdf.status, 200);
+    assert.equal(signedPdf.headers.get('content-type'), 'application/pdf');
   } finally {
     if (child.exitCode === null) { const exited = once(child, 'exit'); child.kill('SIGTERM'); await exited; }
     await rm(directory, { recursive: true, force: true });
