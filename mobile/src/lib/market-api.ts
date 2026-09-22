@@ -1,6 +1,7 @@
 import { sampleMovers, sampleReports, sampleWatchlist } from '@/data/sample-data';
 import {
   AlertRule,
+  CalendarEvent,
   Market,
   MarketMover,
   Quote,
@@ -41,6 +42,14 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
   }
 
   return response.json() as Promise<T>;
+}
+
+export async function getCalendarEvents(days = 14): Promise<CalendarEvent[]> {
+  try {
+    return await request<CalendarEvent[]>('/api/calendar?days=' + encodeURIComponent(String(days)));
+  } catch {
+    return [];
+  }
 }
 
 export async function getTodayFocus(): Promise<TodayFocusStock[]> {
