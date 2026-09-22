@@ -17,8 +17,11 @@ function envOrDefault(value, fallback) {
   return value?.trim() || fallback;
 }
 
+const pushIntervalSeconds = Math.max(60, Number(process.env.PUSH_INTERVAL_SECONDS ?? 120) || 120);
+
 export const config = {
   port: Number(process.env.PORT ?? 8787),
+  pushIntervalMs: pushIntervalSeconds * 1000,
   watchlist: parseWatchlist(process.env.WATCHLIST),
   moverUrls: {
     KR: envOrDefault(process.env.NAVER_KR_MOVERS_URL, DEFAULT_MOVER_URLS.KR),
