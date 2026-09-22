@@ -33,3 +33,22 @@ test('returns low-confidence message when no news exists', () => {
   assert.equal(result.confidence, 'low');
   assert.match(result.summary, /특정하기 어렵습니다/);
 });
+
+
+test('uses earnings or filing events as structured evidence', () => {
+  const result = summarizeMovementReason(
+    { name: 'NVIDIA', changePercent: 4.5, volumeRatio: 2.2 },
+    [],
+    [{
+      type: 'earnings',
+      title: 'NVDA 실적 발표',
+      startsAt: '2026-09-22T20:00:00Z',
+      url: 'https://example.com/earnings',
+    }],
+  );
+
+  assert.equal(result.category, 'earnings');
+  assert.equal(result.label, '실적·가이던스');
+  assert.equal(result.confidence, 'medium');
+  assert.equal(result.evidence[0].type, 'earnings');
+});
