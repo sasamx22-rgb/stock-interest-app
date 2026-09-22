@@ -11,6 +11,7 @@ import {
 } from '@/types/market';
 
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL?.replace(/\/$/, '');
+const API_KEY = process.env.EXPO_PUBLIC_API_KEY?.trim();
 
 type RequestOptions = {
   method?: 'GET' | 'POST' | 'DELETE';
@@ -28,6 +29,7 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
     headers: {
       Accept: 'application/json',
       ...(options.body ? { 'Content-Type': 'application/json' } : {}),
+      ...(API_KEY ? { 'X-Market-Pulse-Key': API_KEY } : {}),
     },
   });
 
