@@ -6,6 +6,7 @@ import {
   Report,
   PushRegistration,
   PushStatus,
+  StockDetail,
   StockSearchResult,
   WatchlistItem,
 } from '@/types/market';
@@ -57,6 +58,26 @@ export async function getWatchlistItems(): Promise<WatchlistItem[]> {
       code: quote.naverCode,
       name: quote.name,
     }));
+  }
+}
+
+export async function getStockDetail(
+  market: Market,
+  code: string,
+  name?: string,
+): Promise<StockDetail | null> {
+  try {
+    const query = name ? `?name=${encodeURIComponent(name)}` : '';
+    return await request<StockDetail>(
+      `/api/stocks/${market}/${encodeURIComponent(code)}${query}`,
+    );
+  } catch {
+    const quote = sampleWatchlist.find(
+      (item) => item.market === market && item.naverCode === code,
+    );
+    return quote
+      ? { quote, prices: [], news: [], source: 'sample' }
+      : null;
   }
 }
 
