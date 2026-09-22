@@ -86,7 +86,7 @@ function requireApiAccess(request) {
   if (!config.apiKey) return;
 
   const provided = request.headers['x-market-pulse-key'];
-  if (provided !== config.apiKey) {
+  if (provided !== config.apiKey && provided !== config.publishKey) {
     const error = new Error('Unauthorized');
     error.statusCode = 401;
     throw error;
