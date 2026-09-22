@@ -79,17 +79,17 @@ export async function buildTodayFocus({
     }
   }
 
-  const uniqueUnresolved = [];
-  const unresolvedSeen = new Set();
+  const unresolvedByTicker = new Map();
   for (const item of unresolved) {
     const key = normalizeText(item.ticker);
-    if (!key || unresolvedSeen.has(key)) continue;
-    unresolvedSeen.add(key);
-    uniqueUnresolved.push(item);
+    if (!key) continue;
+    const current = unresolvedByTicker.get(key) ?? { ticker: item.ticker, reportIds: [] };
+    if (!current.reportIds.includes(item.reportId)) current.reportIds.push(item.reportId);
+    unresolvedByTicker.set(key, current);
   }
 
   const resolved = await Promise.allSettled(
-    uniqueUnresolved.slice(0, 12).map(async ({ ticker, reportId }) => {
+    [...unresolvedByTicker.values()].slice(0, 12).map(async ({ ticker, reportIds }) => {
       const results = await provider.searchStocks(ticker);
       if (results.length === 0) return null;
 
@@ -99,13 +99,13 @@ export async function buildTodayFocus({
       ));
       const match = exact ?? results[0];
       const quote = await provider.quote(match.code, match.name);
-      return { quote, reportId };
+      return { quote, reportIds };
     }),
   );
 
   resolved.forEach((result) => {
     if (result.status !== 'fulfilled' || !result.value) return;
-    upsert(result.value.quote, 'report', [result.value.reportId]);
+    upsert(result.value.quote, 'report', result.value.reportIds);
   });
 
   return [...byKey.values()]
