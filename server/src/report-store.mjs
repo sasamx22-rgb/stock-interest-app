@@ -2,7 +2,6 @@ import { atomicWriteFile as writeFile, serializeFileOperations } from './file-st
 import { mkdir, readFile } from 'node:fs/promises';
 import { dirname } from 'node:path';
 
-const MAX_REPORTS = 400;
 const ID_PATTERN = /^[A-Za-z0-9._-]{1,80}$/;
 
 function cleanString(value, maxLength) {
@@ -90,7 +89,7 @@ export class ReportStore {
         return [report];
       });
 
-      return sortReports(normalized).slice(0, MAX_REPORTS);
+      return sortReports(normalized);
     } catch (error) {
       if (error?.code !== 'ENOENT') throw error;
       await this.save(this.defaults);
@@ -99,7 +98,7 @@ export class ReportStore {
   }
 
   async save(items) {
-    const normalized = sortReports(items).slice(0, MAX_REPORTS);
+    const normalized = sortReports(items);
     await mkdir(dirname(this.filePath), { recursive: true });
     await writeFile(this.filePath, `${JSON.stringify(normalized, null, 2)}\n`, 'utf8');
     return normalized;
@@ -118,9 +117,13 @@ export class ReportStore {
     }
 
     const items = await this.getAll();
-    const next = [report, ...items.filter((item) => item.id !== report.id)];
+    const existing = items.find((item) => item.id === report.id);
+    const merged = existing?.pdfUrl && !report.pdfUrl
+      ? { ...report, pdfUrl: existing.pdfUrl }
+      : report;
+    const next = [merged, ...items.filter((item) => item.id !== report.id)];
     await this.save(next);
-    return report;
+    return merged;
   }
 
   async remove(id) {
