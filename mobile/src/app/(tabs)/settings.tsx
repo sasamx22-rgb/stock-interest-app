@@ -78,12 +78,16 @@ export default function SettingsScreen() {
       getPushStatus().catch(() => null),
       getAlertSettings(),
       getAiStatus(),
-    ]).then(([status, currentRule, currentAiStatus]) => {
-      if (!active) return;
-      setPushStatus(status);
-      setRule(currentRule);
-      setAiStatus(currentAiStatus);
-    });
+    ])
+      .then(([status, currentRule, currentAiStatus]) => {
+        if (!active) return;
+        setPushStatus(status);
+        setRule(currentRule);
+        setAiStatus(currentAiStatus);
+      })
+      .catch(() => {
+        if (active) setMessage('설정 정보를 불러오지 못했습니다. 서버 연결을 확인해주세요.');
+      });
 
     return () => {
       active = false;
