@@ -21,6 +21,7 @@ function stockCodeFrom(value) {
     ?? value.stockCode
     ?? value.symbolCode
     ?? value.reutersCode
+    ?? value.tickerCode
     ?? value.symbol;
 }
 
@@ -29,7 +30,30 @@ function stockNameFrom(value) {
     ?? value.stockNameEng
     ?? value.itemName
     ?? value.itemname
+    ?? value.displayName
+    ?? value.korName
+    ?? value.engName
     ?? value.name;
+}
+
+function nationFrom(value) {
+  return String(
+    value.nationType
+    ?? value.nationCode
+    ?? value.countryCode
+    ?? value.country
+    ?? '',
+  ).toUpperCase();
+}
+
+function marketFromSearchItem(item, code) {
+  const nation = nationFrom(item);
+  if (['KOR', 'KR', 'KOREA'].includes(nation)) return 'KR';
+  if (['USA', 'US', 'UNITED STATES'].includes(nation)) return 'US';
+  if (nation && !['KOR', 'KR', 'KOREA', 'USA', 'US', 'UNITED STATES'].includes(nation)) {
+    return null;
+  }
+  return marketFromCode(code);
 }
 
 function quotePayload(payload) {
@@ -94,7 +118,7 @@ export function normalizeRankingPayload(payload, market) {
 
   return objects.flatMap((item) => {
     const rawCode = String(stockCodeFrom(item));
-    const naverCode = market === 'US' && !rawCode.includes('.')
+    const naverCode = market === 'US'
       ? String(item.reutersCode ?? rawCode)
       : rawCode;
 
@@ -119,6 +143,38 @@ export function normalizeRankingPayload(payload, market) {
   });
 }
 
+export function normalizeSearchPayload(payload) {
+  const objects = walkForStockObjects(payload);
+  const seen = new Set();
+
+  return objects.flatMap((item) => {
+    const rawCode = String(stockCodeFrom(item) ?? '').trim();
+    const name = String(stockNameFrom(item) ?? '').trim();
+    if (!rawCode || !name) return [];
+
+    const market = marketFromSearchItem(item, rawCode);
+    if (!market) return [];
+
+    const code = market === 'US'
+      ? String(item.reutersCode ?? rawCode).trim()
+      : rawCode;
+
+    if (market === 'KR' && !/^\d{6}$/.test(code)) return [];
+    if (!/^[A-Za-z0-9._-]{1,40}$/.test(code)) return [];
+
+    const key = `${market}:${code.toUpperCase()}`;
+    if (seen.has(key)) return [];
+    seen.add(key);
+
+    return [{
+      market,
+      code,
+      symbol: market === 'US' ? code.split('.')[0] : code,
+      name,
+    }];
+  }).slice(0, 12);
+}
+
 export class NaverMarketProvider {
   constructor({ fetchImpl = fetch, timeoutMs = DEFAULT_TIMEOUT_MS } = {}) {
     this.fetchImpl = fetchImpl;
@@ -130,7 +186,7 @@ export class NaverMarketProvider {
       headers: {
         Accept: 'application/json',
         Referer: 'https://stock.naver.com/',
-        'User-Agent': 'MarketPulsePersonal/0.2',
+        'User-Agent': 'MarketPulsePersonal/0.3',
       },
       signal: AbortSignal.timeout(this.timeoutMs),
     });
@@ -151,6 +207,15 @@ export class NaverMarketProvider {
   async watchlist(items) {
     const settled = await Promise.allSettled(items.map((item) => this.quote(item.code, item.name)));
     return settled.flatMap((result) => result.status === 'fulfilled' ? [result.value] : []);
+  }
+
+  async searchStocks(query) {
+    const clean = String(query ?? '').trim();
+    if (!clean) return [];
+
+    const url = `https://stock.naver.com/api/autocomplete/search/autoComplete?query=${encodeURIComponent(clean)}&target=stock`;
+    const payload = await this.fetchJson(url);
+    return normalizeSearchPayload(payload);
   }
 
   async movers(market, url) {
