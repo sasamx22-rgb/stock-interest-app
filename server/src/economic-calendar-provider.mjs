@@ -1,16 +1,16 @@
 const BLS_ICS_URL = 'https://www.bls.gov/schedule/news_release/bls.ics';
 
 const FOMC_DATES = [
-  ['2026-10-27T13:00:00-04:00', '2026년 10월 FOMC 회의'],
-  ['2026-12-08T13:00:00-05:00', '2026년 12월 FOMC 회의'],
-  ['2027-01-26T13:00:00-05:00', '2027년 1월 FOMC 회의'],
-  ['2027-03-16T13:00:00-04:00', '2027년 3월 FOMC 회의'],
-  ['2027-04-27T13:00:00-04:00', '2027년 4월 FOMC 회의'],
-  ['2027-06-08T13:00:00-04:00', '2027년 6월 FOMC 회의'],
-  ['2027-07-27T13:00:00-04:00', '2027년 7월 FOMC 회의'],
-  ['2027-09-14T13:00:00-04:00', '2027년 9월 FOMC 회의'],
-  ['2027-10-26T13:00:00-04:00', '2027년 10월 FOMC 회의'],
-  ['2027-12-07T13:00:00-05:00', '2027년 12월 FOMC 회의'],
+  ['2026-10-28', '2026년 10월 FOMC 금리결정'],
+  ['2026-12-09', '2026년 12월 FOMC 금리결정'],
+  ['2027-01-27', '2027년 1월 FOMC 금리결정'],
+  ['2027-03-17', '2027년 3월 FOMC 금리결정'],
+  ['2027-04-28', '2027년 4월 FOMC 금리결정'],
+  ['2027-06-09', '2027년 6월 FOMC 금리결정'],
+  ['2027-07-28', '2027년 7월 FOMC 금리결정'],
+  ['2027-09-15', '2027년 9월 FOMC 금리결정'],
+  ['2027-10-27', '2027년 10월 FOMC 금리결정'],
+  ['2027-12-08', '2027년 12월 FOMC 금리결정'],
 ];
 
 const IMPORTANT_BLS = [
@@ -25,7 +25,43 @@ function unfoldIcs(text) {
   return text.replace(/\r?\n[ \t]/g, '');
 }
 
-function parseIcsDate(value) {
+function timeZoneOffsetMs(date, timeZone) {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hourCycle: 'h23',
+  }).formatToParts(date);
+
+  const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+  const asUtc = Date.UTC(
+    Number(values.year),
+    Number(values.month) - 1,
+    Number(values.day),
+    Number(values.hour),
+    Number(values.minute),
+    Number(values.second),
+  );
+  return asUtc - date.getTime();
+}
+
+function zonedDateTimeToUtc({ year, month, day, hour, minute, second = 0 }, timeZone) {
+  const localAsUtc = Date.UTC(year, month - 1, day, hour, minute, second);
+  let estimate = new Date(localAsUtc);
+
+  for (let index = 0; index < 2; index += 1) {
+    const offset = timeZoneOffsetMs(estimate, timeZone);
+    estimate = new Date(localAsUtc - offset);
+  }
+
+  return estimate;
+}
+
+function parseIcsDate(value, timeZone = 'America/New_York') {
   const raw = String(value ?? '').trim();
   const match = raw.match(/^(\d{4})(\d{2})(\d{2})(?:T(\d{2})(\d{2})(\d{2})?Z?)?$/);
   if (!match) return null;
@@ -35,12 +71,14 @@ function parseIcsDate(value) {
     return new Date(`${year}-${month}-${day}T${hour}:${minute}:${second}Z`);
   }
 
-  // BLS release times are Eastern Time. These releases are normally 08:30/10:00 ET.
-  // Use DST by month for a pragmatic conversion; exact source text remains attached.
-  const monthNumber = Number(month);
-  const daylight = monthNumber >= 3 && monthNumber <= 11;
-  const offset = daylight ? '-04:00' : '-05:00';
-  return new Date(`${year}-${month}-${day}T${hour}:${minute}:${second}${offset}`);
+  return zonedDateTimeToUtc({
+    year: Number(year),
+    month: Number(month),
+    day: Number(day),
+    hour: Number(hour),
+    minute: Number(minute),
+    second: Number(second),
+  }, timeZone);
 }
 
 export function parseBlsIcs(ics) {
@@ -59,7 +97,9 @@ export function parseBlsIcs(ics) {
     const summary = String(values.SUMMARY ?? '').replace(/\\,/g, ',').trim();
     if (!IMPORTANT_BLS.some((pattern) => pattern.test(summary))) return [];
 
-    const date = parseIcsDate(values.DTSTART);
+    const startLine = lines.find((line) => line.startsWith('DTSTART')) ?? '';
+    const timeZone = startLine.match(/TZID=([^;:]+)/)?.[1] ?? 'America/New_York';
+    const date = parseIcsDate(values.DTSTART, timeZone);
     if (!date || Number.isNaN(date.getTime())) return [];
 
     return [{
@@ -97,11 +137,19 @@ export function normalizeNasdaqCalendar(payload, kind, date) {
 
     if (kind === 'earnings') {
       const time = textValue(row.time ?? row.timeSlot ?? row.when) || '시간 미정';
+      const hour = /after/i.test(time) ? 16 : /before|pre/i.test(time) ? 8 : 12;
+      const minute = /after/i.test(time) ? 30 : 0;
       return [{
         id: `nasdaq:earnings:${date}:${symbol}`,
         title: `${symbol} 실적 발표`,
         type: 'earnings',
-        startsAt: `${date}T12:00:00Z`,
+        startsAt: zonedDateTimeToUtc({
+          year: Number(date.slice(0, 4)),
+          month: Number(date.slice(5, 7)),
+          day: Number(date.slice(8, 10)),
+          hour,
+          minute,
+        }, 'America/New_York').toISOString(),
         market: 'US',
         importance: 'high',
         tickers: [symbol],
@@ -120,7 +168,13 @@ export function normalizeNasdaqCalendar(payload, kind, date) {
       id: `nasdaq:dividend:${normalizedDate}:${symbol}:${index}`,
       title: `${symbol} 배당락`,
       type: 'dividend',
-      startsAt: `${normalizedDate}T12:00:00Z`,
+      startsAt: zonedDateTimeToUtc({
+        year: Number(normalizedDate.slice(0, 4)),
+        month: Number(normalizedDate.slice(5, 7)),
+        day: Number(normalizedDate.slice(8, 10)),
+        hour: 9,
+        minute: 30,
+      }, 'America/New_York').toISOString(),
       market: 'US',
       importance: 'medium',
       tickers: [symbol],
@@ -176,11 +230,17 @@ export class EconomicCalendarProvider {
     const end = new Date(now.getTime() + boundedDays * 86_400_000);
     const symbolSet = new Set(symbols.map((symbol) => symbol.toUpperCase()));
 
-    const events = FOMC_DATES.map(([startsAt, title]) => ({
-      id: `fed:fomc:${startsAt.slice(0, 10)}`,
+    const events = FOMC_DATES.map(([date, title]) => ({
+      id: `fed:fomc:${date}`,
       title,
       type: 'fomc',
-      startsAt: new Date(startsAt).toISOString(),
+      startsAt: zonedDateTimeToUtc({
+        year: Number(date.slice(0, 4)),
+        month: Number(date.slice(5, 7)),
+        day: Number(date.slice(8, 10)),
+        hour: 14,
+        minute: 0,
+      }, 'America/New_York').toISOString(),
       market: 'GLOBAL',
       importance: 'high',
       tickers: [],
