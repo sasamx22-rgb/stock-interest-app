@@ -1,5 +1,15 @@
 export type Market = 'KR' | 'US';
 
+export type WatchlistItem = {
+  market: Market;
+  code: string;
+  name: string;
+};
+
+export type StockSearchResult = WatchlistItem & {
+  symbol: string;
+};
+
 export type Quote = {
   symbol: string;
   naverCode: string;
