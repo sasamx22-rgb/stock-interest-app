@@ -572,24 +572,32 @@ async function handler(request, response) {
 
       const detail = await provider.stockDetail(code, name, market, relevantEvents);
 
-      try {
-        const enhanced = await aiService.enhanceMovementReason({
-          quote: detail.quote,
-          news: detail.news,
-          events: relevantEvents,
-          ruleBased: detail.movementReason,
-        });
-        if (enhanced) {
-          detail.movementReason = {
-            ...detail.movementReason,
-            ...enhanced,
-            evidence: detail.movementReason?.evidence ?? [],
-            aiEnhanced: true,
-            model: config.ai.model,
-          };
+      const shouldEnhanceWithAi = aiService.enabled && (
+        Math.abs(detail.quote.changePercent) >= 2
+        || detail.quote.volumeRatio >= 2
+        || relevantEvents.length > 0
+      );
+
+      if (shouldEnhanceWithAi) {
+        try {
+          const enhanced = await aiService.enhanceMovementReason({
+            quote: detail.quote,
+            news: detail.news,
+            events: relevantEvents,
+            ruleBased: detail.movementReason,
+          });
+          if (enhanced) {
+            detail.movementReason = {
+              ...detail.movementReason,
+              ...enhanced,
+              evidence: detail.movementReason?.evidence ?? [],
+              aiEnhanced: true,
+              model: config.ai.model,
+            };
+          }
+        } catch (error) {
+          console.warn('AI movement analysis failed; using rule-based fallback', error);
         }
-      } catch (error) {
-        console.warn('AI movement analysis failed; using rule-based fallback', error);
       }
 
       return sendJson(response, 200, detail);
