@@ -342,7 +342,7 @@ export async function getReportPdfUrl(id: string): Promise<string | null> {
 }
 
 export function isLiveDataConfigured() {
-  return Boolean(API_BASE_URL) && !DEMO_MODE;
+  return Boolean(API_BASE_URL && API_KEY) && !DEMO_MODE;
 }
 
 export function isDemoMode() {
