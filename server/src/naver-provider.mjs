@@ -418,7 +418,7 @@ export class NaverMarketProvider {
     return normalizeNewsPayload(await this.fetchJson(url));
   }
 
-  async stockDetail(naverCode, fallbackName, market = marketFromCode(naverCode)) {
+  async stockDetail(naverCode, fallbackName, market = marketFromCode(naverCode), calendarEvents = []) {
     const [quoteResult, priceResult, newsResult] = await Promise.allSettled([
       this.quote(naverCode, fallbackName),
       this.priceHistory(naverCode, market),
@@ -435,7 +435,7 @@ export class NaverMarketProvider {
       quote: quoteResult.value,
       prices: priceResult.status === 'fulfilled' ? priceResult.value : [],
       news,
-      movementReason: summarizeMovementReason(quoteResult.value, news),
+      movementReason: summarizeMovementReason(quoteResult.value, news, calendarEvents),
       source: 'naver',
     };
   }
