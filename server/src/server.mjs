@@ -29,6 +29,9 @@ import { WatchlistStore } from './watchlist-store.mjs';
 if (process.env.NODE_ENV === 'production' && !config.apiKey) {
   throw new Error('MARKET_PULSE_API_KEY is required in production');
 }
+if (process.env.NODE_ENV === 'production' && config.publishKey === config.apiKey) {
+  console.warn('MARKET_PULSE_PUBLISH_KEY is not set; publisher operations share the app key.');
+}
 
 const provider = new NaverMarketProvider();
 const calendarProvider = new EconomicCalendarProvider();
@@ -253,18 +256,7 @@ async function handler(request, response) {
 
     if (url.pathname === '/health') {
       if (request.method !== 'GET') return sendJson(response, 405, { error: 'Method not allowed' });
-      const [pushTokens, aiStatus] = await Promise.all([
-        pushTokenStore.getAll(),
-        aiService.status(),
-      ]);
-      return sendJson(response, 200, {
-        ok: true,
-        provider: 'naver',
-        pushMonitor: pushMonitor.active ? 'active' : 'inactive',
-        pushReceiptMonitor: pushReceiptMonitor.active ? 'active' : 'inactive',
-        registeredDevices: pushTokens.length,
-        ai: aiStatus,
-      });
+      return sendJson(response, 200, { ok: true });
     }
 
     if (url.pathname === '/api/home/briefing') {
