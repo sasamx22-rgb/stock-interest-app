@@ -228,3 +228,56 @@ test('stock detail tolerates price or news endpoint failures', async () => {
   assert.deepEqual(detail.prices, []);
   assert.equal(detail.news.length, 1);
 });
+
+
+test('estimates missing surge volume ratio against prior daily average', async () => {
+  const provider = new NaverMarketProvider();
+  provider.priceHistory = async () => [
+    { date: '2026-09-22', closePrice: 120, changePercent: 6, volume: 1000 },
+    { date: '2026-09-21', closePrice: 113, changePercent: 1, volume: 100 },
+    { date: '2026-09-20', closePrice: 112, changePercent: 0.5, volume: 100 },
+    { date: '2026-09-19', closePrice: 111, changePercent: -0.2, volume: 100 },
+  ];
+
+  const [quote] = await provider.enrichVolumeRatios([{
+    symbol: 'TEST',
+    naverCode: 'TEST.O',
+    name: 'Test',
+    market: 'US',
+    price: 120,
+    currency: 'USD',
+    changePercent: 6,
+    volumeRatio: 0,
+    volume: 1000,
+    updatedAt: '2026-09-22T10:00:00Z',
+    source: 'naver',
+  }]);
+
+  assert.equal(quote.volumeRatio, 10);
+});
+
+test('does not estimate volume ratio for sub-threshold price movers', async () => {
+  const provider = new NaverMarketProvider();
+  let historyCalls = 0;
+  provider.priceHistory = async () => {
+    historyCalls += 1;
+    return [];
+  };
+
+  const [quote] = await provider.enrichVolumeRatios([{
+    symbol: 'TEST',
+    naverCode: 'TEST.O',
+    name: 'Test',
+    market: 'US',
+    price: 120,
+    currency: 'USD',
+    changePercent: 4.9,
+    volumeRatio: 0,
+    volume: 1000,
+    updatedAt: '2026-09-22T10:00:00Z',
+    source: 'naver',
+  }]);
+
+  assert.equal(historyCalls, 0);
+  assert.equal(quote.volumeRatio, 0);
+});
