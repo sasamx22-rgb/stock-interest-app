@@ -4,7 +4,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 
 import { ScreenShell } from '@/components/screen-shell';
 import { palette, spacing } from '@/constants/market-theme';
-import { getReport, markReportRead } from '@/lib/market-api';
+import { getReport, getReportPdfUrl, markReportRead } from '@/lib/market-api';
 import { Report } from '@/types/market';
 
 function reportLabel(report: Report) {
@@ -109,7 +109,11 @@ export default function ReportDetailScreen() {
 
           <Pressable
             disabled={!report.pdfUrl}
-            onPress={() => report.pdfUrl && Linking.openURL(report.pdfUrl)}
+            onPress={async () => {
+              if (!report.pdfUrl) return;
+              const url = await getReportPdfUrl(report.id);
+              if (url) await Linking.openURL(url);
+            }}
             style={[styles.pdfButton, !report.pdfUrl && styles.pdfButtonDisabled]}>
             <Text style={[styles.pdfButtonText, !report.pdfUrl && styles.pdfButtonTextDisabled]}>
               {report.pdfUrl ? 'PDF 원문 열기' : 'PDF 원문 미연결'}
