@@ -42,14 +42,10 @@ const REPORT_SCHEMA = {
     highlights: {
       type: 'array',
       items: { type: 'string' },
-      minItems: 3,
-      maxItems: 6,
     },
     tickers: {
       type: 'array',
       items: { type: 'string' },
-      minItems: 1,
-      maxItems: 8,
     },
   },
   required: ['title', 'summary', 'marketSummary', 'highlights', 'tickers'],
@@ -216,7 +212,7 @@ export class OpenAiAnalysisService {
       })),
     };
 
-    return this.jsonResponse({
+    const result = await this.jsonResponse({
       schema: REPORT_SCHEMA,
       schemaName: 'market_pulse_daily_report',
       reasoningEffort: 'medium',
@@ -232,6 +228,13 @@ export class OpenAiAnalysisService {
         JSON.stringify(evidence),
       ].join('\n'),
     });
+
+    if (!result) return null;
+    return {
+      ...result,
+      highlights: Array.isArray(result.highlights) ? result.highlights.slice(0, 6) : [],
+      tickers: Array.isArray(result.tickers) ? result.tickers.slice(0, 8) : [],
+    };
   }
 }
 
