@@ -4,7 +4,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 
 import { ScreenShell } from '@/components/screen-shell';
 import { palette, spacing } from '@/constants/market-theme';
-import { getReport } from '@/lib/market-api';
+import { getReport, markReportRead } from '@/lib/market-api';
 import { Report } from '@/types/market';
 
 function reportLabel(report: Report) {
@@ -25,6 +25,7 @@ export default function ReportDetailScreen() {
 
     let active = true;
     getReport(id).then((value) => {
+      if (value) void markReportRead(id);
       if (active) {
         setState({ status: 'ready', report: value });
       }
