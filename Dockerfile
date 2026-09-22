@@ -8,8 +8,6 @@ ENV NODE_ENV=production
 ENV PORT=8787
 ENV DATA_DIR=/data
 
-VOLUME ["/data"]
-
 EXPOSE 8787
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
