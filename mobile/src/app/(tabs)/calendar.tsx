@@ -33,14 +33,30 @@ function formatTime(value: string) {
   });
 }
 
+function eventTimeLabel(event: CalendarEvent) {
+  if (event.type === 'earnings' && event.source === 'Nasdaq') {
+    const raw = event.description ?? '';
+    if (/after/i.test(raw)) return '장후';
+    if (/before|pre/i.test(raw)) return '장전';
+    return '시간 미정';
+  }
+  return formatTime(event.startsAt);
+}
+
 export default function CalendarScreen() {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
+  const [loadError, setLoadError] = useState(false);
 
   useFocusEffect(useCallback(() => {
     let active = true;
-    getCalendarEvents(21).then((items) => {
-      if (active) setEvents(items);
-    });
+    setLoadError(false);
+    getCalendarEvents(21)
+      .then((items) => {
+        if (active) setEvents(items);
+      })
+      .catch(() => {
+        if (active) setLoadError(true);
+      });
     return () => {
       active = false;
     };
@@ -67,12 +83,15 @@ export default function CalendarScreen() {
         </Text>
       </View>
 
-      {grouped.length === 0 ? (
+      {loadError ? (
+        <View style={styles.empty}>
+          <Text style={styles.emptyTitle}>일정을 불러오지 못했습니다.</Text>
+          <Text style={styles.emptyText}>서버 연결을 확인한 뒤 다시 열어주세요.</Text>
+        </View>
+      ) : grouped.length === 0 ? (
         <View style={styles.empty}>
           <Text style={styles.emptyTitle}>예정된 주요 일정이 없습니다.</Text>
-          <Text style={styles.emptyText}>
-            외부 일정 소스가 일시적으로 응답하지 않거나 등록된 관심종목에 일정이 없을 수 있습니다.
-          </Text>
+          <Text style={styles.emptyText}>현재 기간에 표시할 주요 일정이 없습니다.</Text>
         </View>
       ) : grouped.map(([dateKey, items]) => (
         <View key={dateKey} style={styles.daySection}>
@@ -93,7 +112,7 @@ export default function CalendarScreen() {
                   </Text>
                   <Text style={styles.marketBadge}>{event.market}</Text>
                 </View>
-                <Text style={styles.time}>{formatTime(event.startsAt)}</Text>
+                <Text style={styles.time}>{eventTimeLabel(event)}</Text>
               </View>
               <Text style={styles.title}>{event.title}</Text>
               {event.description ? (
