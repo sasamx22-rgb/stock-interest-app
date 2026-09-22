@@ -220,3 +220,17 @@ test('a total external calendar outage is not cached as an empty calendar', asyn
     /calendar providers failed/i,
   );
 });
+
+
+test('a nonempty unknown ranking schema is not treated as an empty market', async () => {
+  const provider = new NaverMarketProvider({
+    fetchImpl: async () => ({
+      ok: true,
+      json: async () => ({ rows: [{ code_v2: '005930', label_v2: '삼성전자' }] }),
+    }),
+  });
+  await assert.rejects(
+    provider.movers('KR', 'https://example.test/changed-ranking'),
+    /could not be normalized/,
+  );
+});
