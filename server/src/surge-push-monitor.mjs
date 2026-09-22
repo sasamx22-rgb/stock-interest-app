@@ -23,6 +23,13 @@ export class SurgePushMonitor {
     this.inFlight = true;
 
     try {
+      const tokenItems = await this.getTokens();
+      const tokens = tokenItems.map((item) => item.token);
+      if (tokens.length === 0) {
+        this.previousEligible = null;
+        return { baseline: false, newAlerts: 0, sent: 0, noDevices: true };
+      }
+
       const alerts = await this.loadAlerts();
       const current = new Set(alerts.map((item) => `${item.market}:${item.symbol}`));
 
@@ -38,13 +45,6 @@ export class SurgePushMonitor {
       if (newAlerts.length === 0) {
         this.previousEligible = current;
         return { baseline: false, newAlerts: 0, sent: 0 };
-      }
-
-      const tokenItems = await this.getTokens();
-      const tokens = tokenItems.map((item) => item.token);
-      if (tokens.length === 0) {
-        this.previousEligible = current;
-        return { baseline: false, newAlerts: newAlerts.length, sent: 0 };
       }
 
       const result = await this.sendPush(tokens, newAlerts);
