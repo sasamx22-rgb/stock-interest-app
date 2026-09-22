@@ -23,10 +23,14 @@ function envOrDefault(value, fallback) {
 const pushIntervalSeconds = Math.max(60, Number(process.env.PUSH_INTERVAL_SECONDS ?? 120) || 120);
 const aiDailyLimit = Math.max(0, Number(process.env.OPENAI_DAILY_LIMIT ?? 12) || 0);
 
+const apiKey = process.env.MARKET_PULSE_API_KEY?.trim() ?? '';
+const publishKey = process.env.MARKET_PULSE_PUBLISH_KEY?.trim() || apiKey;
+
 export const config = {
   port: Number(process.env.PORT ?? 8787),
   pushIntervalMs: pushIntervalSeconds * 1000,
-  apiKey: process.env.MARKET_PULSE_API_KEY?.trim() ?? '',
+  apiKey,
+  publishKey,
   dataDir: envOrDefault(process.env.DATA_DIR, DEFAULT_DATA_DIR),
   ai: {
     apiKey: process.env.OPENAI_API_KEY?.trim() ?? '',
