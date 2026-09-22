@@ -7,7 +7,7 @@ import { EngagementStore } from '../src/engagement-store.mjs';
 import { summarizeMovementReason } from '../src/movement-reason.mjs';
 import { SurgePushMonitor } from '../src/surge-push-monitor.mjs';
 import { sendExpoPushNotifications } from '../src/expo-push.mjs';
-import { NaverMarketProvider, normalizeBasicQuote } from '../src/naver-provider.mjs';
+import { NaverMarketProvider, normalizeBasicQuote, normalizePriceHistory } from '../src/naver-provider.mjs';
 import { readJsonBody } from '../src/http-body.mjs';
 import { BoundedCache } from '../src/bounded-cache.mjs';
 import { ReportStore } from '../src/report-store.mjs';
@@ -132,4 +132,50 @@ test('report library keeps more than 400 entries and preserves an existing PDF l
   } finally {
     await rm(directory, { recursive: true, force: true });
   }
+});
+
+
+test('reopening a report keeps its first read timestamp', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'first-read-'));
+  try {
+    const store = new EngagementStore({ filePath: join(directory, 'engagement.json') });
+    await store.markReportRead('report-1', new Date('2026-09-20T01:00:00Z'));
+    await store.markReportRead('report-1', new Date('2026-09-23T01:00:00Z'));
+    const state = await store.get();
+    assert.equal(state.readReports['report-1'], '2026-09-20T01:00:00.000Z');
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test('price history is deduplicated by session and sorted newest first', () => {
+  const prices = normalizePriceHistory({
+    data: [
+      { localDate: '2026-09-20', closePrice: '100' },
+      { localDate: '2026-09-22', closePrice: '120' },
+      { localDate: '2026-09-22', closePrice: '119' },
+      { localDate: '2026-09-21', closePrice: '110' },
+      { localDate: 'bad', closePrice: '999' },
+    ],
+  });
+  assert.deepEqual(prices.map((item) => item.date), [
+    '2026-09-22',
+    '2026-09-21',
+    '2026-09-20',
+  ]);
+  assert.equal(prices[0].closePrice, 120);
+});
+
+test('surge monitor skips market polling when no devices are registered', async () => {
+  let marketCalls = 0;
+  const monitor = new SurgePushMonitor({
+    loadAlerts: async () => { marketCalls += 1; return []; },
+    getTokens: async () => [],
+    sendPush: async () => ({ sent: 0 }),
+    removeToken: async () => {},
+    logger: { error() {} },
+  });
+  const result = await monitor.check();
+  assert.equal(result.noDevices, true);
+  assert.equal(marketCalls, 0);
 });
