@@ -154,16 +154,24 @@ export default function StockDetailScreen() {
           <View style={styles.reasonCard}>
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionTitle}>상승·하락 원인</Text>
-              <Text style={styles.reasonBadge}>
-                {detail.movementReason?.label ?? '원인 확인 중'}
-              </Text>
+              <View style={styles.reasonBadgeRow}>
+                {detail.movementReason?.aiEnhanced ? (
+                  <Text style={styles.aiBadge}>AI 보강</Text>
+                ) : null}
+                <Text style={styles.reasonBadge}>
+                  {detail.movementReason?.label ?? '원인 확인 중'}
+                </Text>
+              </View>
             </View>
             <Text style={styles.reasonSummary}>
               {detail.movementReason?.summary
                 ?? '현재 수집된 뉴스만으로는 변동 원인을 특정하기 어렵습니다.'}
             </Text>
             <Text style={styles.reasonNote}>
-              뉴스·시세를 기반으로 한 참고용 요약이며 단일 원인으로 확정한 내용은 아닙니다.
+              {detail.movementReason?.aiEnhanced
+                ? `${detail.movementReason.model ?? 'AI'}가 뉴스·일정 근거를 바탕으로 문장을 보강했습니다. `
+                : ''}
+              단일 원인으로 확정한 내용이나 투자 추천은 아닙니다.
             </Text>
           </View>
 
@@ -269,6 +277,17 @@ const styles = StyleSheet.create({
     padding: spacing.lg,
     borderWidth: 1,
     borderColor: palette.primary,
+  },
+  reasonBadgeRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.xs },
+  aiBadge: {
+    color: palette.background,
+    backgroundColor: palette.primary,
+    fontSize: 9,
+    fontWeight: '900',
+    paddingHorizontal: 7,
+    paddingVertical: 5,
+    borderRadius: 8,
+    overflow: 'hidden',
   },
   reasonBadge: {
     color: palette.primary,
