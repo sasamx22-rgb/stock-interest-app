@@ -1,5 +1,10 @@
 const DEFAULT_WATCHLIST = 'KR:005930:삼성전자,KR:000660:SK하이닉스,US:NVDA.O:NVIDIA';
 
+export const DEFAULT_MOVER_URLS = Object.freeze({
+  KR: 'https://stock.naver.com/api/domestic/market/stock/default?tradeType=KRX&marketType=ALL&orderType=upperQuantTop&startIdx=0&pageSize=100',
+  US: 'https://stock.naver.com/api/foreign/market/stock/global?nation=usa&tradeType=ALL&orderType=up&startIdx=0&pageSize=100',
+});
+
 export function parseWatchlist(value = DEFAULT_WATCHLIST) {
   return value.split(',').flatMap((entry) => {
     const [market, code, ...nameParts] = entry.trim().split(':');
@@ -8,12 +13,15 @@ export function parseWatchlist(value = DEFAULT_WATCHLIST) {
   });
 }
 
+function envOrDefault(value, fallback) {
+  return value?.trim() || fallback;
+}
+
 export const config = {
   port: Number(process.env.PORT ?? 8787),
   watchlist: parseWatchlist(process.env.WATCHLIST),
   moverUrls: {
-    KR: process.env.NAVER_KR_MOVERS_URL ?? '',
-    US: process.env.NAVER_US_MOVERS_URL ?? '',
+    KR: envOrDefault(process.env.NAVER_KR_MOVERS_URL, DEFAULT_MOVER_URLS.KR),
+    US: envOrDefault(process.env.NAVER_US_MOVERS_URL, DEFAULT_MOVER_URLS.US),
   },
 };
-
