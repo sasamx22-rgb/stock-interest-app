@@ -37,3 +37,14 @@ export type Report = {
   tickers: string[];
   pdfUrl?: string;
 };
+
+export type PushRegistration = {
+  token: string;
+  platform: 'android' | 'ios';
+};
+
+export type PushStatus = {
+  registeredDevices: number;
+  monitorActive: boolean;
+  intervalSeconds: number;
+};
