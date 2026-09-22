@@ -60,6 +60,7 @@ export default function DashboardScreen() {
   const [refreshedAt, setRefreshedAt] = useState(0);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
+  const [calendarUnavailable, setCalendarUnavailable] = useState(false);
 
   const refresh = useCallback(async () => {
     const requestId = ++refreshGeneration.current;
@@ -74,6 +75,7 @@ export default function DashboardScreen() {
       setEngagement(briefing.engagement);
       setWeeklyReview(briefing.weeklyReview);
       setCalendar(briefing.calendar);
+      setCalendarUnavailable(briefing.dataStatus?.calendar === 'unavailable');
       setRefreshedAt(Date.parse(briefing.generatedAt) || Date.now());
     } catch {
       if (requestId === refreshGeneration.current) setLoadError(true);
@@ -118,10 +120,21 @@ export default function DashboardScreen() {
       </View>
 
       <View style={styles.statusRow}>
-        <View style={[styles.livePill, (!isLiveDataConfigured() || loadError) && styles.samplePill]}>
+        <View style={[
+          styles.livePill,
+          (!isLiveDataConfigured() || loadError || calendarUnavailable) && styles.samplePill,
+        ]}>
           <View style={styles.liveDot} />
           <Text style={styles.liveText}>
-            {loadError ? 'CONNECTION ERROR' : isDemoMode() ? 'SAMPLE MODE' : isLiveDataConfigured() ? 'LIVE DATA' : 'NOT CONFIGURED'}
+            {loadError
+              ? 'CONNECTION ERROR'
+              : calendarUnavailable
+                ? 'PARTIAL DATA'
+                : isDemoMode()
+                  ? 'SAMPLE MODE'
+                  : isLiveDataConfigured()
+                    ? 'LIVE DATA'
+                    : 'NOT CONFIGURED'}
           </Text>
         </View>
         <Text style={styles.ruleText}>
@@ -201,9 +214,15 @@ export default function DashboardScreen() {
           style={({ pressed }) => [styles.shortcutCard, pressed && styles.pressed]}>
           <View style={styles.shortcutIcon}><Text style={styles.shortcutIconText}>◷</Text></View>
           <Text style={styles.shortcutTitle}>경제 일정</Text>
-          <Text style={styles.shortcutValue}>{calendar.length}개 예정</Text>
+          <Text style={styles.shortcutValue}>
+            {calendarUnavailable ? '확인 실패' : `${calendar.length}개 예정`}
+          </Text>
           <Text style={styles.shortcutDetail} numberOfLines={2}>
-            {nextEvent ? `${eventTime(nextEvent)} · ${nextEvent.title}` : '예정된 주요 일정 없음'}
+            {calendarUnavailable
+              ? '일정 데이터 연결 상태를 확인해주세요.'
+              : nextEvent
+                ? `${eventTime(nextEvent)} · ${nextEvent.title}`
+                : '예정된 주요 일정 없음'}
           </Text>
         </Pressable>
 
