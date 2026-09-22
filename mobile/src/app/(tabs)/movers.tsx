@@ -5,19 +5,25 @@ import { useFocusEffect } from 'expo-router';
 import { QuoteRow } from '@/components/quote-row';
 import { ScreenShell } from '@/components/screen-shell';
 import { palette, spacing } from '@/constants/market-theme';
-import { getMovers } from '@/lib/market-api';
-import { Market, MarketMover } from '@/types/market';
+import { getAlertSettings, getMovers } from '@/lib/market-api';
+import { AlertRule, Market, MarketMover } from '@/types/market';
 
 export default function MoversScreen() {
   const [market, setMarket] = useState<Market>('KR');
   const [items, setItems] = useState<MarketMover[]>([]);
+  const [rule, setRule] = useState<AlertRule>({ changePercent: 5, volumeRatio: 3 });
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
   const refresh = useCallback(async () => {
     setLoading(true);
     try {
-      setItems(await getMovers(market));
+      const [nextItems, nextRule] = await Promise.all([
+        getMovers(market),
+        getAlertSettings(),
+      ]);
+      setItems(nextItems);
+      setRule(nextRule);
       setLastUpdated(new Date());
     } finally {
       setLoading(false);
@@ -34,7 +40,9 @@ export default function MoversScreen() {
         <View style={styles.headerText}>
           <Text style={styles.eyebrow}>SURGE RADAR</Text>
           <Text style={styles.heading}>급등 탐지</Text>
-          <Text style={styles.description}>상승률 5%와 거래량 3배 조건을 함께 확인합니다.</Text>
+          <Text style={styles.description}>
+            상승률 {rule.changePercent}%와 거래량 {rule.volumeRatio}배 조건을 함께 확인합니다.
+          </Text>
         </View>
         <Pressable disabled={loading} onPress={refresh} style={styles.refreshButton}>
           <Text style={styles.refreshText}>{loading ? '조회 중' : '새로고침'}</Text>
