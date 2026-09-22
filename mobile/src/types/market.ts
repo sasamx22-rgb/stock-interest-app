@@ -35,6 +35,8 @@ export type Report = {
   type: 'morning' | 'premarket';
   summary: string;
   tickers: string[];
+  highlights?: string[];
+  marketSummary?: string;
   pdfUrl?: string;
 };
 
