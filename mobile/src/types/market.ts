@@ -50,3 +50,24 @@ export type PushStatus = {
   monitorActive: boolean;
   intervalSeconds: number;
 };
+
+export type PricePoint = {
+  date: string;
+  closePrice: number;
+  changePercent: number;
+  volume: number;
+};
+
+export type StockNews = {
+  title: string;
+  publishedAt?: string;
+  publisher?: string;
+  url?: string;
+};
+
+export type StockDetail = {
+  quote: Quote;
+  prices: PricePoint[];
+  news: StockNews[];
+  source: 'naver' | 'sample';
+};
