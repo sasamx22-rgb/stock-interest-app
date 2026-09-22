@@ -75,7 +75,7 @@ const pushMonitor = new SurgePushMonitor({
   getTokens: () => pushTokenStore.getAll(),
   sendPush: (tokens, alerts) => sendExpoPushNotifications(tokens, alerts),
   removeToken: (token) => pushTokenStore.remove(token),
-  intervalMs: 120_000,
+  intervalMs: config.pushIntervalMs,
 });
 
 async function handler(request, response) {
@@ -151,7 +151,7 @@ async function handler(request, response) {
       return sendJson(response, 200, {
         registeredDevices: tokens.length,
         monitorActive: pushMonitor.active,
-        intervalSeconds: 120,
+        intervalSeconds: Math.round(config.pushIntervalMs / 1000),
       });
     }
 
