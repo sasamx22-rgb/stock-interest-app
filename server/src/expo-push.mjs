@@ -1,5 +1,7 @@
 const EXPO_PUSH_URL = 'https://exp.host/--/api/v2/push/send';
+const EXPO_RECEIPTS_URL = 'https://exp.host/--/api/v2/push/getReceipts';
 const MAX_MESSAGES_PER_REQUEST = 100;
+const MAX_RECEIPTS_PER_REQUEST = 1000;
 
 function chunks(values, size) {
   const result = [];
@@ -48,6 +50,7 @@ export async function sendExpoPushNotifications(
   }));
 
   const tickets = [];
+  const receiptTickets = [];
   const invalidTokens = [];
 
   for (const batch of chunks(messages, MAX_MESSAGES_PER_REQUEST)) {
@@ -73,8 +76,11 @@ export async function sendExpoPushNotifications(
     tickets.push(...batchTickets);
 
     batchTickets.forEach((ticket, index) => {
+      const token = batch[index]?.to;
+      if (ticket?.status === 'ok' && ticket?.id && token) {
+        receiptTickets.push({ id: ticket.id, token });
+      }
       if (ticket?.status === 'error' && ticket?.details?.error === 'DeviceNotRegistered') {
-        const token = batch[index]?.to;
         if (token) invalidTokens.push(token);
       }
     });
@@ -84,5 +90,35 @@ export async function sendExpoPushNotifications(
     sent: tickets.filter((ticket) => ticket?.status === 'ok').length,
     invalidTokens: [...new Set(invalidTokens)],
     tickets,
+    receiptTickets,
   };
+}
+
+export async function getExpoPushReceipts(
+  receiptIds,
+  { fetchImpl = fetch, timeoutMs = 10_000 } = {},
+) {
+  const ids = [...new Set((receiptIds ?? []).filter((id) => typeof id === 'string' && id))];
+  const receipts = {};
+
+  for (const batch of chunks(ids, MAX_RECEIPTS_PER_REQUEST)) {
+    const response = await fetchImpl(EXPO_RECEIPTS_URL, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ ids: batch }),
+      signal: AbortSignal.timeout(timeoutMs),
+    });
+    if (!response.ok) {
+      throw new Error(`Expo receipt request failed: ${response.status}`);
+    }
+    const payload = await response.json();
+    if (payload?.data && typeof payload.data === 'object') {
+      Object.assign(receipts, payload.data);
+    }
+  }
+
+  return receipts;
 }
