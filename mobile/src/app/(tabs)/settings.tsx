@@ -166,7 +166,7 @@ export default function SettingsScreen() {
             ? `${aiStatus.callsToday} / ${aiStatus.dailyLimit}회`
             : 'API 키 미설정'}
         />
-        <SettingRow label="AI 사용 범위" value="변동 원인 · 보고서" />
+        <SettingRow label="AI 사용 범위" value="종목 변동 원인" />
       </View>
 
       <View style={styles.notice}>
