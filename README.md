@@ -13,7 +13,7 @@
 - 서버 2분 감시 + Android 원격 시스템 푸시
 - 한국/미국 급등 종목 화면 + 수동 새로고침
 - 앱 내부 종목 상세: 현재가·최근 일별 시세·최근 뉴스·상승·하락 원인 요약·네이버 원문 링크
-- 선택형 GPT-5.6 Terra 보강: 변동 원인 + 08:00/08:50 보고서 작성
+- 선택형 GPT-5.6 Terra 보강: 종목 변동 원인만 보강
 - 경제 일정 탭: FOMC·주요 BLS 지표·관심 미국종목 실적/배당락
 - 읽지 않은 보고서 NEW 표시 + 최근 7일 주간 관심 종목 회고
 - PDF 원문과 앱용 요약을 위한 영구 보고서 보관함
@@ -83,26 +83,21 @@ server/  Node.js API + 교체 가능한 NaverMarketProvider
 
 OpenAI API 키가 없어도 앱의 시세, 급등 탐지, 일정, 관심종목, 규칙 기반 변동 원인 분석은 정상 동작합니다.
 
-`OPENAI_API_KEY`를 서버에 설정하면 **GPT-5.6 Terra**를 다음 두 기능에만 사용합니다.
+``OPENAI_API_KEY`를 서버에 설정하면 **GPT-5.6 Terra**는 종목 상세의 상승·하락 원인 문장 보강에만 사용합니다.
 
-- 종목 상세의 상승·하락 원인 문장 보강
-- 08:00 모닝 브리프 / 08:50 프리마켓 보고서 작성
+08:00 모닝 브리프와 08:50 프리마켓 보고서는 서버의 OpenAI API가 만들지 않습니다. 보고서는 ChatGPT에서 별도로 작성한 완성본을 Market Pulse 서버에 저장합니다.
 
 비용을 제어하기 위해 다음 제한을 적용합니다.
 
 - 모델 기본값: `gpt-5.6-terra`
 - 종목 변동 원인: low reasoning
-- 보고서 작성: medium reasoning
 - 종목 원인 결과: 같은 근거 조합은 6시간 메모리 캐시
 - 하루 AI 호출 기본 상한: 12회
 - 일일 한도는 한국시간 00:00 기준으로 초기화
 - 의미 있는 변동(기본: |등락률| 2% 이상, 거래량 2배 이상, 또는 관련 일정 존재)에만 종목 원인 AI 보강
-- 자동 보고서 생성 실패 시 5분 쿨다운으로 반복 호출 방지
 - 일일 사용량: `DATA_DIR/ai-budget.json`에 저장
 - API 키가 없거나 일일 한도 소진 시 규칙 기반 분석으로 자동 대체
 - OpenAI API 키는 모바일 앱에 포함하지 않고 서버에서만 보관
-
-서버가 계속 실행 중이고 AI가 활성화되어 있으면 한국시간 **08:00과 08:50**에 각각 보고서를 자동 생성합니다. 시작 시각을 놓쳤더라도 10분 이내에 서버가 살아나면 해당 보고서를 한 번 생성하도록 보정합니다.
 
 ## 상승·하락 원인 요약
 
@@ -152,6 +147,28 @@ OpenAI API 키가 없어도 앱의 시세, 급등 탐지, 일정, 관심종목, 
 - 네이버 증권 원문 링크
 
 가격 이력이나 뉴스 API 중 하나가 실패해도 현재가 조회가 성공하면 나머지 상세 화면은 계속 표시합니다. 가격 흐름 요약은 과거 가격의 단순 계산이며 투자 추천이나 향후 수익률 예측이 아닙니다.
+
+## ChatGPT 보고서 → 앱 전달
+
+보고서는 **ChatGPT에서 작성하고 Market Pulse는 저장·표시만** 합니다. 이 구조에서는 ChatGPT 보고서 작성에 앱의 OpenAI API 토큰을 사용하지 않습니다.
+
+서버는 이미 다음 저장 API를 제공합니다.
+
+- `POST /api/reports`: 앱용 보고서 요약/본문 메타데이터 저장
+- `POST /api/reports/{id}/pdf`: PDF 원문 저장
+- 같은 `id`를 다시 보내면 보고서 내용을 업데이트
+
+저장소에는 업로드 도구도 포함되어 있습니다.
+
+```bash
+MARKET_PULSE_URL=https://your-service.up.railway.app \
+MARKET_PULSE_API_KEY=your-secret \
+npm run publish-report -- report.json report.pdf
+```
+
+JSON 형식은 `examples/report-template.json`을 기준으로 사용합니다. PDF가 없는 경우 마지막 인자를 생략할 수 있습니다.
+
+최종적으로는 08:00/08:50 ChatGPT 보고서가 완성된 뒤 이 저장 API로 전달되도록 연결하면 됩니다. 서버 배포 전에는 실제 공개 URL이 없으므로, 먼저 Railway 배포를 마친 뒤 자동 전달 방식을 연결합니다.
 
 ## 보고서 자동 저장 API
 
@@ -289,6 +306,6 @@ npx eas-cli@latest build --platform android --profile preview
 - `PUSH_INTERVAL_SECONDS`: 서버 급등 푸시 감시 주기. 기본 120초, 최소 60초
 - `OPENAI_API_KEY`: 선택형 AI 분석용 서버 전용 키
 - `OPENAI_MODEL`: 기본 `gpt-5.6-terra`
-- `OPENAI_DAILY_LIMIT`: 하루 AI 호출 상한. 기본 12회
+- `OPENAI_DAILY_LIMIT`: 종목 변동 원인 AI 보강의 하루 호출 상한. 기본 12회
 
 민감정보와 인증정보는 GitHub에 커밋하지 않습니다.
