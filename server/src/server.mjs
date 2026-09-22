@@ -6,6 +6,8 @@ import { CalendarEventStore } from './calendar-event-store.mjs';
 import { describeAlert, isAlertEligible } from './alerts.mjs';
 import { config } from './config.mjs';
 import { EconomicCalendarProvider } from './economic-calendar-provider.mjs';
+import { buildEngagementSummary, buildWeeklyReview } from './engagement-service.mjs';
+import { EngagementStore } from './engagement-store.mjs';
 import { sendExpoPushNotifications } from './expo-push.mjs';
 import { NaverMarketProvider } from './naver-provider.mjs';
 import { PushTokenStore } from './push-token-store.mjs';
@@ -43,6 +45,10 @@ const reportPdfStore = new ReportPdfStore({
 
 const calendarEventStore = new CalendarEventStore({
   filePath: join(config.dataDir, 'calendar-events.json'),
+});
+
+const engagementStore = new EngagementStore({
+  filePath: join(config.dataDir, 'engagement.json'),
 });
 
 function requireWriteAccess(request) {
@@ -160,6 +166,34 @@ async function handler(request, response) {
       });
     }
 
+    if (url.pathname === '/api/engagement/summary') {
+      if (request.method !== 'GET') return sendJson(response, 405, { error: 'Method not allowed' });
+      const [engagement, reports, watchlistItems, movers] = await Promise.all([
+        engagementStore.get(),
+        reportStore.getAll(),
+        watchlistStore.getAll(),
+        loadMarketMovers(['KR', 'US']),
+      ]);
+      const focusStocks = await buildTodayFocus({ provider, watchlistItems, reports, movers });
+      return sendJson(response, 200, buildEngagementSummary({ reports, engagement, focusStocks }));
+    }
+
+    if (url.pathname === '/api/activity/stock-view') {
+      if (request.method !== 'POST') return sendJson(response, 405, { error: 'Method not allowed' });
+      requireWriteAccess(request);
+      await engagementStore.logStockView(await readJsonBody(request));
+      return sendJson(response, 201, { recorded: true });
+    }
+
+    if (url.pathname === '/api/review/weekly') {
+      if (request.method !== 'GET') return sendJson(response, 405, { error: 'Method not allowed' });
+      const [engagement, reports, watchlistItems] = await Promise.all([
+        engagementStore.get(),
+        reportStore.getAll(),
+        watchlistStore.getAll(),
+      ]);
+      return sendJson(response, 200, buildWeeklyReview({ engagement, reports, watchlistItems }));
+    }
     if (url.pathname === '/api/reports') {
       if (request.method === 'GET') {
         return sendJson(response, 200, await reportStore.getAll());
@@ -174,6 +208,17 @@ async function handler(request, response) {
       return sendJson(response, 405, { error: 'Method not allowed' });
     }
 
+    if (url.pathname.startsWith('/api/reports/') && url.pathname.endsWith('/read')) {
+      if (request.method !== 'POST') return sendJson(response, 405, { error: 'Method not allowed' });
+      requireWriteAccess(request);
+      const encodedId = url.pathname.slice('/api/reports/'.length, -'/read'.length);
+      const id = decodeURIComponent(encodedId);
+      if (!id || id.includes('/')) return sendJson(response, 404, { error: 'Not found' });
+      const report = await reportStore.getById(id);
+      if (!report) return sendJson(response, 404, { error: 'Report not found' });
+      await engagementStore.markReportRead(id);
+      return sendJson(response, 200, { read: true });
+    }
     if (url.pathname.startsWith('/api/reports/') && url.pathname.endsWith('/pdf')) {
       const encodedId = url.pathname.slice('/api/reports/'.length, -'/pdf'.length);
       const id = decodeURIComponent(encodedId);
