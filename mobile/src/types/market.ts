@@ -120,6 +120,8 @@ export type CalendarEvent = {
 
 export type DailyPick = TodayFocusStock & {
   pickReason: string;
+  pickScore?: number;
+  signals?: string[];
 };
 
 export type EngagementSummary = {
