@@ -4,6 +4,8 @@ import assert from 'node:assert/strict';
 import {
   NaverMarketProvider,
   normalizeBasicQuote,
+  normalizeNewsPayload,
+  normalizePriceHistory,
   normalizeRankingPayload,
   normalizeSearchPayload,
 } from '../src/naver-provider.mjs';
@@ -161,4 +163,68 @@ test('caches mover feed briefly to avoid duplicate Naver requests', async () => 
   await provider.movers('KR', url);
 
   assert.equal(calls, 1);
+});
+
+
+test('normalizes nested daily price rows', () => {
+  const prices = normalizePriceHistory({
+    data: {
+      prices: [
+        { localDate: '2026-09-22', closePrice: '84,200', fluctuationsRatio: '2.31', accumulatedTradingVolume: '12,345,678' },
+        { localDate: '2026-09-19', closePrice: '82,300', fluctuationsRatio: '-0.40', accumulatedTradingVolume: '9,876,543' },
+      ],
+    },
+  });
+
+  assert.equal(prices.length, 2);
+  assert.equal(prices[0].closePrice, 84200);
+  assert.equal(prices[0].volume, 12345678);
+});
+
+test('normalizes recent news while keeping URL optional', () => {
+  const news = normalizeNewsPayload({
+    data: [
+      {
+        articleTitle: '삼성전자 반도체 관련 주요 뉴스',
+        officeName: '테스트경제',
+        articleDateTime: '2026-09-22T09:10:00+09:00',
+        articleUrl: 'https://example.com/news/1',
+      },
+      {
+        title: 'NVIDIA 신제품 관련 뉴스',
+        publisher: 'Example Wire',
+        date: '2026-09-22',
+      },
+    ],
+  });
+
+  assert.equal(news.length, 2);
+  assert.equal(news[0].publisher, '테스트경제');
+  assert.equal(news[0].url, 'https://example.com/news/1');
+  assert.equal(news[1].url, undefined);
+});
+
+test('stock detail tolerates price or news endpoint failures', async () => {
+  const provider = new NaverMarketProvider({
+    fetchImpl: async (url) => {
+      if (url.includes('/basic')) {
+        return {
+          ok: true,
+          json: async () => ({ stockName: '삼성전자', closePrice: '84,200', fluctuationsRatio: '2.31' }),
+        };
+      }
+      if (url.includes('daily-prices')) {
+        return { ok: false, status: 502, json: async () => ({}) };
+      }
+      return {
+        ok: true,
+        json: async () => ({ data: [{ title: '삼성전자 테스트 뉴스 기사', publisher: '테스트' }] }),
+      };
+    },
+  });
+
+  const detail = await provider.stockDetail('005930', '삼성전자', 'KR');
+  assert.equal(detail.quote.name, '삼성전자');
+  assert.deepEqual(detail.prices, []);
+  assert.equal(detail.news.length, 1);
 });
