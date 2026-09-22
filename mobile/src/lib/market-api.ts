@@ -4,6 +4,8 @@ import {
   MarketMover,
   Quote,
   Report,
+  PushRegistration,
+  PushStatus,
   StockSearchResult,
   WatchlistItem,
 } from '@/types/market';
@@ -97,6 +99,19 @@ export async function removeWatchlistItem(
 
 export async function getLiveAlerts(): Promise<MarketMover[]> {
   return request<MarketMover[]>('/api/alerts');
+}
+
+export async function registerPushToken(
+  registration: PushRegistration,
+): Promise<{ registered: boolean; registeredDevices: number }> {
+  return request('/api/push/register', {
+    method: 'POST',
+    body: JSON.stringify(registration),
+  });
+}
+
+export async function getPushStatus(): Promise<PushStatus> {
+  return request<PushStatus>('/api/push/status');
 }
 
 export async function getMovers(market?: Market): Promise<MarketMover[]> {
