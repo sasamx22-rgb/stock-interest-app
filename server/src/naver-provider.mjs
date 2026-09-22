@@ -311,6 +311,7 @@ export class NaverMarketProvider {
     this.timeoutMs = timeoutMs;
     this.moverCache = new Map();
     this.priceHistoryCache = new Map();
+    this.newsCache = new Map();
   }
 
   async fetchJson(url) {
@@ -411,11 +412,20 @@ export class NaverMarketProvider {
   }
 
   async news(naverCode, market = marketFromCode(naverCode)) {
+    const cacheKey = `${market}:${naverCode}`;
+    const now = Date.now();
+    const cached = this.newsCache.get(cacheKey);
+    if (cached && now - cached.fetchedAt < 5 * 60_000) {
+      return cached.items;
+    }
+
     const url = market === 'KR'
       ? `https://stock.naver.com/api/domestic/detail/news?itemCode=${encodeURIComponent(naverCode)}&page=1&pageSize=10`
       : `https://stock.naver.com/api/foreign/worldStock/list?reutersCode=${encodeURIComponent(naverCode)}&page=1&pageSize=10`;
 
-    return normalizeNewsPayload(await this.fetchJson(url));
+    const items = normalizeNewsPayload(await this.fetchJson(url));
+    this.newsCache.set(cacheKey, { fetchedAt: now, items });
+    return items;
   }
 
   async stockDetail(naverCode, fallbackName, market = marketFromCode(naverCode), calendarEvents = []) {
