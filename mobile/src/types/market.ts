@@ -102,3 +102,16 @@ export type StockDetail = {
   movementReason?: MovementReason;
   source: 'naver' | 'sample';
 };
+
+export type CalendarEvent = {
+  id: string;
+  title: string;
+  type: 'macro' | 'fomc' | 'earnings' | 'dividend' | 'filing' | 'custom';
+  startsAt: string;
+  market: 'KR' | 'US' | 'GLOBAL';
+  importance: 'high' | 'medium' | 'low';
+  tickers: string[];
+  source: string;
+  description?: string;
+  url?: string;
+};
