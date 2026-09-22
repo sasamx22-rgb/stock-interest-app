@@ -5,14 +5,15 @@ function usage() {
   console.error([
     'Usage:',
     '  MARKET_PULSE_URL=https://your-app.up.railway.app \\',
-    '  MARKET_PULSE_API_KEY=your-secret \\',
+    '  MARKET_PULSE_PUBLISH_KEY=your-publisher-secret \\',
     '  node scripts/publish-report.mjs <report.json> [report.pdf]',
   ].join('\n'));
 }
 
 const [, , jsonArg, pdfArg] = process.argv;
 const baseUrl = process.env.MARKET_PULSE_URL?.replace(/\/$/, '');
-const apiKey = process.env.MARKET_PULSE_API_KEY?.trim();
+const apiKey = process.env.MARKET_PULSE_PUBLISH_KEY?.trim()
+  || process.env.MARKET_PULSE_API_KEY?.trim();
 
 if (!jsonArg || !baseUrl) {
   usage();
