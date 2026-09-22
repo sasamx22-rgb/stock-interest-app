@@ -288,7 +288,7 @@ async function handler(request, response) {
         aiService.status(),
       ]);
 
-      const [focusStocks, calendarEvents] = await Promise.all([
+      const [focusStocks, calendarResult] = await Promise.all([
         buildTodayFocus({
           provider,
           watchlistItems,
@@ -296,8 +296,14 @@ async function handler(request, response) {
           movers,
           now,
         }),
-        loadCalendarEvents(7, watchlistItems, now),
+        loadCalendarEvents(7, watchlistItems, now)
+          .then((events) => ({ status: 'ok', events }))
+          .catch((error) => {
+            console.warn('Calendar data unavailable for home briefing', error);
+            return { status: 'unavailable', events: [] };
+          }),
       ]);
+      const calendarEvents = calendarResult.events;
       const dailyPicks = await buildDailyPicks({
         provider,
         focusStocks,
@@ -321,6 +327,9 @@ async function handler(request, response) {
           now,
         }),
         calendar: calendarEvents.slice(0, 15),
+        dataStatus: {
+          calendar: calendarResult.status,
+        },
         alertRule,
         ai: aiStatus,
       });
