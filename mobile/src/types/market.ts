@@ -132,13 +132,13 @@ export type WeeklyReview = {
   periodDays: number;
   stockViewCount: number;
   uniqueStockCount: number;
-  topViewed: Array<{
+  topViewed: {
     market: Market;
     code: string;
     name: string;
     viewedAt: string;
     views: number;
-  }>;
+  }[];
   currentWatchlistCount: number;
   reportsRead: number;
   reportsPublished: number;
