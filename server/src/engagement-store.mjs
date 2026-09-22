@@ -58,7 +58,9 @@ export class EngagementStore {
     }
 
     const state = await this.get();
-    state.readReports[clean] = readAt.toISOString();
+    if (!state.readReports[clean]) {
+      state.readReports[clean] = readAt.toISOString();
+    }
     return this.save(state);
   }
 
