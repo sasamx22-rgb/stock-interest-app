@@ -10,12 +10,17 @@ function pickReason(item) {
   return '내 관심종목 중 오늘 확인할 종목';
 }
 
-export function buildEngagementSummary({ reports, engagement, focusStocks }) {
+export function buildEngagementSummary({
+  reports,
+  engagement,
+  focusStocks,
+  dailyPicks,
+}) {
   const unreadReportIds = reports
     .filter((report) => !engagement.readReports[report.id])
     .map((report) => report.id);
 
-  const dailyPicks = focusStocks.slice(0, 3).map((item) => ({
+  const picks = dailyPicks ?? focusStocks.slice(0, 3).map((item) => ({
     ...item,
     pickReason: pickReason(item),
   }));
@@ -23,7 +28,7 @@ export function buildEngagementSummary({ reports, engagement, focusStocks }) {
   return {
     unreadReportIds,
     unreadReportCount: unreadReportIds.length,
-    dailyPicks,
+    dailyPicks: picks,
   };
 }
 
