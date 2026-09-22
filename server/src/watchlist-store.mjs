@@ -1,4 +1,4 @@
-import { mkdir, readFile, rename, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname } from 'node:path';
 
 const MAX_ITEMS = 80;
@@ -55,10 +55,7 @@ export class WatchlistStore {
     const normalized = dedupe(items);
     await mkdir(dirname(this.filePath), { recursive: true });
 
-    const tempPath = `${this.filePath}.tmp`;
-    await writeFile(tempPath, `${JSON.stringify(normalized, null, 2)}\n`, 'utf8');
-    await rename(tempPath, this.filePath);
-
+    await writeFile(this.filePath, `${JSON.stringify(normalized, null, 2)}\n`, 'utf8');
     return normalized;
   }
 
