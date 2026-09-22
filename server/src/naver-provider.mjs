@@ -118,11 +118,11 @@ export function normalizeBasicQuote(payload, requestedCode, fallbackName = reque
     volumeRatio: numberFrom(
       source.volumeRatio
       ?? source.accumulatedTradingVolumeRatio
-      ?? source.tradeVolume
       ?? source.tradingVolumeRatio
       ?? source.quantRate
-      ?? source.volumeIncreaseRate,
-      1,
+      ?? source.volumeIncreaseRate
+      ?? source.compareToPreviousTradingVolumeRatio,
+      0,
     ),
     volume: numberFrom(
       source.accumulatedTradingVolume
@@ -403,7 +403,13 @@ export class NaverMarketProvider {
       6,
       (item) => this.quote(item.code, item.name),
     );
-    return settled.flatMap((result) => result.status === 'fulfilled' ? [result.value] : []);
+    const quotes = settled.flatMap((result) => result.status === 'fulfilled' ? [result.value] : []);
+    if (items.length > 0 && quotes.length === 0) {
+      const error = new Error('Naver watchlist quote requests failed for all symbols');
+      error.causes = settled.flatMap((result) => result.status === 'rejected' ? [result.reason] : []);
+      throw error;
+    }
+    return quotes;
   }
 
   async searchStocks(query) {
@@ -533,6 +539,21 @@ export class NaverMarketProvider {
 
     const payload = await this.fetchJson(url);
     const items = normalizeRankingPayload(payload, market);
+    const candidateObjects = walkForStockObjects(payload);
+    const errorShaped = Boolean(
+      payload
+      && typeof payload === 'object'
+      && !Array.isArray(payload)
+      && (
+        payload.error
+        || payload.errors
+        || payload.success === false
+        || payload.status === 'error'
+      )
+    );
+    if (errorShaped || (candidateObjects.length > 0 && items.length === 0)) {
+      throw new Error(`Naver ${market} ranking response could not be normalized`);
+    }
     this.moverCache.set(url, { fetchedAt: now, items });
     return items;
   }
