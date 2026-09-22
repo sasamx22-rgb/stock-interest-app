@@ -109,6 +109,27 @@ server/  Node.js API + 교체 가능한 NaverMarketProvider
 
 `DATA_DIR`를 지정하면 관심종목과 푸시 토큰 JSON 저장 위치를 바꿀 수 있으므로, 클라우드 배포 시 영구 볼륨 경로를 연결할 수 있습니다.
 
+## 24시간 서버 실행
+
+원격 푸시는 **서버가 계속 실행 중이어야** 동작합니다. 저장소 루트의 `Dockerfile`은 서버만 포함하는 가벼운 컨테이너이며 기본 `DATA_DIR=/data`를 사용합니다.
+
+로컬 Docker 테스트:
+
+```bash
+docker compose up --build
+```
+
+클라우드 배포 시에는 다음을 설정합니다.
+
+- 컨테이너 포트: `PORT` 환경변수 또는 기본 `8787`
+- 영구 볼륨: `/data`에 마운트
+- `MARKET_PULSE_API_KEY`: 충분히 긴 임의 문자열
+- `PUSH_INTERVAL_SECONDS`: 기본 120
+- 모바일 APK의 `EXPO_PUBLIC_API_BASE_URL`: 배포된 HTTPS 서버 주소
+- 모바일 APK의 `EXPO_PUBLIC_API_KEY`: 서버와 동일한 API 키
+
+Docker 기반 서비스를 지원하는 플랫폼이면 같은 이미지 구조를 사용할 수 있습니다. 단, 네이버 내부 API는 공식 Open API가 아니므로 배포 환경의 네트워크 정책이나 네이버 응답 변경에 따라 조정이 필요할 수 있습니다.
+
 ## 로컬 실행
 
 Node.js 22.13 이상이 필요합니다.
