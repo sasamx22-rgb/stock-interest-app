@@ -16,7 +16,7 @@ export default function ReportDetailScreen() {
   const router = useRouter();
   const id = Array.isArray(params.id) ? params.id[0] : params.id;
   const [state, setState] = useState<{
-    status: 'loading' | 'ready';
+    status: 'loading' | 'ready' | 'error';
     report: Report | null;
   }>({ status: 'loading', report: null });
 
@@ -24,12 +24,17 @@ export default function ReportDetailScreen() {
     if (!id) return;
 
     let active = true;
-    getReport(id).then((value) => {
-      if (value) void markReportRead(id);
-      if (active) {
-        setState({ status: 'ready', report: value });
-      }
-    });
+    setState({ status: 'loading', report: null });
+    getReport(id)
+      .then((value) => {
+        if (value) void markReportRead(id);
+        if (active) {
+          setState({ status: 'ready', report: value });
+        }
+      })
+      .catch(() => {
+        if (active) setState({ status: 'error', report: null });
+      });
 
     return () => {
       active = false;
@@ -47,7 +52,12 @@ export default function ReportDetailScreen() {
 
       {loading ? <ActivityIndicator color={palette.primary} /> : null}
 
-      {!loading && !report ? (
+      {state.status === 'error' ? (
+        <View style={styles.empty}>
+          <Text style={styles.emptyTitle}>보고서를 불러오지 못했습니다.</Text>
+          <Text style={styles.emptyText}>서버 연결 또는 API 키 설정을 확인해주세요.</Text>
+        </View>
+      ) : !loading && !report ? (
         <View style={styles.empty}>
           <Text style={styles.emptyTitle}>보고서를 찾을 수 없습니다.</Text>
           <Text style={styles.emptyText}>보고서가 삭제되었거나 아직 동기화되지 않았습니다.</Text>
