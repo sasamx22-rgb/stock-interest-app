@@ -20,6 +20,7 @@ export default function ReportDetailScreen() {
     status: 'ready' | 'error';
     report: Report | null;
   }>({ id: undefined, status: 'ready', report: null });
+  const [pdfMessage, setPdfMessage] = useState('');
 
   useEffect(() => {
     if (!id) return;
@@ -121,14 +122,24 @@ export default function ReportDetailScreen() {
             disabled={!report.pdfUrl}
             onPress={async () => {
               if (!report.pdfUrl) return;
-              const url = await getReportPdfUrl(report.id);
-              if (url) await Linking.openURL(url);
+              setPdfMessage('');
+              const url = await getReportPdfUrl(report.id, report.pdfUrl);
+              if (!url) {
+                setPdfMessage('PDF 링크를 열 수 없습니다.');
+                return;
+              }
+              try {
+                await Linking.openURL(url);
+              } catch {
+                setPdfMessage('PDF 뷰어를 열지 못했습니다.');
+              }
             }}
             style={[styles.pdfButton, !report.pdfUrl && styles.pdfButtonDisabled]}>
             <Text style={[styles.pdfButtonText, !report.pdfUrl && styles.pdfButtonTextDisabled]}>
               {report.pdfUrl ? 'PDF 원문 열기' : 'PDF 원문 미연결'}
             </Text>
           </Pressable>
+          {pdfMessage ? <Text style={styles.pdfMessage}>{pdfMessage}</Text> : null}
         </>
       ) : null}
     </ScreenShell>
@@ -177,6 +188,7 @@ const styles = StyleSheet.create({
   pdfButtonDisabled: { backgroundColor: palette.surfaceRaised },
   pdfButtonText: { color: palette.background, fontWeight: '900' },
   pdfButtonTextDisabled: { color: palette.textMuted },
+  pdfMessage: { color: palette.warning, fontSize: 11, textAlign: 'center' },
   empty: { backgroundColor: palette.surface, borderRadius: 20, padding: spacing.xl },
   emptyTitle: { color: palette.text, fontSize: 16, fontWeight: '900', textAlign: 'center' },
   emptyText: { color: palette.textMuted, fontSize: 13, lineHeight: 20, textAlign: 'center', marginTop: spacing.sm },
