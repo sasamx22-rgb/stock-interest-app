@@ -22,6 +22,16 @@ server/  Node.js API + 교체 가능한 NaverMarketProvider
 
 앱은 `EXPO_PUBLIC_API_BASE_URL`이 없거나 서버 연결에 실패하면 샘플 데이터로 실행됩니다. 서버와 연결하면 API 응답을 사용합니다.
 
+## 네이버 데이터 연결
+
+- 국내 관심종목은 네이버 모바일 국내종목 basic 응답을 사용합니다.
+- 미국 관심종목은 `stock.naver.com`의 해외종목 basic 응답을 별도로 사용합니다.
+- 국내 급등 탐지는 네이버의 거래량 급증 목록을 기본 후보군으로 사용합니다.
+- 미국 급등 탐지는 네이버의 미국 상승 종목 목록을 기본 후보군으로 사용합니다.
+- 급등 목록 응답에 거래량 배수 필드가 없으면 해당 종목은 거래량 3배 조건을 충족한 것으로 임의 판단하지 않습니다.
+
+기본 급등 목록 URL은 서버에 내장되어 있으며, 네이버 응답 구조가 바뀌는 경우 아래 환경변수로 대체 URL을 지정할 수 있습니다.
+
 ## 로컬 실행
 
 Node.js 22.13 이상이 필요합니다.
@@ -55,8 +65,7 @@ npx eas-cli@latest build --platform android --profile preview
 
 - `PORT`: 기본값 `8787`
 - `WATCHLIST`: `KR:005930:삼성전자,US:NVDA.O:NVIDIA` 형식
-- `NAVER_KR_MOVERS_URL`: 네이버 국내 급등 목록 JSON 엔드포인트
-- `NAVER_US_MOVERS_URL`: 네이버 미국 급등 목록 JSON 엔드포인트
+- `NAVER_KR_MOVERS_URL`: 기본 국내 급등 후보 URL을 바꾸고 싶을 때 지정
+- `NAVER_US_MOVERS_URL`: 기본 미국 급등 후보 URL을 바꾸고 싶을 때 지정
 
 민감정보와 인증정보는 GitHub에 커밋하지 않습니다.
-
