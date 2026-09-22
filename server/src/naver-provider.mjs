@@ -1,3 +1,5 @@
+import { BoundedCache } from './bounded-cache.mjs';
+import { DEFAULT_ALERT_RULE } from './alerts.mjs';
 import { summarizeMovementReason } from './movement-reason.mjs';
 
 const DEFAULT_TIMEOUT_MS = 7_000;
@@ -5,7 +7,9 @@ const DEFAULT_TIMEOUT_MS = 7_000;
 function numberFrom(value, fallback = 0) {
   if (typeof value === 'number') return Number.isFinite(value) ? value : fallback;
   if (typeof value !== 'string') return fallback;
-  const parsed = Number(value.replaceAll(',', '').replace(/[％%배xX]/g, '').trim());
+  const clean = value.replaceAll(',', '').replace(/[％%배xX]/g, '').trim();
+  if (!clean) return fallback;
+  const parsed = Number(clean);
   return Number.isFinite(parsed) ? parsed : fallback;
 }
 
@@ -71,6 +75,8 @@ function quotePayload(payload) {
 
 export function normalizeBasicQuote(payload, requestedCode, fallbackName = requestedCode) {
   const source = quotePayload(payload);
+  const price = numberFrom(source?.closePrice ?? source?.currentPrice ?? source?.nowPrice ?? source?.price, Number.NaN);
+  if (!Number.isFinite(price) || price <= 0) throw new Error('Naver quote has no valid price');
   const market = marketFromCode(requestedCode);
   const symbol = market === 'US' ? requestedCode.split('.')[0] : requestedCode;
 
@@ -79,7 +85,7 @@ export function normalizeBasicQuote(payload, requestedCode, fallbackName = reque
     naverCode: requestedCode,
     name: stockNameFrom(source) ?? fallbackName,
     market,
-    price: numberFrom(source.closePrice ?? source.currentPrice ?? source.nowPrice ?? source.price),
+    price,
     currency: currencyFromMarket(market),
     changePercent: numberFrom(
       source.fluctuationsRatio
@@ -131,9 +137,11 @@ export function normalizeRankingPayload(payload, market) {
       : rawCode;
 
     if (seen.has(naverCode)) return [];
-    seen.add(naverCode);
 
-    const quote = normalizeBasicQuote(item, naverCode, stockNameFrom(item) ?? rawCode);
+    let quote;
+    try { quote = normalizeBasicQuote(item, naverCode, stockNameFrom(item) ?? rawCode); }
+    catch { return []; }
+    seen.add(naverCode);
     return [{
       ...quote,
       market,
@@ -309,9 +317,9 @@ export class NaverMarketProvider {
   constructor({ fetchImpl = fetch, timeoutMs = DEFAULT_TIMEOUT_MS } = {}) {
     this.fetchImpl = fetchImpl;
     this.timeoutMs = timeoutMs;
-    this.moverCache = new Map();
-    this.priceHistoryCache = new Map();
-    this.newsCache = new Map();
+    this.moverCache = new BoundedCache();
+    this.priceHistoryCache = new BoundedCache();
+    this.newsCache = new BoundedCache();
   }
 
   async fetchJson(url) {
@@ -368,10 +376,10 @@ export class NaverMarketProvider {
     return items;
   }
 
-  async enrichVolumeRatios(quotes) {
+  async enrichVolumeRatios(quotes, rule = DEFAULT_ALERT_RULE) {
     const targets = quotes
       .map((quote, index) => ({ quote, index }))
-      .filter(({ quote }) => quote.changePercent >= 5 && quote.volumeRatio < 3)
+      .filter(({ quote }) => quote.changePercent >= rule.changePercent && quote.volumeRatio < rule.volumeRatio)
       .slice(0, 20);
 
     if (targets.length === 0) return quotes;
@@ -388,12 +396,18 @@ export class NaverMarketProvider {
       const rows = result.value.filter((item) => item.volume > 0);
       if (rows.length < 3) return;
 
-      const currentVolume = quote.volume > 0 ? quote.volume : rows[0].volume;
+      // localTradedAt identifies the quote's market session. Never substitute
+      // yesterday's history volume for an unknown current-session volume.
+      const session = String(quote.updatedAt ?? '').slice(0, 10).replaceAll('-', '');
+      if (!/^\d{8}$/.test(session)) return;
+      const dateKey = (row) => String(row.date).slice(0, 10).replaceAll('-', '');
+      const currentRow = rows.find((row) => dateKey(row) === session);
+      const currentVolume = quote.volume > 0 ? quote.volume : currentRow?.volume;
       if (!(currentVolume > 0)) return;
-
-      // The first daily-price row is the most recent session. Exclude it from
-      // the comparison baseline so today's surge does not inflate its own average.
-      const baselineRows = rows.slice(1, 21);
+      const baselineRows = rows
+        .filter((row) => /^\d{8}$/.test(dateKey(row)) && dateKey(row) < session)
+        .sort((a, b) => dateKey(b).localeCompare(dateKey(a)))
+        .slice(0, 20);
       if (baselineRows.length < 2) return;
 
       const averageVolume = baselineRows.reduce((sum, item) => sum + item.volume, 0) / baselineRows.length;

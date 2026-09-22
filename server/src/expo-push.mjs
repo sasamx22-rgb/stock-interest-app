@@ -11,7 +11,7 @@ function chunks(values, size) {
 
 function alertBody(alerts) {
   const preview = alerts.slice(0, 3).map(
-    (item) => `${item.name} +${item.changePercent.toFixed(2)}% · 거래량 ${item.volumeRatio.toFixed(1)}배`,
+    (item) => `${String(item.name).slice(0, 80)} +${item.changePercent.toFixed(2)}% · 거래량 ${item.volumeRatio.toFixed(1)}배`,
   );
   if (alerts.length > 3) preview.push(`외 ${alerts.length - 3}개 종목`);
   return preview.join('\n');
@@ -20,17 +20,17 @@ function alertBody(alerts) {
 export async function sendExpoPushNotifications(
   tokens,
   alerts,
-  { fetchImpl = fetch } = {},
+  { fetchImpl = fetch, timeoutMs = 10_000 } = {},
 ) {
   const validTokens = [...new Set(tokens.filter((token) => typeof token === 'string' && token))];
   if (validTokens.length === 0 || alerts.length === 0) {
     return { sent: 0, invalidTokens: [], tickets: [] };
   }
 
-  const symbols = alerts.map((item) => ({
+  const symbols = alerts.slice(0, 3).map((item) => ({
     market: item.market,
-    symbol: item.symbol,
-    name: item.name,
+    symbol: String(item.symbol).slice(0, 40),
+    name: String(item.name).slice(0, 80),
   }));
 
   const messages = validTokens.map((token) => ({
@@ -43,6 +43,7 @@ export async function sendExpoPushNotifications(
     data: {
       screen: 'movers',
       symbols,
+      totalAlerts: alerts.length,
     },
   }));
 
@@ -57,6 +58,7 @@ export async function sendExpoPushNotifications(
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(batch),
+      signal: AbortSignal.timeout(timeoutMs),
     });
 
     if (!response.ok) {
@@ -65,6 +67,9 @@ export async function sendExpoPushNotifications(
 
     const payload = await response.json();
     const batchTickets = Array.isArray(payload?.data) ? payload.data : [];
+    if (batchTickets.length !== batch.length) {
+      throw new Error('Expo returned an incomplete ticket response');
+    }
     tickets.push(...batchTickets);
 
     batchTickets.forEach((ticket, index) => {
@@ -76,7 +81,7 @@ export async function sendExpoPushNotifications(
   }
 
   return {
-    sent: messages.length,
+    sent: tickets.filter((ticket) => ticket?.status === 'ok').length,
     invalidTokens: [...new Set(invalidTokens)],
     tickets,
   };

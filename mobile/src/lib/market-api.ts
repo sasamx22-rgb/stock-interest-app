@@ -31,21 +31,28 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
     throw new Error('API base URL is not configured');
   }
 
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    method: options.method ?? 'GET',
-    body: options.body,
-    headers: {
-      Accept: 'application/json',
-      ...(options.body ? { 'Content-Type': 'application/json' } : {}),
-      ...(API_KEY ? { 'X-Market-Pulse-Key': API_KEY } : {}),
-    },
-  });
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 60_000);
+  try {
+    const response = await fetch(`${API_BASE_URL}${path}`, {
+      signal: controller.signal,
+      method: options.method ?? 'GET',
+      body: options.body,
+      headers: {
+        Accept: 'application/json',
+        ...(options.body ? { 'Content-Type': 'application/json' } : {}),
+        ...(API_KEY ? { 'X-Market-Pulse-Key': API_KEY } : {}),
+      },
+    });
 
-  if (!response.ok) {
-    throw new Error(`Market API request failed: ${response.status}`);
+    if (!response.ok) {
+      throw new Error(`Market API request failed: ${response.status}`);
+    }
+
+    return await response.json() as T;
+  } finally {
+    clearTimeout(timeout);
   }
-
-  return response.json() as Promise<T>;
 }
 
 export async function getHomeBriefing(): Promise<HomeBriefing> {

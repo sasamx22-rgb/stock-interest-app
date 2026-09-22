@@ -1,3 +1,4 @@
+import { BoundedCache } from './bounded-cache.mjs';
 import { createHash } from 'node:crypto';
 
 function extractOutputText(payload) {
@@ -45,7 +46,7 @@ export class OpenAiAnalysisService {
     this.fetchImpl = fetchImpl;
     this.budgetStore = budgetStore;
     this.movementCacheMs = movementCacheMs;
-    this.cache = new Map();
+    this.cache = new BoundedCache();
   }
 
   get enabled() {

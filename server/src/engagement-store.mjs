@@ -1,4 +1,5 @@
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { atomicWriteFile as writeFile, serializeFileOperations } from './file-storage.mjs';
+import { mkdir, readFile } from 'node:fs/promises';
 import { dirname } from 'node:path';
 
 const MAX_VIEWS = 1200;
@@ -29,6 +30,7 @@ function normalizeState(value) {
 export class EngagementStore {
   constructor({ filePath }) {
     this.filePath = filePath;
+    serializeFileOperations(this, ['get', 'save', 'markReportRead', 'logStockView']);
   }
 
   async get() {

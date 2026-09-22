@@ -1,4 +1,5 @@
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { atomicWriteFile as writeFile, serializeFileOperations } from './file-storage.mjs';
+import { mkdir, readFile } from 'node:fs/promises';
 import { dirname } from 'node:path';
 
 const MAX_TOKENS = 20;
@@ -11,6 +12,7 @@ export function isValidExpoPushToken(value) {
 export class PushTokenStore {
   constructor({ filePath }) {
     this.filePath = filePath;
+    serializeFileOperations(this, ['getAll', 'save', 'register', 'remove']);
   }
 
   async getAll() {

@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 
@@ -9,6 +9,7 @@ import { getAlertSettings, getMovers } from '@/lib/market-api';
 import { AlertRule, Market, MarketMover } from '@/types/market';
 
 export default function MoversScreen() {
+  const generation = useRef(0);
   const [market, setMarket] = useState<Market>('KR');
   const [items, setItems] = useState<MarketMover[]>([]);
   const [rule, setRule] = useState<AlertRule>({ changePercent: 5, volumeRatio: 3 });
@@ -16,22 +17,27 @@ export default function MoversScreen() {
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
   const refresh = useCallback(async () => {
+    const requestId = ++generation.current;
     setLoading(true);
     try {
       const [nextItems, nextRule] = await Promise.all([
         getMovers(market),
         getAlertSettings(),
       ]);
+      if (requestId !== generation.current) return;
       setItems(nextItems);
       setRule(nextRule);
       setLastUpdated(new Date());
     } finally {
-      setLoading(false);
+      if (requestId === generation.current) setLoading(false);
     }
   }, [market]);
 
   useFocusEffect(useCallback(() => {
-    refresh();
+    setItems([]);
+    setLastUpdated(null);
+    void refresh();
+    return () => { generation.current += 1; };
   }, [refresh]));
 
   return (

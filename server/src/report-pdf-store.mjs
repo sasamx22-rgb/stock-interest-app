@@ -1,4 +1,5 @@
-import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
+import { atomicWriteFile as writeFile } from './file-storage.mjs';
+import { mkdir, readFile, unlink } from 'node:fs/promises';
 import { join } from 'node:path';
 
 const ID_PATTERN = /^[A-Za-z0-9._-]{1,80}$/;

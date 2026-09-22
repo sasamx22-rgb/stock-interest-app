@@ -1,3 +1,4 @@
+import { readBinaryBody, readJsonBody } from './http-body.mjs';
 import { createServer } from 'node:http';
 import { join } from 'node:path';
 
@@ -20,6 +21,10 @@ import { sampleReports } from './sample.mjs';
 import { SurgePushMonitor } from './surge-push-monitor.mjs';
 import { buildTodayFocus } from './today-focus.mjs';
 import { WatchlistStore } from './watchlist-store.mjs';
+
+if (process.env.NODE_ENV === 'production' && !config.apiKey) {
+  throw new Error('MARKET_PULSE_API_KEY is required in production');
+}
 
 const provider = new NaverMarketProvider();
 const calendarProvider = new EconomicCalendarProvider();
@@ -85,54 +90,13 @@ function sendJson(response, status, body) {
   response.end(JSON.stringify(body));
 }
 
-async function readBinaryBody(request, maxBytes = 25 * 1024 * 1024) {
-  const chunks = [];
-  let size = 0;
-
-  for await (const chunk of request) {
-    const buffer = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
-    size += buffer.length;
-    if (size > maxBytes) {
-      const error = new Error('Request body too large');
-      error.statusCode = 413;
-      throw error;
-    }
-    chunks.push(buffer);
-  }
-
-  return Buffer.concat(chunks);
-}
-
-async function readJsonBody(request, maxBytes = 10_000) {
-  let body = '';
-  for await (const chunk of request) {
-    body += chunk;
-    if (Buffer.byteLength(body) > maxBytes) {
-      const error = new Error('Request body too large');
-      error.statusCode = 413;
-      throw error;
-    }
-  }
-
-  if (!body.trim()) return {};
-  try {
-    return JSON.parse(body);
-  } catch {
-    const error = new Error('Invalid JSON body');
-    error.statusCode = 400;
-    throw error;
-  }
-}
-
 async function loadMarketMovers(markets) {
   const quotes = (await Promise.all(
     markets.map((value) => provider.movers(value, config.moverUrls[value])),
   )).flat();
 
-  const [enrichedQuotes, rule] = await Promise.all([
-    provider.enrichVolumeRatios(quotes),
-    alertSettingsStore.get(),
-  ]);
+  const rule = await alertSettingsStore.get();
+  const enrichedQuotes = await provider.enrichVolumeRatios(quotes, rule);
 
   return enrichedQuotes.map((quote) => ({
     ...quote,
@@ -181,7 +145,6 @@ const pushMonitor = new SurgePushMonitor({
 
 
 async function handler(request, response) {
-  const url = new URL(request.url ?? '/', `http://${request.headers.host ?? 'localhost'}`);
 
   if (request.method === 'OPTIONS') {
     response.writeHead(204, {
@@ -193,6 +156,7 @@ async function handler(request, response) {
   }
 
   try {
+    const url = new URL(request.url ?? '/', 'http://localhost');
     if (url.pathname === '/health') {
       if (request.method !== 'GET') return sendJson(response, 405, { error: 'Method not allowed' });
       const [pushTokens, aiStatus] = await Promise.all([
@@ -620,7 +584,7 @@ async function handler(request, response) {
 const server = createServer(handler);
 
 server.listen(config.port, '0.0.0.0', () => {
-  console.log(`Market Pulse API listening on http://0.0.0.0:${config.port}`);
+  console.log(`Market Pulse API listening on http://0.0.0.0:${server.address().port}`);
   pushMonitor.start();
 });
 

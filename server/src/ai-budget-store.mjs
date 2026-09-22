@@ -1,4 +1,5 @@
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { atomicWriteFile as writeFile, serializeFileOperations } from './file-storage.mjs';
+import { mkdir, readFile } from 'node:fs/promises';
 import { dirname } from 'node:path';
 
 function dateKey(now = new Date()) {
@@ -13,6 +14,7 @@ function dateKey(now = new Date()) {
 export class AiBudgetStore {
   constructor({ filePath, dailyLimit = 12 }) {
     this.filePath = filePath;
+    serializeFileOperations(this, ['get', 'reserve']);
     this.dailyLimit = Math.max(0, Number(dailyLimit) || 0);
     this.reserveQueue = Promise.resolve();
   }

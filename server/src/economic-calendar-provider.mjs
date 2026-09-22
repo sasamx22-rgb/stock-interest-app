@@ -1,3 +1,4 @@
+import { BoundedCache } from './bounded-cache.mjs';
 const BLS_ICS_URL = 'https://www.bls.gov/schedule/news_release/bls.ics';
 
 const FOMC_DATES = [
@@ -192,7 +193,7 @@ export class EconomicCalendarProvider {
   constructor({ fetchImpl = fetch, timeoutMs = 8_000 } = {}) {
     this.fetchImpl = fetchImpl;
     this.timeoutMs = timeoutMs;
-    this.cache = new Map();
+    this.cache = new BoundedCache();
   }
 
   async fetchText(url, headers = {}) {
