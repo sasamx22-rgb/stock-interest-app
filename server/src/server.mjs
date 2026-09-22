@@ -3,14 +3,22 @@ import { fileURLToPath } from 'node:url';
 
 import { describeAlert, isAlertEligible } from './alerts.mjs';
 import { config } from './config.mjs';
+import { sendExpoPushNotifications } from './expo-push.mjs';
 import { NaverMarketProvider } from './naver-provider.mjs';
+import { PushTokenStore } from './push-token-store.mjs';
 import { sampleReports } from './sample.mjs';
+import { SurgePushMonitor } from './surge-push-monitor.mjs';
 import { WatchlistStore } from './watchlist-store.mjs';
 
 const provider = new NaverMarketProvider();
+
 const watchlistStore = new WatchlistStore({
   filePath: fileURLToPath(new URL('../data/watchlist.json', import.meta.url)),
   defaults: config.watchlist,
+});
+
+const pushTokenStore = new PushTokenStore({
+  filePath: fileURLToPath(new URL('../data/push-tokens.json', import.meta.url)),
 });
 
 function sendJson(response, status, body) {
@@ -55,6 +63,21 @@ async function loadMarketMovers(markets) {
   }));
 }
 
+async function loadEligibleAlerts() {
+  const movers = await loadMarketMovers(['KR', 'US']);
+  return movers
+    .filter((item) => item.alertEligible)
+    .sort((a, b) => b.changePercent - a.changePercent);
+}
+
+const pushMonitor = new SurgePushMonitor({
+  loadAlerts: loadEligibleAlerts,
+  getTokens: () => pushTokenStore.getAll(),
+  sendPush: (tokens, alerts) => sendExpoPushNotifications(tokens, alerts),
+  removeToken: (token) => pushTokenStore.remove(token),
+  intervalMs: 120_000,
+});
+
 async function handler(request, response) {
   const url = new URL(request.url ?? '/', `http://${request.headers.host ?? 'localhost'}`);
 
@@ -70,7 +93,13 @@ async function handler(request, response) {
   try {
     if (url.pathname === '/health') {
       if (request.method !== 'GET') return sendJson(response, 405, { error: 'Method not allowed' });
-      return sendJson(response, 200, { ok: true, provider: 'naver' });
+      const pushTokens = await pushTokenStore.getAll();
+      return sendJson(response, 200, {
+        ok: true,
+        provider: 'naver',
+        pushMonitor: pushMonitor.active ? 'active' : 'inactive',
+        registeredDevices: pushTokens.length,
+      });
     }
 
     if (url.pathname === '/api/reports') {
@@ -116,14 +145,44 @@ async function handler(request, response) {
       return sendJson(response, 200, await provider.searchStocks(query));
     }
 
+    if (url.pathname === '/api/push/status') {
+      if (request.method !== 'GET') return sendJson(response, 405, { error: 'Method not allowed' });
+      const tokens = await pushTokenStore.getAll();
+      return sendJson(response, 200, {
+        registeredDevices: tokens.length,
+        monitorActive: pushMonitor.active,
+        intervalSeconds: 120,
+      });
+    }
+
+    if (url.pathname === '/api/push/register') {
+      if (request.method === 'POST') {
+        const body = await readJsonBody(request);
+        const items = await pushTokenStore.register({
+          token: body.token,
+          platform: body.platform,
+        });
+        return sendJson(response, 201, {
+          registered: true,
+          registeredDevices: items.length,
+        });
+      }
+
+      if (request.method === 'DELETE') {
+        const token = url.searchParams.get('token');
+        const items = await pushTokenStore.remove(token);
+        return sendJson(response, 200, {
+          registered: false,
+          registeredDevices: items.length,
+        });
+      }
+
+      return sendJson(response, 405, { error: 'Method not allowed' });
+    }
+
     if (url.pathname === '/api/alerts') {
       if (request.method !== 'GET') return sendJson(response, 405, { error: 'Method not allowed' });
-
-      const movers = await loadMarketMovers(['KR', 'US']);
-      const alerts = movers
-        .filter((item) => item.alertEligible)
-        .sort((a, b) => b.changePercent - a.changePercent);
-      return sendJson(response, 200, alerts);
+      return sendJson(response, 200, await loadEligibleAlerts());
     }
 
     if (url.pathname === '/api/movers') {
@@ -144,6 +203,16 @@ async function handler(request, response) {
   }
 }
 
-createServer(handler).listen(config.port, '0.0.0.0', () => {
+const server = createServer(handler);
+
+server.listen(config.port, '0.0.0.0', () => {
   console.log(`Market Pulse API listening on http://0.0.0.0:${config.port}`);
+  pushMonitor.start();
 });
+
+for (const signal of ['SIGINT', 'SIGTERM']) {
+  process.on(signal, () => {
+    pushMonitor.stop();
+    server.close(() => process.exit(0));
+  });
+}
