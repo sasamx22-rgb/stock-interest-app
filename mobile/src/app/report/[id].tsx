@@ -15,28 +15,28 @@ export default function ReportDetailScreen() {
   const params = useLocalSearchParams<{ id?: string | string[] }>();
   const router = useRouter();
   const id = Array.isArray(params.id) ? params.id[0] : params.id;
-  const [report, setReport] = useState<Report | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [state, setState] = useState<{
+    status: 'loading' | 'ready';
+    report: Report | null;
+  }>({ status: 'loading', report: null });
 
   useEffect(() => {
-    if (!id) {
-      setLoading(false);
-      return;
-    }
+    if (!id) return;
 
     let active = true;
-    getReport(id)
-      .then((value) => {
-        if (active) setReport(value);
-      })
-      .finally(() => {
-        if (active) setLoading(false);
-      });
+    getReport(id).then((value) => {
+      if (active) {
+        setState({ status: 'ready', report: value });
+      }
+    });
 
     return () => {
       active = false;
     };
   }, [id]);
+
+  const loading = Boolean(id) && state.status === 'loading';
+  const report = state.report;
 
   return (
     <ScreenShell>
