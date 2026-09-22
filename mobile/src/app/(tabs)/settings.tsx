@@ -23,13 +23,21 @@ export default function SettingsScreen() {
         <SettingRow label="상승률 기준" value="5%" />
         <SettingRow label="거래량 기준" value="최근 평균의 3배" />
         <SettingRow label="대상 시장" value="한국 · 미국" />
-        <SettingRow label="조회 주기" value="1~3분" />
+        <SettingRow label="알림 확인 주기" value="앱 실행 중 2분" />
       </View>
 
       <View style={styles.card}>
         <SettingRow label="데이터 연결" value={isLiveDataConfigured() ? '백엔드 연결됨' : '샘플 모드'} />
         <SettingRow label="데이터 출처" value="NAVER 우선" />
+        <SettingRow label="현재 알림 방식" value="신규 신호 인앱 알림" />
         <SettingRow label="배포 방식" value="개인용 APK" />
+      </View>
+
+      <View style={styles.notice}>
+        <Text style={styles.noticeTitle}>현재 알림 범위</Text>
+        <Text style={styles.noticeText}>
+          지금 버전은 앱이 실행 중일 때 신규 급등 신호를 확인합니다. 앱이 완전히 종료된 상태에서도 받는 Android 시스템 푸시는 다음 배포 단계에서 별도로 연결합니다.
+        </Text>
       </View>
 
       <View style={styles.notice}>
@@ -44,9 +52,9 @@ const styles = StyleSheet.create({
   eyebrow: { color: palette.primary, fontSize: 12, fontWeight: '900', letterSpacing: 1.6 },
   heading: { color: palette.text, fontSize: 30, fontWeight: '900', marginTop: spacing.sm },
   card: { backgroundColor: palette.surface, borderRadius: 20, paddingHorizontal: spacing.lg, borderColor: palette.border, borderWidth: 1 },
-  row: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: spacing.lg, borderBottomColor: palette.border, borderBottomWidth: StyleSheet.hairlineWidth },
-  label: { color: palette.textMuted, fontSize: 14 },
-  value: { color: palette.text, fontSize: 14, fontWeight: '800' },
+  row: { flexDirection: 'row', justifyContent: 'space-between', gap: spacing.lg, paddingVertical: spacing.lg, borderBottomColor: palette.border, borderBottomWidth: StyleSheet.hairlineWidth },
+  label: { color: palette.textMuted, fontSize: 14, flex: 1 },
+  value: { color: palette.text, fontSize: 14, fontWeight: '800', textAlign: 'right', flex: 1 },
   notice: { backgroundColor: '#3A321C', borderRadius: 16, padding: spacing.lg },
   noticeTitle: { color: palette.warning, fontSize: 13, fontWeight: '900' },
   noticeText: { color: '#D4C8A8', fontSize: 12, lineHeight: 18, marginTop: spacing.sm },
