@@ -123,6 +123,15 @@ export async function getEngagementSummary(): Promise<EngagementSummary> {
   }
 }
 
+export async function getReportReadState(): Promise<EngagementSummary> {
+  try {
+    return await request<EngagementSummary>('/api/reports/read-state');
+  } catch (error) {
+    if (!DEMO_MODE) throw error;
+    return { unreadReportIds: [], unreadReportCount: 0, dailyPicks: [] };
+  }
+}
+
 export async function getWeeklyReview(): Promise<WeeklyReview | null> {
   try {
     return await request<WeeklyReview>('/api/review/weekly');
@@ -180,8 +189,9 @@ export async function getTodayFocus(): Promise<TodayFocusStock[]> {
 export async function getWatchlist(): Promise<Quote[]> {
   try {
     return await request<Quote[]>('/api/watchlist');
-  } catch {
-    return DEMO_MODE ? sampleWatchlist : [];
+  } catch (error) {
+    if (!DEMO_MODE) throw error;
+    return sampleWatchlist;
   }
 }
 
@@ -208,8 +218,8 @@ export async function getStockDetail(
     return await request<StockDetail>(
       `/api/stocks/${market}/${encodeURIComponent(code)}${query}`,
     );
-  } catch {
-    if (!DEMO_MODE) return null;
+  } catch (error) {
+    if (!DEMO_MODE) throw error;
     const quote = sampleWatchlist.find(
       (item) => item.market === market && item.naverCode === code,
     );
