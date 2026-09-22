@@ -41,6 +41,11 @@ export type Report = {
   pdfUrl?: string;
 };
 
+export type AlertRule = {
+  changePercent: number;
+  volumeRatio: number;
+};
+
 export type PushRegistration = {
   token: string;
   platform: 'android' | 'ios';
