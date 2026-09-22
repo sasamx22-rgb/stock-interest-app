@@ -24,7 +24,13 @@ export class PushReceiptMonitor {
     this.inFlight = true;
     try {
       const now = Date.now();
-      const pending = (await this.receiptStore.getAll())
+      const items = await this.receiptStore.getAll();
+      const expired = items.filter((item) => {
+        const created = Date.parse(item.createdAt);
+        return !Number.isFinite(created) || now - created > this.maxAgeMs;
+      }).map((item) => item.id);
+      if (expired.length > 0) await this.receiptStore.remove(expired);
+      const pending = items
         .filter((item) => {
           const age = now - Date.parse(item.createdAt);
           return age >= this.minimumAgeMs && age <= this.maxAgeMs;
@@ -55,10 +61,6 @@ export class PushReceiptMonitor {
       }
       if (completed.length > 0) await this.receiptStore.remove(completed);
 
-      const expired = (await this.receiptStore.getAll())
-        .filter((item) => now - Date.parse(item.createdAt) > this.maxAgeMs)
-        .map((item) => item.id);
-      if (expired.length > 0) await this.receiptStore.remove(expired);
     } catch (error) {
       this.logger.error?.('Push receipt monitor failed', error);
     } finally {

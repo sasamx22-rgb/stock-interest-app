@@ -1,0 +1,57 @@
+{
+  "hasNext": true,
+  "items": [
+    {
+      "tradingDateKst": "2026-09-22",
+      "basePrice": "2335",
+      "closingPrice": "3035",
+      "changePrice": "700",
+      "priceMovement": "upperLimit",
+      "changeRate": "29.98",
+      "openingPrice": "2335",
+      "highPrice": "3035",
+      "lowPrice": "2330",
+      "tradingVolume": "14286739",
+      "tradingValue": "40474924000.000"
+    },
+    {
+      "tradingDateKst": "2026-09-21",
+      "basePrice": "2320",
+      "closingPrice": "2380",
+      "changePrice": "60",
+      "priceMovement": "rising",
+      "changeRate": "2.59",
+      "openingPrice": "2340",
+      "highPrice": "2535",
+      "lowPrice": "2315",
+      "tradingVolume": "71428",
+      "tradingValue": "168339564.000"
+    },
+    {
+      "tradingDateKst": "2026-09-18",
+      "basePrice": "2310",
+      "closingPrice": "2340",
+      "changePrice": "30",
+      "priceMovement": "rising",
+      "changeRate": "1.30",
+      "openingPrice": "2325",
+      "highPrice": "2340",
+      "lowPrice": "2295",
+      "tradingVolume": "17793",
+      "tradingValue": "41230876.000"
+    },
+    {
+      "tradingDateKst": "2026-09-17",
+      "basePrice": "2310",
+      "closingPrice": "2330",
+      "changePrice": "20",
+      "priceMovement": "rising",
+      "changeRate": "0.87",
+      "openingPrice": "2310",
+      "highPrice": "2340",
+      "lowPrice": "2295",
+      "tradingVolume": "28689",
+      "tradingValue": "66534722.000"
+    }
+  ]
+}

@@ -53,6 +53,8 @@ function stockCodeFrom(value) {
 
 function stockNameFrom(value) {
   return value.stockName
+    ?? value.koreanCodeName
+    ?? value.englishCodeName
     ?? value.stockNameEng
     ?? value.itemName
     ?? value.itemname
@@ -116,6 +118,7 @@ export function normalizeBasicQuote(payload, requestedCode, fallbackName = reque
     volumeRatio: numberFrom(
       source.volumeRatio
       ?? source.accumulatedTradingVolumeRatio
+      ?? source.tradeVolume
       ?? source.tradingVolumeRatio
       ?? source.quantRate
       ?? source.volumeIncreaseRate,
@@ -123,11 +126,12 @@ export function normalizeBasicQuote(payload, requestedCode, fallbackName = reque
     ),
     volume: numberFrom(
       source.accumulatedTradingVolume
+      ?? source.tradeVolume
       ?? source.tradingVolume
       ?? source.volume,
       0,
     ),
-    updatedAt: source.localTradedAt ?? source.updatedAt ?? source.tradeTime ?? new Date().toISOString(),
+    updatedAt: source.localTradedAt ?? source.updatedAt ?? source.tradeTime ?? '',
     source: 'naver',
   };
 }
@@ -223,11 +227,23 @@ function walkObjects(value, output = []) {
   return output;
 }
 
+function normalizeSessionDate(value) {
+  const raw = String(value ?? '').trim();
+  const match = raw.match(/^(\d{4})[-/]?(\d{2})[-/]?(\d{2})(?:T.*)?$/);
+  if (!match) return '';
+  const [, year, month, day] = match;
+  const date = `${year}-${month}-${day}`;
+  const parsed = new Date(`${date}T00:00:00Z`);
+  return Number.isFinite(parsed.getTime()) && parsed.toISOString().slice(0, 10) === date ? date : '';
+}
+
 export function normalizePriceHistory(payload) {
   const byDate = new Map();
   for (const item of walkObjects(payload)) {
     const date = String(
-      item.localDate
+      item.tradingDateKst
+      ?? item.localTradedAt
+      ?? item.localDate
       ?? item.bizdate
       ?? item.bizDate
       ?? item.tradeDate
@@ -237,18 +253,20 @@ export function normalizePriceHistory(payload) {
     ).trim();
 
     const rawPrice =
-      item.closePrice
+      item.closingPrice
+      ?? item.closePrice
       ?? item.close
       ?? item.currentPrice
       ?? item.price;
 
     const price = numberFrom(rawPrice, Number.NaN);
-    const dateKey = date.replaceAll('-', '').replaceAll('/', '');
-    if (!/^\d{8}$/.test(dateKey) || !Number.isFinite(price) || price <= 0) continue;
+    const normalizedDate = normalizeSessionDate(date);
+    const dateKey = normalizedDate.replaceAll('-', '');
+    if (!normalizedDate || !Number.isFinite(price) || price <= 0) continue;
 
     if (!byDate.has(dateKey)) {
       byDate.set(dateKey, {
-        date,
+        date: normalizedDate,
         closePrice: price,
         changePercent: numberFrom(
           item.fluctuationsRatio
@@ -438,9 +456,9 @@ export class NaverMarketProvider {
 
       // localTradedAt identifies the quote's market session. Never substitute
       // yesterday's history volume for an unknown current-session volume.
-      const session = String(quote.updatedAt ?? '').slice(0, 10).replaceAll('-', '');
+      const session = normalizeSessionDate(quote.updatedAt).replaceAll('-', '');
       if (!/^\d{8}$/.test(session)) return;
-      const dateKey = (row) => String(row.date).slice(0, 10).replaceAll('-', '');
+      const dateKey = (row) => normalizeSessionDate(row.date).replaceAll('-', '');
       const currentRow = rows.find((row) => dateKey(row) === session);
       const currentVolume = quote.volume > 0 ? quote.volume : currentRow?.volume;
       if (!(currentVolume > 0)) return;

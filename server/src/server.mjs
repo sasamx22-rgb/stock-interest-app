@@ -29,8 +29,8 @@ import { WatchlistStore } from './watchlist-store.mjs';
 if (process.env.NODE_ENV === 'production' && !config.apiKey) {
   throw new Error('MARKET_PULSE_API_KEY is required in production');
 }
-if (process.env.NODE_ENV === 'production' && config.publishKey === config.apiKey) {
-  console.warn('MARKET_PULSE_PUBLISH_KEY is not set; publisher operations share the app key.');
+if (process.env.NODE_ENV === 'production' && (!config.publishKey || config.publishKey === config.apiKey)) {
+  throw new Error('A distinct MARKET_PULSE_PUBLISH_KEY is required in production');
 }
 
 const provider = new NaverMarketProvider();
@@ -101,7 +101,12 @@ function requireWriteAccess(request) {
 }
 
 function requirePublishAccess(request) {
-  if (!config.publishKey) return;
+  if (!config.publishKey) {
+    if (!config.apiKey) return; // Explicit local, unauthenticated development mode.
+    const error = new Error('Publisher access is not configured');
+    error.statusCode = 503;
+    throw error;
+  }
   const provided = request.headers['x-market-pulse-key'];
   if (provided !== config.publishKey) {
     const error = new Error('Unauthorized');
@@ -111,15 +116,23 @@ function requirePublishAccess(request) {
 }
 
 function requestIdentity(request) {
-  const forwarded = String(request.headers['x-forwarded-for'] ?? '').split(',')[0].trim();
-  return forwarded || request.socket?.remoteAddress || 'unknown';
+  // No verified proxy trust boundary is configured. Do not trust caller-supplied XFF.
+  return request.socket?.remoteAddress || 'unknown';
 }
 
 function enforceApiRateLimit(request) {
   const now = Date.now();
   const key = requestIdentity(request);
+  for (const [bucketKey, bucket] of apiRateBuckets) {
+    if (now - bucket.startedAt >= API_RATE_WINDOW_MS) apiRateBuckets.delete(bucketKey);
+  }
   const current = apiRateBuckets.get(key);
   if (!current || now - current.startedAt >= API_RATE_WINDOW_MS) {
+    if (apiRateBuckets.size >= 500) {
+      const error = new Error('Too many clients');
+      error.statusCode = 429;
+      throw error;
+    }
     apiRateBuckets.set(key, { startedAt: now, count: 1 });
     return;
   }
@@ -129,11 +142,7 @@ function enforceApiRateLimit(request) {
     error.statusCode = 429;
     throw error;
   }
-  if (apiRateBuckets.size > 500) {
-    for (const [bucketKey, bucket] of apiRateBuckets) {
-      if (now - bucket.startedAt >= API_RATE_WINDOW_MS) apiRateBuckets.delete(bucketKey);
-    }
-  }
+
 }
 
 function signPdfAccess(id, expiresAt) {
@@ -146,7 +155,7 @@ function isValidPdfSignature(id, url) {
   const provided = url.searchParams.get('signature') ?? '';
   if (!Number.isInteger(expiresAt) || expiresAt < Date.now() || expiresAt > Date.now() + 10 * 60_000) return false;
   const expected = signPdfAccess(id, expiresAt);
-  if (provided.length !== expected.length) return false;
+  if (!/^[a-f0-9]{64}$/.test(provided)) return false;
   return timingSafeEqual(Buffer.from(provided), Buffer.from(expected));
 }
 
