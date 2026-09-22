@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Pressable,
@@ -24,6 +24,8 @@ function displaySymbol(item: WatchlistItem) {
 }
 
 export default function WatchlistScreen() {
+  const listGeneration = useRef(0);
+  const searchGeneration = useRef(0);
   const [watchlist, setWatchlist] = useState<WatchlistItem[]>([]);
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<StockSearchResult[]>([]);
@@ -33,34 +35,49 @@ export default function WatchlistScreen() {
   const [message, setMessage] = useState('');
 
   const loadWatchlist = useCallback(async () => {
+    const requestId = ++listGeneration.current;
     setLoadingList(true);
     try {
-      setWatchlist(await getWatchlistItems());
+      const items = await getWatchlistItems();
+      if (requestId !== listGeneration.current) return false;
+      setWatchlist(items);
+      return true;
     } catch {
-      setMessage('관심종목을 불러오지 못했습니다. 서버 연결을 확인해주세요.');
+      if (requestId === listGeneration.current) {
+        setMessage('관심종목을 불러오지 못했습니다. 서버 연결을 확인해주세요.');
+      }
+      return false;
     } finally {
-      setLoadingList(false);
+      if (requestId === listGeneration.current) setLoadingList(false);
     }
   }, []);
 
   useFocusEffect(useCallback(() => {
-    loadWatchlist();
+    void loadWatchlist();
+    return () => {
+      listGeneration.current += 1;
+      searchGeneration.current += 1;
+    };
   }, [loadWatchlist]));
 
   const submitSearch = async () => {
     const clean = query.trim();
     if (!clean) return;
 
+    const requestId = ++searchGeneration.current;
     setSearching(true);
     setMessage('');
     try {
       const nextResults = await searchStocks(clean);
+      if (requestId !== searchGeneration.current) return;
       setResults(nextResults);
       if (nextResults.length === 0) setMessage('검색 결과가 없습니다.');
     } catch {
-      setMessage('종목 검색에 실패했습니다. 서버 연결을 확인해주세요.');
+      if (requestId === searchGeneration.current) {
+        setMessage('종목 검색에 실패했습니다. 서버 연결을 확인해주세요.');
+      }
     } finally {
-      setSearching(false);
+      if (requestId === searchGeneration.current) setSearching(false);
     }
   };
 
@@ -70,8 +87,10 @@ export default function WatchlistScreen() {
     setMessage('');
     try {
       await addWatchlistItem(item);
-      await loadWatchlist();
-      setMessage(`${item.name}을(를) 관심종목에 추가했습니다.`);
+      const refreshed = await loadWatchlist();
+      setMessage(refreshed
+        ? `${item.name}을(를) 관심종목에 추가했습니다.`
+        : `${item.name} 추가는 완료됐지만 목록 새로고침에 실패했습니다.`);
     } catch {
       setMessage('관심종목 추가에 실패했습니다.');
     } finally {
@@ -85,8 +104,10 @@ export default function WatchlistScreen() {
     setMessage('');
     try {
       await removeWatchlistItem(item);
-      await loadWatchlist();
-      setMessage(`${item.name}을(를) 관심종목에서 삭제했습니다.`);
+      const refreshed = await loadWatchlist();
+      setMessage(refreshed
+        ? `${item.name}을(를) 관심종목에서 삭제했습니다.`
+        : `${item.name} 삭제는 완료됐지만 목록 새로고침에 실패했습니다.`);
     } catch {
       setMessage('관심종목 삭제에 실패했습니다.');
     } finally {
