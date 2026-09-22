@@ -19,6 +19,7 @@ export type Quote = {
   currency: 'KRW' | 'USD';
   changePercent: number;
   volumeRatio: number;
+  volume?: number;
   updatedAt: string;
   source: 'naver' | 'sample';
 };
