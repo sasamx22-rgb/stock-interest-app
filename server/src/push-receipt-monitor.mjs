@@ -4,7 +4,7 @@ export class PushReceiptMonitor {
     getReceipts,
     removeToken,
     intervalMs = 5 * 60_000,
-    minimumAgeMs = 60_000,
+    minimumAgeMs = 15 * 60_000,
     maxAgeMs = 24 * 60 * 60_000,
     logger = console,
   }) {
