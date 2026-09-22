@@ -8,6 +8,7 @@ import {
   getAiStatus,
   getAlertSettings,
   getPushStatus,
+  isDemoMode,
   isLiveDataConfigured,
   updateAlertSettings,
 } from '@/lib/market-api';
@@ -145,7 +146,10 @@ export default function SettingsScreen() {
           label="서버 감시 주기"
           value={pushStatus ? `${Math.round(pushStatus.intervalSeconds / 60)}분` : '2분'}
         />
-        <SettingRow label="데이터 연결" value={isLiveDataConfigured() ? '백엔드 연결됨' : '샘플 모드'} />
+        <SettingRow
+          label="데이터 연결"
+          value={isLiveDataConfigured() ? '백엔드 연결됨' : isDemoMode() ? '샘플 모드' : '연결 설정 필요'}
+        />
         <SettingRow label="데이터 출처" value="NAVER 우선" />
         <SettingRow
           label="푸시 감시"
