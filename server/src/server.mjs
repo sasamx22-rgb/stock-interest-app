@@ -6,6 +6,7 @@ import { config } from './config.mjs';
 import { sendExpoPushNotifications } from './expo-push.mjs';
 import { NaverMarketProvider } from './naver-provider.mjs';
 import { PushTokenStore } from './push-token-store.mjs';
+import { ReportStore } from './report-store.mjs';
 import { sampleReports } from './sample.mjs';
 import { SurgePushMonitor } from './surge-push-monitor.mjs';
 import { WatchlistStore } from './watchlist-store.mjs';
@@ -19,6 +20,11 @@ const watchlistStore = new WatchlistStore({
 
 const pushTokenStore = new PushTokenStore({
   filePath: join(config.dataDir, 'push-tokens.json'),
+});
+
+const reportStore = new ReportStore({
+  filePath: join(config.dataDir, 'reports.json'),
+  defaults: sampleReports,
 });
 
 function requireWriteAccess(request) {
@@ -114,8 +120,37 @@ async function handler(request, response) {
     }
 
     if (url.pathname === '/api/reports') {
-      if (request.method !== 'GET') return sendJson(response, 405, { error: 'Method not allowed' });
-      return sendJson(response, 200, sampleReports);
+      if (request.method === 'GET') {
+        return sendJson(response, 200, await reportStore.getAll());
+      }
+
+      if (request.method === 'POST') {
+        requireWriteAccess(request);
+        const report = await reportStore.upsert(await readJsonBody(request, 50_000));
+        return sendJson(response, 201, report);
+      }
+
+      return sendJson(response, 405, { error: 'Method not allowed' });
+    }
+
+    if (url.pathname.startsWith('/api/reports/')) {
+      const id = decodeURIComponent(url.pathname.slice('/api/reports/'.length));
+      if (!id || id.includes('/')) return sendJson(response, 404, { error: 'Not found' });
+
+      if (request.method === 'GET') {
+        const report = await reportStore.getById(id);
+        return report
+          ? sendJson(response, 200, report)
+          : sendJson(response, 404, { error: 'Report not found' });
+      }
+
+      if (request.method === 'DELETE') {
+        requireWriteAccess(request);
+        await reportStore.remove(id);
+        return sendJson(response, 200, { removed: true });
+      }
+
+      return sendJson(response, 405, { error: 'Method not allowed' });
     }
 
     if (url.pathname === '/api/watchlist/items') {
