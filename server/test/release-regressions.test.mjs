@@ -10,6 +10,7 @@ import { sendExpoPushNotifications } from '../src/expo-push.mjs';
 import { NaverMarketProvider, normalizeBasicQuote } from '../src/naver-provider.mjs';
 import { readJsonBody } from '../src/http-body.mjs';
 import { BoundedCache } from '../src/bounded-cache.mjs';
+import { ReportStore } from '../src/report-store.mjs';
 
 test('concurrent read markers survive through two store instances', async () => {
   const directory = await mkdtemp(join(tmpdir(), 'release-review-'));
@@ -100,4 +101,35 @@ test('historical cache keys remain bounded after many distinct symbols', () => {
   assert.equal(cache.size, 3);
   assert.equal(cache.has('stock-0'), false);
   assert.equal(cache.get('stock-99'), 99);
+});
+
+
+test('report library keeps more than 400 entries and preserves an existing PDF link', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'report-library-'));
+  try {
+    const store = new ReportStore({ filePath: join(directory, 'reports.json') });
+    for (let i = 0; i < 405; i++) {
+      await store.upsert({
+        id: `report-${String(i).padStart(3, '0')}`,
+        title: `Report ${i}`,
+        publishedAt: new Date(Date.UTC(2026, 0, 1, 0, i)).toISOString(),
+        type: i % 2 ? 'morning' : 'premarket',
+        summary: 'summary',
+        tickers: [],
+        ...(i === 404 ? { pdfUrl: '/api/reports/report-404/pdf' } : {}),
+      });
+    }
+    assert.equal((await store.getAll()).length, 405);
+    const updated = await store.upsert({
+      id: 'report-404',
+      title: 'Updated report',
+      publishedAt: new Date(Date.UTC(2026, 0, 2)).toISOString(),
+      type: 'morning',
+      summary: 'updated',
+      tickers: [],
+    });
+    assert.equal(updated.pdfUrl, '/api/reports/report-404/pdf');
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
 });
