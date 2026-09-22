@@ -50,10 +50,18 @@ test('HTTP preserves UTF-8 and handles invalid Host without terminating', async 
     });
     assert.equal(response.status, 201);
     assert.ok(response.body.some((item) => item.name === '한글테스트'));
-    const unauthorized = await fetch(`http://127.0.0.1:${port}/api/watchlist`, {
+    const unauthorizedWrite = await fetch(`http://127.0.0.1:${port}/api/watchlist`, {
       method: 'POST', body: '{}',
     });
-    assert.equal(unauthorized.status, 401);
+    assert.equal(unauthorizedWrite.status, 401);
+
+    const unauthorizedRead = await fetch(`http://127.0.0.1:${port}/api/reports`);
+    assert.equal(unauthorizedRead.status, 401);
+
+    const authorizedRead = await fetch(`http://127.0.0.1:${port}/api/reports`, {
+      headers: { 'X-Market-Pulse-Key': 'test-only-key' },
+    });
+    assert.equal(authorizedRead.status, 200);
   } finally {
     if (child.exitCode === null) { const exited = once(child, 'exit'); child.kill('SIGTERM'); await exited; }
     await rm(directory, { recursive: true, force: true });
