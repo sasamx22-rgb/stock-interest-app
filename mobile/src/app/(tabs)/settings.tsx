@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 
@@ -66,6 +66,7 @@ function RuleSelector({
 }
 
 export default function SettingsScreen() {
+  const loadGeneration = useRef(0);
   const [pushStatus, setPushStatus] = useState<PushStatus | null>(null);
   const [aiStatus, setAiStatus] = useState<AiStatus | null>(null);
   const [rule, setRule] = useState<AlertRule>({ changePercent: 5, volumeRatio: 3 });
@@ -73,28 +74,31 @@ export default function SettingsScreen() {
   const [message, setMessage] = useState('');
 
   useFocusEffect(useCallback(() => {
-    let active = true;
+    const requestId = ++loadGeneration.current;
     Promise.all([
       getPushStatus().catch(() => null),
       getAlertSettings(),
       getAiStatus(),
     ])
       .then(([status, currentRule, currentAiStatus]) => {
-        if (!active) return;
+        if (requestId !== loadGeneration.current) return;
         setPushStatus(status);
         setRule(currentRule);
         setAiStatus(currentAiStatus);
       })
       .catch(() => {
-        if (active) setMessage('설정 정보를 불러오지 못했습니다. 서버 연결을 확인해주세요.');
+        if (requestId === loadGeneration.current) {
+          setMessage('설정 정보를 불러오지 못했습니다. 서버 연결을 확인해주세요.');
+        }
       });
 
     return () => {
-      active = false;
+      loadGeneration.current += 1;
     };
   }, []));
 
   const saveRule = async (nextRule: AlertRule) => {
+    loadGeneration.current += 1;
     setSaving(true);
     setMessage('');
     try {
