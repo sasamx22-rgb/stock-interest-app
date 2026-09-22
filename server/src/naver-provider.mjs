@@ -204,8 +204,8 @@ function walkObjects(value, output = []) {
 }
 
 export function normalizePriceHistory(payload) {
-  const seen = new Set();
-  return walkObjects(payload).flatMap((item) => {
+  const byDate = new Map();
+  for (const item of walkObjects(payload)) {
     const date = String(
       item.localDate
       ?? item.bizdate
@@ -223,30 +223,34 @@ export function normalizePriceHistory(payload) {
       ?? item.price;
 
     const price = numberFrom(rawPrice, Number.NaN);
-    if (!date || !Number.isFinite(price)) return [];
+    const dateKey = date.replaceAll('-', '').replaceAll('/', '');
+    if (!/^\d{8}$/.test(dateKey) || !Number.isFinite(price) || price <= 0) continue;
 
-    const key = `${date}:${price}`;
-    if (seen.has(key)) return [];
-    seen.add(key);
+    if (!byDate.has(dateKey)) {
+      byDate.set(dateKey, {
+        date,
+        closePrice: price,
+        changePercent: numberFrom(
+          item.fluctuationsRatio
+          ?? item.changeRate
+          ?? item.changePercent
+          ?? item.prevChangeRate,
+          0,
+        ),
+        volume: numberFrom(
+          item.accumulatedTradingVolume
+          ?? item.tradingVolume
+          ?? item.volume,
+          0,
+        ),
+      });
+    }
+  }
 
-    return [{
-      date,
-      closePrice: price,
-      changePercent: numberFrom(
-        item.fluctuationsRatio
-        ?? item.changeRate
-        ?? item.changePercent
-        ?? item.prevChangeRate,
-        0,
-      ),
-      volume: numberFrom(
-        item.accumulatedTradingVolume
-        ?? item.tradingVolume
-        ?? item.volume,
-        0,
-      ),
-    }];
-  }).slice(0, 30);
+  return [...byDate.entries()]
+    .sort(([a], [b]) => b.localeCompare(a))
+    .slice(0, 30)
+    .map(([, item]) => item);
 }
 
 function newsTitleFrom(item) {
