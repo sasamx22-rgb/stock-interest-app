@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
 
@@ -61,10 +61,12 @@ export default function DashboardScreen() {
   const [loadError, setLoadError] = useState(false);
 
   const refresh = useCallback(async () => {
+    const requestId = ++refreshGeneration.current;
     setLoading(true);
     setLoadError(false);
     try {
       const briefing = await getHomeBriefing();
+      if (requestId !== refreshGeneration.current) return;
       setFocusStocks(briefing.focusStocks);
       setReports(briefing.reports);
       setRule(briefing.alertRule);
@@ -73,14 +75,17 @@ export default function DashboardScreen() {
       setCalendar(briefing.calendar);
       setRefreshedAt(Date.parse(briefing.generatedAt) || Date.now());
     } catch {
-      setLoadError(true);
+      if (requestId === refreshGeneration.current) setLoadError(true);
     } finally {
-      setLoading(false);
+      if (requestId === refreshGeneration.current) setLoading(false);
     }
   }, []);
 
   useFocusEffect(useCallback(() => {
-    refresh();
+    void refresh();
+    return () => {
+      refreshGeneration.current += 1;
+    };
   }, [refresh]));
 
   const alertCount = focusStocks.filter((item) => item.alertEligible).length;
