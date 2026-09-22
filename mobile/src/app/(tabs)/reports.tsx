@@ -4,27 +4,40 @@ import { useFocusEffect, useRouter } from 'expo-router';
 
 import { ScreenShell } from '@/components/screen-shell';
 import { palette, spacing } from '@/constants/market-theme';
-import { getEngagementSummary, getReportPdfUrl, getReports } from '@/lib/market-api';
+import { getReportPdfUrl, getReportReadState, getReports } from '@/lib/market-api';
 import { Report } from '@/types/market';
 
 export default function ReportsScreen() {
   const [reports, setReports] = useState<Report[]>([]);
   const [unreadReportIds, setUnreadReportIds] = useState<string[]>([]);
   const [loadError, setLoadError] = useState(false);
+  const [readStateError, setReadStateError] = useState(false);
   const router = useRouter();
 
   useFocusEffect(useCallback(() => {
     let active = true;
     setLoadError(false);
-    Promise.all([getReports(), getEngagementSummary()])
-      .then(([items, engagement]) => {
-        if (!active) return;
-        setReports(items);
-        setUnreadReportIds(engagement.unreadReportIds);
+    setReadStateError(false);
+
+    getReports()
+      .then((items) => {
+        if (active) setReports(items);
       })
       .catch(() => {
         if (active) setLoadError(true);
       });
+
+    getReportReadState()
+      .then((engagement) => {
+        if (!active) return;
+        setUnreadReportIds(engagement.unreadReportIds);
+      })
+      .catch(() => {
+        if (!active) return;
+        setUnreadReportIds([]);
+        setReadStateError(true);
+      });
+
     return () => {
       active = false;
     };
@@ -36,6 +49,9 @@ export default function ReportsScreen() {
         <Text style={styles.eyebrow}>REPORT LIBRARY</Text>
         <Text style={styles.heading}>보고서 보관함</Text>
         <Text style={styles.description}>08:00 모닝 브리프와 08:50 프리마켓 보고서를 날짜별로 모아봅니다.</Text>
+        {readStateError && !loadError ? (
+          <Text style={styles.stateWarning}>읽음 상태를 확인하지 못해 NEW 표시를 잠시 생략합니다.</Text>
+        ) : null}
       </View>
 
       {loadError ? (
@@ -96,6 +112,7 @@ const styles = StyleSheet.create({
   eyebrow: { color: palette.primary, fontSize: 12, fontWeight: '900', letterSpacing: 1.6 },
   heading: { color: palette.text, fontSize: 30, fontWeight: '900', marginTop: spacing.sm },
   description: { color: palette.textMuted, fontSize: 14, lineHeight: 20, marginTop: spacing.sm },
+  stateWarning: { color: palette.warning, fontSize: 11, lineHeight: 17, marginTop: spacing.sm },
   card: { backgroundColor: palette.surface, borderRadius: 20, padding: spacing.lg, borderColor: palette.border, borderWidth: 1 },
   topRow: { flexDirection: 'row', justifyContent: 'space-between', gap: spacing.md },
   typeRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.xs, flex: 1 },
