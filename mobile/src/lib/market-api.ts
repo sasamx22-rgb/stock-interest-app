@@ -133,6 +133,14 @@ export async function getReports(): Promise<Report[]> {
   }
 }
 
+export async function getReport(id: string): Promise<Report | null> {
+  try {
+    return await request<Report>(`/api/reports/${encodeURIComponent(id)}`);
+  } catch {
+    return sampleReports.find((report) => report.id === id) ?? null;
+  }
+}
+
 export function isLiveDataConfigured() {
   return Boolean(API_BASE_URL);
 }
