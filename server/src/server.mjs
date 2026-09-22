@@ -13,9 +13,11 @@ import { EconomicCalendarProvider } from './economic-calendar-provider.mjs';
 import { buildEngagementSummary, buildWeeklyReview } from './engagement-service.mjs';
 import { EngagementStore } from './engagement-store.mjs';
 import { withFileLock } from './file-storage.mjs';
-import { sendExpoPushNotifications } from './expo-push.mjs';
+import { getExpoPushReceipts, sendExpoPushNotifications } from './expo-push.mjs';
 import { NaverMarketProvider } from './naver-provider.mjs';
 import { OpenAiAnalysisService } from './openai-analysis.mjs';
+import { PushReceiptMonitor } from './push-receipt-monitor.mjs';
+import { PushReceiptStore } from './push-receipt-store.mjs';
 import { PushTokenStore } from './push-token-store.mjs';
 import { ReportPdfStore } from './report-pdf-store.mjs';
 import { ReportStore } from './report-store.mjs';
@@ -53,6 +55,10 @@ const watchlistStore = new WatchlistStore({
 
 const pushTokenStore = new PushTokenStore({
   filePath: join(config.dataDir, 'push-tokens.json'),
+});
+
+const pushReceiptStore = new PushReceiptStore({
+  filePath: join(config.dataDir, 'push-receipts.json'),
 });
 
 const reportStore = new ReportStore({
@@ -200,9 +206,19 @@ async function loadCalendarEvents(days, watchlistItems, now = new Date()) {
 const pushMonitor = new SurgePushMonitor({
   loadAlerts: loadEligibleAlerts,
   getTokens: () => pushTokenStore.getAll(),
-  sendPush: (tokens, alerts) => sendExpoPushNotifications(tokens, alerts),
+  sendPush: async (tokens, alerts) => {
+    const result = await sendExpoPushNotifications(tokens, alerts);
+    if (result.receiptTickets?.length) await pushReceiptStore.add(result.receiptTickets);
+    return result;
+  },
   removeToken: (token) => pushTokenStore.remove(token),
   intervalMs: config.pushIntervalMs,
+});
+
+const pushReceiptMonitor = new PushReceiptMonitor({
+  receiptStore: pushReceiptStore,
+  getReceipts: (ids) => getExpoPushReceipts(ids),
+  removeToken: (token) => pushTokenStore.remove(token),
 });
 
 
@@ -235,6 +251,7 @@ async function handler(request, response) {
         ok: true,
         provider: 'naver',
         pushMonitor: pushMonitor.active ? 'active' : 'inactive',
+        pushReceiptMonitor: pushReceiptMonitor.active ? 'active' : 'inactive',
         registeredDevices: pushTokens.length,
         ai: aiStatus,
       });
@@ -678,11 +695,13 @@ const server = createServer(handler);
 server.listen(config.port, '0.0.0.0', () => {
   console.log(`Market Pulse API listening on http://0.0.0.0:${server.address().port}`);
   pushMonitor.start();
+  pushReceiptMonitor.start();
 });
 
 for (const signal of ['SIGINT', 'SIGTERM']) {
   process.on(signal, () => {
     pushMonitor.stop();
+    pushReceiptMonitor.stop();
     server.close(() => process.exit(0));
   });
 }
