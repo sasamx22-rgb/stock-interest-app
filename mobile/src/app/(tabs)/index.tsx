@@ -6,26 +6,35 @@ import { QuoteRow } from '@/components/quote-row';
 import { ScreenShell } from '@/components/screen-shell';
 import { SectionTitle } from '@/components/section-title';
 import { palette, spacing } from '@/constants/market-theme';
-import { getMovers, getReports, getWatchlist, isLiveDataConfigured } from '@/lib/market-api';
-import { MarketMover, Quote, Report } from '@/types/market';
+import {
+  getAlertSettings,
+  getMovers,
+  getReports,
+  getWatchlist,
+  isLiveDataConfigured,
+} from '@/lib/market-api';
+import { AlertRule, MarketMover, Quote, Report } from '@/types/market';
 
 export default function DashboardScreen() {
   const [watchlist, setWatchlist] = useState<Quote[]>([]);
   const [movers, setMovers] = useState<MarketMover[]>([]);
   const [reports, setReports] = useState<Report[]>([]);
+  const [rule, setRule] = useState<AlertRule>({ changePercent: 5, volumeRatio: 3 });
   const [loading, setLoading] = useState(true);
 
   const refresh = useCallback(async () => {
     setLoading(true);
     try {
-      const [watchlistData, moverData, reportData] = await Promise.all([
+      const [watchlistData, moverData, reportData, alertRule] = await Promise.all([
         getWatchlist(),
         getMovers(),
         getReports(),
+        getAlertSettings(),
       ]);
       setWatchlist(watchlistData);
       setMovers(moverData);
       setReports(reportData);
+      setRule(alertRule);
     } finally {
       setLoading(false);
     }
@@ -50,7 +59,9 @@ export default function DashboardScreen() {
 
       <View style={styles.signalCard}>
         <Text style={styles.signalLabel}>급등 알림 기준</Text>
-        <Text style={styles.signalValue}>+5% · 거래량 3배</Text>
+        <Text style={styles.signalValue}>
+          +{rule.changePercent}% · 거래량 {rule.volumeRatio}배
+        </Text>
         <Text style={styles.signalCaption}>
           현재 {movers.filter((item) => item.alertEligible).length}개 종목이 조건을 충족했습니다.
         </Text>
