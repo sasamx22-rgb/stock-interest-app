@@ -2,7 +2,6 @@ import { atomicWriteFile as writeFile, serializeFileOperations } from './file-st
 import { mkdir, readFile } from 'node:fs/promises';
 import { dirname } from 'node:path';
 
-const MAX_EVENTS = 800;
 const ID_PATTERN = /^[A-Za-z0-9._:-]{1,120}$/;
 const VALID_TYPES = new Set(['macro', 'fomc', 'earnings', 'dividend', 'filing', 'custom']);
 
@@ -63,7 +62,7 @@ export class CalendarEventStore {
         if (!event || seen.has(event.id)) return [];
         seen.add(event.id);
         return [event];
-      })).slice(0, MAX_EVENTS);
+      }));
     } catch (error) {
       if (error?.code === 'ENOENT') return [];
       throw error;
@@ -71,7 +70,7 @@ export class CalendarEventStore {
   }
 
   async save(items) {
-    const normalized = sortEvents(items).slice(0, MAX_EVENTS);
+    const normalized = sortEvents(items);
     await mkdir(dirname(this.filePath), { recursive: true });
     await writeFile(this.filePath, `${JSON.stringify(normalized, null, 2)}\n`, 'utf8');
     return normalized;
