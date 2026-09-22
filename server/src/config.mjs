@@ -24,7 +24,7 @@ const pushIntervalSeconds = Math.max(60, Number(process.env.PUSH_INTERVAL_SECOND
 const aiDailyLimit = Math.max(0, Number(process.env.OPENAI_DAILY_LIMIT ?? 12) || 0);
 
 const apiKey = process.env.MARKET_PULSE_API_KEY?.trim() ?? '';
-const publishKey = process.env.MARKET_PULSE_PUBLISH_KEY?.trim() || apiKey;
+const publishKey = process.env.MARKET_PULSE_PUBLISH_KEY?.trim() ?? '';
 
 export const config = {
   port: Number(process.env.PORT ?? 8787),

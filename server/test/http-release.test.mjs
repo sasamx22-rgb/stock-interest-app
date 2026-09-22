@@ -7,6 +7,24 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { request } from 'node:http';
 
+for (const publisherKey of ['', 'test-only-key']) {
+  test(`production refuses ${publisherKey ? 'identical' : 'missing'} publisher credentials`, async () => {
+    const child = spawn(process.execPath, ['src/server.mjs'], {
+      env: { ...process.env, NODE_ENV: 'production', PORT: '0', MARKET_PULSE_API_KEY: 'test-only-key',
+        MARKET_PULSE_PUBLISH_KEY: publisherKey, OPENAI_API_KEY: '' },
+      stdio: ['ignore', 'ignore', 'pipe'],
+    });
+    let stderr = '';
+    child.stderr.on('data', (data) => { stderr += data; });
+    const killTimer = setTimeout(() => child.kill('SIGTERM'), 3_000);
+    try {
+      const [code] = await once(child, 'exit');
+      assert.equal(code, 1);
+      assert.match(stderr, /distinct MARKET_PULSE_PUBLISH_KEY/);
+    } finally { clearTimeout(killTimer); }
+  });
+}
+
 test('production refuses an empty write key', async () => {
   const child = spawn(process.execPath, ['src/server.mjs'], {
     env: { ...process.env, NODE_ENV: 'production', MARKET_PULSE_API_KEY: '', OPENAI_API_KEY: '' },
@@ -116,6 +134,42 @@ test('HTTP preserves UTF-8 and handles invalid Host without terminating', async 
     const signedPdf = await fetch(`http://127.0.0.1:${port}${link.url}`);
     assert.equal(signedPdf.status, 200);
     assert.equal(signedPdf.headers.get('content-type'), 'application/pdf');
+
+    const health = await fetch(`http://127.0.0.1:${port}/health`);
+    assert.deepEqual(await health.json(), { ok: true });
+    for (const path of ['/api/home/briefing', '/api/ai/status', '/api/engagement/summary',
+      '/api/review/weekly', '/api/reports/signed-pdf-test', '/api/reports/signed-pdf-test/pdf',
+      '/api/reports/signed-pdf-test/pdf-link', '/api/watchlist/items', '/api/watchlist',
+      '/api/stocks/US/NVDA.O', '/api/search?q=NVDA', '/api/calendar', '/api/settings/alerts',
+      '/api/push/status', '/api/alerts', '/api/movers']) {
+      assert.equal((await fetch(`http://127.0.0.1:${port}${path}`)).status, 401, path);
+    }
+    for (const [method, path] of [['POST', '/api/reports/signed-pdf-test/pdf'],
+      ['DELETE', '/api/reports/signed-pdf-test'], ['POST', '/api/calendar']]) {
+      assert.equal((await fetch(`http://127.0.0.1:${port}${path}`, { method,
+        headers: { 'X-Market-Pulse-Key': 'test-only-key' }, body: '{}' })).status, 401, path);
+    }
+    const tampered = new URL(link.url, `http://127.0.0.1:${port}`);
+    tampered.searchParams.set('signature', 'é'.repeat(64));
+    assert.equal((await fetch(tampered)).status, 401);
+    tampered.searchParams.set('expires', '1');
+    assert.equal((await fetch(tampered)).status, 401);
+    const wrongPath = link.url.replace('signed-pdf-test/pdf?', 'another-report/pdf?');
+    assert.equal((await fetch(`http://127.0.0.1:${port}${wrongPath}`)).status, 401);
+    const writeWithSignature = await fetch(`http://127.0.0.1:${port}${link.url}`, { method: 'POST', body: '%PDF-' });
+    assert.equal(writeWithSignature.status, 401);
+    assert.equal((await fetch(`http://127.0.0.1:${port}${link.url}`)).status, 200, 'signed URLs are reusable within their TTL');
+
+    // XFF is attacker controlled without an explicitly verified proxy boundary.
+    let limited = false;
+    for (let i = 0; i < 245; i++) {
+      const res = await fetch(`http://127.0.0.1:${port}/api/watchlist/items`, {
+        headers: { 'X-Market-Pulse-Key': 'test-only-key', 'X-Forwarded-For': `198.51.100.${i}` },
+      });
+      await res.arrayBuffer();
+      if (res.status === 429) { limited = true; break; }
+    }
+    assert.equal(limited, true);
   } finally {
     if (child.exitCode === null) { const exited = once(child, 'exit'); child.kill('SIGTERM'); await exited; }
     await rm(directory, { recursive: true, force: true });

@@ -7,12 +7,23 @@ const queues = new Map();
 const context = new AsyncLocalStorage();
 
 // One Node process only. Multiple replicas must use a transactional database.
+// Nested operations on one held file must be awaited sequentially, not forked.
 export function withFileLock(filePath, operation) {
   const key = resolve(filePath);
   const held = context.getStore();
-  if (held?.has(key)) return operation();
+  if (held?.get(key)?.active) return operation();
   const previous = queues.get(key) ?? Promise.resolve();
-  const next = previous.then(() => context.run(new Set([...(held ?? []), key]), operation));
+  const next = previous.then(async () => {
+    const lease = { active: true };
+    const inherited = new Map(held ?? []);
+    inherited.set(key, lease);
+    try {
+      return await context.run(inherited, operation);
+    } finally {
+      // Async descendants retain their context, but not ownership after return.
+      lease.active = false;
+    }
+  });
   const settled = next.then(() => undefined, () => undefined);
   queues.set(key, settled);
   void settled.then(() => {

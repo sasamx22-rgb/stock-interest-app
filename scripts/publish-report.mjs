@@ -12,10 +12,9 @@ function usage() {
 
 const [, , jsonArg, pdfArg] = process.argv;
 const baseUrl = process.env.MARKET_PULSE_URL?.replace(/\/$/, '');
-const apiKey = process.env.MARKET_PULSE_PUBLISH_KEY?.trim()
-  || process.env.MARKET_PULSE_API_KEY?.trim();
+const apiKey = process.env.MARKET_PULSE_PUBLISH_KEY?.trim();
 
-if (!jsonArg || !baseUrl) {
+if (!jsonArg || !baseUrl || !apiKey) {
   usage();
   process.exit(1);
 }
