@@ -182,7 +182,7 @@ JSON 형식은 `examples/report-template.json`을 기준으로 사용합니다. 
 
 ## 보고서 자동 저장 API
 
-08:00/08:50 보고서 생성기가 Market Pulse 서버에 결과를 넣을 수 있도록 저장 API가 준비되어 있습니다. 가능하면 앱용 `MARKET_PULSE_API_KEY`와 별도로 `MARKET_PULSE_PUBLISH_KEY`를 설정하고, 보고서 게시·PDF 업로드·삭제에는 게시키를 사용합니다.
+08:00/08:50 보고서 생성기가 Market Pulse 서버에 결과를 넣을 수 있도록 저장 API가 준비되어 있습니다. production에서는 앱용 `MARKET_PULSE_API_KEY`와 **서로 다른** `MARKET_PULSE_PUBLISH_KEY`를 반드시 설정하고, 보고서 게시·PDF 업로드·삭제에는 게시키를 사용합니다.
 
 ### 1. 앱용 요약 저장
 
@@ -236,7 +236,7 @@ JSON 형식은 `examples/report-template.json`을 기준으로 사용합니다. 
 로컬 개발에서는 API 키 없이 실행할 수 있지만, `NODE_ENV=production`에서는 `MARKET_PULSE_API_KEY`가 반드시 필요합니다.
 
 - 앱 접근키: 서버 `MARKET_PULSE_API_KEY=<긴 임의 문자열>` / 모바일 `EXPO_PUBLIC_API_KEY=<같은 값>`
-- 게시 관리자키: 서버 `MARKET_PULSE_PUBLISH_KEY=<별도의 긴 임의 문자열>` 권장
+- 게시 관리자키: 서버 `MARKET_PULSE_PUBLISH_KEY=<앱 키와 다른 긴 임의 문자열>` — production 필수
 - production의 `/api/*` 읽기·쓰기 요청은 인증을 요구합니다.
 - 보고서 게시·PDF 업로드·보고서 삭제·수동 일정 등록은 게시 관리자키를 사용합니다.
 - PDF 원문은 앱이 인증된 API로 5분짜리 서명 URL을 발급받은 뒤 브라우저/뷰어로 엽니다.
@@ -260,7 +260,7 @@ docker compose up --build
 - 컨테이너 포트: `PORT` 환경변수 또는 기본 `8787`
 - 영구 볼륨: `/data`에 마운트
 - `MARKET_PULSE_API_KEY`: 충분히 긴 임의 문자열
-- `MARKET_PULSE_PUBLISH_KEY`: 앱 키와 다른 긴 임의 문자열 권장
+- `MARKET_PULSE_PUBLISH_KEY`: 앱 키와 다른 긴 임의 문자열. production에서는 필수
 - `PUSH_INTERVAL_SECONDS`: 기본 120
 - 모바일 APK의 `EXPO_PUBLIC_API_BASE_URL`: 배포된 HTTPS 서버 주소
 - 모바일 APK의 `EXPO_PUBLIC_API_KEY`: 서버와 동일한 API 키
@@ -314,7 +314,7 @@ npx eas-cli@latest build --platform android --profile preview
 - `PORT`: 기본값 `8787`
 - `DATA_DIR`: 관심종목/푸시 토큰 영구 저장 디렉터리. 미지정 시 `server/data`
 - `MARKET_PULSE_API_KEY`: production 앱 API 접근키. production에서는 필수
-- `MARKET_PULSE_PUBLISH_KEY`: 보고서 게시·PDF 업로드·삭제·수동 일정 등록용 별도 관리자키. 미설정 시 앱 키를 호환용으로 사용
+- `MARKET_PULSE_PUBLISH_KEY`: 보고서 게시·PDF 업로드·삭제·수동 일정 등록용 별도 관리자키. production에서는 필수이며 `MARKET_PULSE_API_KEY`와 같은 값이면 서버 시작을 거부
 - `WATCHLIST`: 최초 실행 시 사용할 관심종목. `KR:005930:삼성전자,US:NVDA.O:NVIDIA` 형식
 - `NAVER_KR_MOVERS_URL`: 기본 국내 급등 후보 URL을 바꾸고 싶을 때 지정
 - `NAVER_US_MOVERS_URL`: 기본 미국 급등 후보 URL을 바꾸고 싶을 때 지정
