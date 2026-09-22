@@ -5,6 +5,8 @@
 ## 현재 구현 범위
 
 - 한국·미국 관심 종목 대시보드
+- 앱에서 네이버 종목 검색 후 관심종목 추가·삭제
+- 관심종목 서버 로컬 JSON 영구 저장
 - 상승률 5% + 거래량 3배 알림 조건 표시
 - 한국/미국 급등 종목 화면
 - PDF 원문과 앱용 요약을 위한 보고서 보관함
@@ -21,6 +23,18 @@ server/  Node.js API + 교체 가능한 NaverMarketProvider
 ```
 
 앱은 `EXPO_PUBLIC_API_BASE_URL`이 없거나 서버 연결에 실패하면 샘플 데이터로 실행됩니다. 서버와 연결하면 API 응답을 사용합니다.
+
+## 관심종목 관리
+
+앱의 **관심** 탭에서 한국·미국 종목을 검색하고 추가/삭제할 수 있습니다.
+
+- 검색: 네이버 공개 종목 자동완성 응답 사용
+- 저장 위치: `server/data/watchlist.json`
+- 최초 실행: `WATCHLIST` 환경변수 값을 초기 관심종목으로 사용
+- 이후 변경: 앱에서 추가·삭제한 상태를 JSON에 저장
+- `server/data/`는 Git에서 제외되어 개인 관심종목이 저장소에 올라가지 않습니다.
+
+시세 조회가 일시 실패해도 저장된 관심종목 자체는 유지됩니다. 홈 화면에는 현재 시세 조회에 성공한 항목이 표시됩니다.
 
 ## 네이버 데이터 연결
 
@@ -64,7 +78,7 @@ npx eas-cli@latest build --platform android --profile preview
 서버는 아래 환경변수를 선택적으로 사용합니다.
 
 - `PORT`: 기본값 `8787`
-- `WATCHLIST`: `KR:005930:삼성전자,US:NVDA.O:NVIDIA` 형식
+- `WATCHLIST`: 최초 실행 시 사용할 관심종목. `KR:005930:삼성전자,US:NVDA.O:NVIDIA` 형식
 - `NAVER_KR_MOVERS_URL`: 기본 국내 급등 후보 URL을 바꾸고 싶을 때 지정
 - `NAVER_US_MOVERS_URL`: 기본 미국 급등 후보 URL을 바꾸고 싶을 때 지정
 
