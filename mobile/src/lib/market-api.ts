@@ -1,5 +1,6 @@
 import { sampleMovers, sampleReports, sampleWatchlist } from '@/data/sample-data';
 import {
+  AiStatus,
   AlertRule,
   CalendarEvent,
   EngagementSummary,
@@ -44,6 +45,33 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
   }
 
   return response.json() as Promise<T>;
+}
+
+export async function getAiStatus(): Promise<AiStatus> {
+  try {
+    return await request<AiStatus>('/api/ai/status');
+  } catch {
+    return {
+      enabled: false,
+      model: 'gpt-5.6-terra',
+      callsToday: 0,
+      dailyLimit: 0,
+    };
+  }
+}
+
+export async function generateAiReport(
+  type: 'morning' | 'premarket',
+  force = false,
+): Promise<Report | null> {
+  try {
+    return resolveReportLinks(await request<Report>('/api/ai/reports/generate', {
+      method: 'POST',
+      body: JSON.stringify({ type, force }),
+    }));
+  } catch {
+    return null;
+  }
 }
 
 export async function getEngagementSummary(): Promise<EngagementSummary> {
