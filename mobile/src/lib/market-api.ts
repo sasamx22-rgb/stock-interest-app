@@ -2,6 +2,7 @@ import { sampleMovers, sampleReports, sampleWatchlist } from '@/data/sample-data
 import {
   AlertRule,
   CalendarEvent,
+  EngagementSummary,
   Market,
   MarketMover,
   Quote,
@@ -12,6 +13,7 @@ import {
   StockSearchResult,
   TodayFocusStock,
   WatchlistItem,
+  WeeklyReview,
 } from '@/types/market';
 
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL?.replace(/\/$/, '');
@@ -42,6 +44,44 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
   }
 
   return response.json() as Promise<T>;
+}
+
+export async function getEngagementSummary(): Promise<EngagementSummary> {
+  try {
+    return await request<EngagementSummary>('/api/engagement/summary');
+  } catch {
+    return { unreadReportIds: [], unreadReportCount: 0, dailyPicks: [] };
+  }
+}
+
+export async function getWeeklyReview(): Promise<WeeklyReview | null> {
+  try {
+    return await request<WeeklyReview>('/api/review/weekly');
+  } catch {
+    return null;
+  }
+}
+
+export async function markReportRead(id: string): Promise<void> {
+  try {
+    await request('/api/reports/' + encodeURIComponent(id) + '/read', {
+      method: 'POST',
+      body: '{}',
+    });
+  } catch {}
+}
+
+export async function recordStockView(item: {
+  market: Market;
+  code: string;
+  name: string;
+}): Promise<void> {
+  try {
+    await request('/api/activity/stock-view', {
+      method: 'POST',
+      body: JSON.stringify(item),
+    });
+  } catch {}
 }
 
 export async function getCalendarEvents(days = 14): Promise<CalendarEvent[]> {
