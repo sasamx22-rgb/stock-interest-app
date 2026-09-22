@@ -1,7 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { NaverMarketProvider, normalizeBasicQuote, normalizeRankingPayload } from '../src/naver-provider.mjs';
+import {
+  NaverMarketProvider,
+  normalizeBasicQuote,
+  normalizeRankingPayload,
+  normalizeSearchPayload,
+} from '../src/naver-provider.mjs';
 
 test('normalizes a Korean Naver quote', () => {
   const quote = normalizeBasicQuote({
@@ -62,6 +67,21 @@ test('supports current Naver ranking field names', () => {
   assert.equal(result[0].volumeRatio, 3.41);
 });
 
+test('normalizes Korean and US autocomplete results only', () => {
+  const result = normalizeSearchPayload({
+    data: [
+      { itemCode: '005930', itemName: '삼성전자', nationType: 'KOR' },
+      { itemCode: 'NVDA', reutersCode: 'NVDA.O', stockName: 'NVIDIA', nationType: 'USA' },
+      { itemCode: '7203', itemName: 'Toyota', nationType: 'JPN' },
+    ],
+  });
+
+  assert.deepEqual(result, [
+    { market: 'KR', code: '005930', symbol: '005930', name: '삼성전자' },
+    { market: 'US', code: 'NVDA.O', symbol: 'NVDA', name: 'NVIDIA' },
+  ]);
+});
+
 test('uses the foreign-stock basic endpoint for US watchlist quotes', async () => {
   const calls = [];
   const provider = new NaverMarketProvider({
@@ -85,4 +105,28 @@ test('uses the foreign-stock basic endpoint for US watchlist quotes', async () =
   assert.equal(calls[0].options.headers.Referer, 'https://stock.naver.com/');
   assert.equal(quote.market, 'US');
   assert.equal(quote.name, 'NVIDIA');
+});
+
+test('uses Naver public stock autocomplete for watchlist search', async () => {
+  const calls = [];
+  const provider = new NaverMarketProvider({
+    fetchImpl: async (url) => {
+      calls.push(url);
+      return {
+        ok: true,
+        json: async () => ({
+          data: [{ itemCode: '005930', itemName: '삼성전자', nationType: 'KOR' }],
+        }),
+      };
+    },
+  });
+
+  const result = await provider.searchStocks('삼성전자');
+
+  assert.equal(calls.length, 1);
+  assert.equal(
+    calls[0],
+    'https://stock.naver.com/api/autocomplete/search/autoComplete?query=%EC%82%BC%EC%84%B1%EC%A0%84%EC%9E%90&target=stock',
+  );
+  assert.equal(result[0].code, '005930');
 });
