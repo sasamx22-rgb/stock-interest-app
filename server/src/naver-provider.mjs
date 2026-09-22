@@ -93,6 +93,12 @@ export function normalizeBasicQuote(payload, requestedCode, fallbackName = reque
       ?? source.volumeIncreaseRate,
       1,
     ),
+    volume: numberFrom(
+      source.accumulatedTradingVolume
+      ?? source.tradingVolume
+      ?? source.volume,
+      0,
+    ),
     updatedAt: source.localTradedAt ?? source.updatedAt ?? source.tradeTime ?? new Date().toISOString(),
     source: 'naver',
   };
@@ -302,6 +308,7 @@ export class NaverMarketProvider {
     this.fetchImpl = fetchImpl;
     this.timeoutMs = timeoutMs;
     this.moverCache = new Map();
+    this.priceHistoryCache = new Map();
   }
 
   async fetchJson(url) {
@@ -342,11 +349,61 @@ export class NaverMarketProvider {
   }
 
   async priceHistory(naverCode, market = marketFromCode(naverCode)) {
+    const cacheKey = `${market}:${naverCode}`;
+    const now = Date.now();
+    const cached = this.priceHistoryCache.get(cacheKey);
+    if (cached && now - cached.fetchedAt < 90_000) {
+      return cached.items;
+    }
+
     const url = market === 'KR'
       ? `https://stock.naver.com/api/stockSecurity/items/v2/domestic/${encodeURIComponent(naverCode)}/daily-prices?size=30`
       : `https://stock.naver.com/api/securityService/stock/${encodeURIComponent(naverCode)}/price?page=1&pageSize=30`;
 
-    return normalizePriceHistory(await this.fetchJson(url));
+    const items = normalizePriceHistory(await this.fetchJson(url));
+    this.priceHistoryCache.set(cacheKey, { fetchedAt: now, items });
+    return items;
+  }
+
+  async enrichVolumeRatios(quotes) {
+    const targets = quotes
+      .map((quote, index) => ({ quote, index }))
+      .filter(({ quote }) => quote.changePercent >= 5 && quote.volumeRatio < 3)
+      .slice(0, 20);
+
+    if (targets.length === 0) return quotes;
+
+    const enriched = [...quotes];
+    const settled = await Promise.allSettled(
+      targets.map(({ quote }) => this.priceHistory(quote.naverCode, quote.market)),
+    );
+
+    settled.forEach((result, targetIndex) => {
+      if (result.status !== 'fulfilled') return;
+
+      const { quote, index } = targets[targetIndex];
+      const rows = result.value.filter((item) => item.volume > 0);
+      if (rows.length < 3) return;
+
+      const currentVolume = quote.volume > 0 ? quote.volume : rows[0].volume;
+      if (!(currentVolume > 0)) return;
+
+      const baselineRows = quote.volume > 0 ? rows.slice(0, 20) : rows.slice(1, 21);
+      if (baselineRows.length < 2) return;
+
+      const averageVolume = baselineRows.reduce((sum, item) => sum + item.volume, 0) / baselineRows.length;
+      if (!(averageVolume > 0)) return;
+
+      const estimatedRatio = currentVolume / averageVolume;
+      if (!Number.isFinite(estimatedRatio) || estimatedRatio <= 0) return;
+
+      enriched[index] = {
+        ...quote,
+        volumeRatio: Math.max(quote.volumeRatio, estimatedRatio),
+      };
+    });
+
+    return enriched;
   }
 
   async news(naverCode, market = marketFromCode(naverCode)) {
