@@ -103,7 +103,8 @@ export async function getHomeBriefing(): Promise<HomeBriefing> {
 export async function getAiStatus(): Promise<AiStatus> {
   try {
     return await request<AiStatus>('/api/ai/status');
-  } catch {
+  } catch (error) {
+    if (!DEMO_MODE) throw error;
     return {
       enabled: false,
       model: 'gpt-5.6-terra',
@@ -116,7 +117,8 @@ export async function getAiStatus(): Promise<AiStatus> {
 export async function getEngagementSummary(): Promise<EngagementSummary> {
   try {
     return await request<EngagementSummary>('/api/engagement/summary');
-  } catch {
+  } catch (error) {
+    if (!DEMO_MODE) throw error;
     return { unreadReportIds: [], unreadReportCount: 0, dailyPicks: [] };
   }
 }
@@ -124,7 +126,8 @@ export async function getEngagementSummary(): Promise<EngagementSummary> {
 export async function getWeeklyReview(): Promise<WeeklyReview | null> {
   try {
     return await request<WeeklyReview>('/api/review/weekly');
-  } catch {
+  } catch (error) {
+    if (!DEMO_MODE) throw error;
     return null;
   }
 }
@@ -276,7 +279,8 @@ export async function getPushStatus(): Promise<PushStatus> {
 export async function getAlertSettings(): Promise<AlertRule> {
   try {
     return await request<AlertRule>('/api/settings/alerts');
-  } catch {
+  } catch (error) {
+    if (!DEMO_MODE) throw error;
     return { changePercent: 5, volumeRatio: 3 };
   }
 }
