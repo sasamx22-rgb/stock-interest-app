@@ -95,6 +95,10 @@ export async function removeWatchlistItem(
   );
 }
 
+export async function getLiveAlerts(): Promise<MarketMover[]> {
+  return request<MarketMover[]>('/api/alerts');
+}
+
 export async function getMovers(market?: Market): Promise<MarketMover[]> {
   try {
     const query = market ? `?market=${market}` : '';
