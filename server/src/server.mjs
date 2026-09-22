@@ -43,6 +43,18 @@ async function readJsonBody(request, maxBytes = 10_000) {
   }
 }
 
+async function loadMarketMovers(markets) {
+  const quotes = (await Promise.all(
+    markets.map((value) => provider.movers(value, config.moverUrls[value])),
+  )).flat();
+
+  return quotes.map((quote) => ({
+    ...quote,
+    alertEligible: isAlertEligible(quote),
+    reason: describeAlert(quote),
+  }));
+}
+
 async function handler(request, response) {
   const url = new URL(request.url ?? '/', `http://${request.headers.host ?? 'localhost'}`);
 
@@ -104,20 +116,22 @@ async function handler(request, response) {
       return sendJson(response, 200, await provider.searchStocks(query));
     }
 
+    if (url.pathname === '/api/alerts') {
+      if (request.method !== 'GET') return sendJson(response, 405, { error: 'Method not allowed' });
+
+      const movers = await loadMarketMovers(['KR', 'US']);
+      const alerts = movers
+        .filter((item) => item.alertEligible)
+        .sort((a, b) => b.changePercent - a.changePercent);
+      return sendJson(response, 200, alerts);
+    }
+
     if (url.pathname === '/api/movers') {
       if (request.method !== 'GET') return sendJson(response, 405, { error: 'Method not allowed' });
 
       const market = url.searchParams.get('market');
       const markets = market && ['KR', 'US'].includes(market) ? [market] : ['KR', 'US'];
-      const quotes = (await Promise.all(
-        markets.map((value) => provider.movers(value, config.moverUrls[value])),
-      )).flat();
-      const movers = quotes.map((quote) => ({
-        ...quote,
-        alertEligible: isAlertEligible(quote),
-        reason: describeAlert(quote),
-      }));
-      return sendJson(response, 200, movers);
+      return sendJson(response, 200, await loadMarketMovers(markets));
     }
 
     return sendJson(response, 404, { error: 'Not found' });
