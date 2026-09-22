@@ -6,6 +6,7 @@ import { AlertSettingsStore } from './alert-settings-store.mjs';
 import { CalendarEventStore } from './calendar-event-store.mjs';
 import { describeAlert, isAlertEligible } from './alerts.mjs';
 import { config } from './config.mjs';
+import { buildDailyPicks } from './daily-picks.mjs';
 import { DailyReportScheduler } from './daily-report-scheduler.mjs';
 import { EconomicCalendarProvider } from './economic-calendar-provider.mjs';
 import { buildEngagementSummary, buildWeeklyReview } from './engagement-service.mjs';
@@ -313,6 +314,11 @@ async function handler(request, response) {
         }),
         loadCalendarEvents(7, watchlistItems, now),
       ]);
+      const dailyPicks = await buildDailyPicks({
+        provider,
+        focusStocks,
+        calendarEvents,
+      });
 
       return sendJson(response, 200, {
         generatedAt: now.toISOString(),
@@ -322,6 +328,7 @@ async function handler(request, response) {
           reports,
           engagement,
           focusStocks,
+          dailyPicks,
         }),
         weeklyReview: buildWeeklyReview({
           engagement,
