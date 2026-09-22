@@ -1,4 +1,5 @@
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { atomicWriteFile as writeFile, serializeFileOperations } from './file-storage.mjs';
+import { mkdir, readFile } from 'node:fs/promises';
 import { dirname } from 'node:path';
 
 const MAX_EVENTS = 800;
@@ -48,6 +49,7 @@ function sortEvents(items) {
 export class CalendarEventStore {
   constructor({ filePath }) {
     this.filePath = filePath;
+    serializeFileOperations(this, ['getAll', 'save', 'upsert']);
   }
 
   async getAll() {

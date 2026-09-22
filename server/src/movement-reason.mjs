@@ -95,7 +95,8 @@ export function summarizeMovementReason(quote, news = [], events = []) {
     }
   }
 
-  const representativeEvent = eventEvidence.find((item) => item.category?.id === dominant?.id);
+  const representativeEvent = eventEvidence.find((item) => item.category?.id === dominant?.id)
+    ?? (usable.length === 0 ? eventEvidence[0] : undefined);
   const representativeNews = usable.find((item) => item.category?.id === dominant?.id) ?? usable[0];
   const representative = representativeEvent ?? representativeNews;
   const categoryLabel = dominant?.count

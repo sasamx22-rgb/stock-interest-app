@@ -1,4 +1,5 @@
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { atomicWriteFile as writeFile, serializeFileOperations } from './file-storage.mjs';
+import { mkdir, readFile } from 'node:fs/promises';
 import { dirname } from 'node:path';
 
 const MAX_REPORTS = 400;
@@ -69,6 +70,7 @@ function sortReports(items) {
 export class ReportStore {
   constructor({ filePath, defaults = [] }) {
     this.filePath = filePath;
+    serializeFileOperations(this, ['getAll', 'save', 'getById', 'upsert', 'remove']);
     this.defaults = defaults.flatMap((item) => {
       const report = normalizeReport(item);
       return report ? [report] : [];

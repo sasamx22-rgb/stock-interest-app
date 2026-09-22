@@ -1,4 +1,5 @@
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { atomicWriteFile as writeFile, serializeFileOperations } from './file-storage.mjs';
+import { mkdir, readFile } from 'node:fs/promises';
 import { dirname } from 'node:path';
 
 import { DEFAULT_ALERT_RULE } from './alerts.mjs';
@@ -32,6 +33,7 @@ export function normalizeAlertRule(value, fallback = DEFAULT_ALERT_RULE) {
 export class AlertSettingsStore {
   constructor({ filePath, defaults = DEFAULT_ALERT_RULE }) {
     this.filePath = filePath;
+    serializeFileOperations(this, ['get', 'save', 'update']);
     this.defaults = normalizeAlertRule(defaults, DEFAULT_ALERT_RULE);
   }
 

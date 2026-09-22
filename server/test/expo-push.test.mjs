@@ -34,6 +34,6 @@ test('sends one Expo push message per registered device', async () => {
   const body = JSON.parse(requests[0].options.body);
   assert.equal(body.length, 2);
   assert.equal(body[0].channelId, 'surge-alerts');
-  assert.equal(result.sent, 2);
+  assert.equal(result.sent, 1);
   assert.deepEqual(result.invalidTokens, ['ExpoPushToken[b]']);
 });

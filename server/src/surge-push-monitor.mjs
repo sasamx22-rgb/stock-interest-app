@@ -34,15 +34,16 @@ export class SurgePushMonitor {
       const newAlerts = alerts.filter(
         (item) => !this.previousEligible.has(`${item.market}:${item.symbol}`),
       );
-      this.previousEligible = current;
 
       if (newAlerts.length === 0) {
+        this.previousEligible = current;
         return { baseline: false, newAlerts: 0, sent: 0 };
       }
 
       const tokenItems = await this.getTokens();
       const tokens = tokenItems.map((item) => item.token);
       if (tokens.length === 0) {
+        this.previousEligible = current;
         return { baseline: false, newAlerts: newAlerts.length, sent: 0 };
       }
 
@@ -50,6 +51,9 @@ export class SurgePushMonitor {
       for (const token of result.invalidTokens ?? []) {
         await this.removeToken(token);
       }
+
+      // Retain the previous baseline on total rejection so the next poll retries.
+      if ((result.sent ?? 0) > 0) this.previousEligible = current;
 
       return {
         baseline: false,
