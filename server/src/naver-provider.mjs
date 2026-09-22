@@ -136,6 +136,15 @@ export function normalizeBasicQuote(payload, requestedCode, fallbackName = reque
   };
 }
 
+function hasNonEmptyArray(value) {
+  if (!value || typeof value !== 'object') return false;
+  if (Array.isArray(value)) {
+    if (value.length > 0) return true;
+    return false;
+  }
+  return Object.values(value).some((child) => hasNonEmptyArray(child));
+}
+
 function walkForStockObjects(value, output = []) {
   if (!value || typeof value !== 'object') return output;
   if (Array.isArray(value)) {
@@ -551,7 +560,11 @@ export class NaverMarketProvider {
         || payload.status === 'error'
       )
     );
-    if (errorShaped || (candidateObjects.length > 0 && items.length === 0)) {
+    const schemaMismatch = items.length === 0 && (
+      candidateObjects.length > 0
+      || hasNonEmptyArray(payload)
+    );
+    if (errorShaped || schemaMismatch) {
       throw new Error(`Naver ${market} ranking response could not be normalized`);
     }
     this.moverCache.set(url, { fetchedAt: now, items });
