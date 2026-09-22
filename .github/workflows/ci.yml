@@ -35,3 +35,6 @@ jobs:
 
       - name: Mobile lint
         run: npm run lint
+
+      - name: Docker build
+        run: docker build -t market-pulse-server .
