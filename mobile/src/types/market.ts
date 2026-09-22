@@ -80,9 +80,25 @@ export type StockNews = {
   url?: string;
 };
 
+export type MovementReasonEvidence = {
+  type: 'news' | 'earnings' | 'filing' | 'calendar';
+  title: string;
+  publisher?: string;
+  url?: string;
+};
+
+export type MovementReason = {
+  category: string;
+  label: string;
+  summary: string;
+  confidence: 'low' | 'medium' | 'high';
+  evidence: MovementReasonEvidence[];
+};
+
 export type StockDetail = {
   quote: Quote;
   prices: PricePoint[];
   news: StockNews[];
+  movementReason?: MovementReason;
   source: 'naver' | 'sample';
 };
