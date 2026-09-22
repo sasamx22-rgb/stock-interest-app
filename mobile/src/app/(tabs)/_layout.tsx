@@ -19,11 +19,15 @@ export default function TabLayout() {
           paddingTop: 8,
           paddingBottom: 8,
         },
-        tabBarLabelStyle: { fontSize: 11, fontWeight: '700' },
+        tabBarLabelStyle: { fontSize: 10, fontWeight: '700' },
       }}>
       <Tabs.Screen
         name="index"
         options={{ title: '홈', tabBarIcon: ({ color }) => icon('⌂', color) }}
+      />
+      <Tabs.Screen
+        name="watchlist"
+        options={{ title: '관심', tabBarIcon: ({ color }) => icon('☆', color) }}
       />
       <Tabs.Screen
         name="movers"
