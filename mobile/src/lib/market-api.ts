@@ -104,20 +104,6 @@ export async function getAiStatus(): Promise<AiStatus> {
   }
 }
 
-export async function generateAiReport(
-  type: 'morning' | 'premarket',
-  force = false,
-): Promise<Report | null> {
-  try {
-    return resolveReportLinks(await request<Report>('/api/ai/reports/generate', {
-      method: 'POST',
-      body: JSON.stringify({ type, force }),
-    }));
-  } catch {
-    return null;
-  }
-}
-
 export async function getEngagementSummary(): Promise<EngagementSummary> {
   try {
     return await request<EngagementSummary>('/api/engagement/summary');
