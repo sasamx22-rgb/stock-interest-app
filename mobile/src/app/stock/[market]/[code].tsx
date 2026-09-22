@@ -145,6 +145,20 @@ export default function StockDetailScreen() {
             </Text>
           </View>
 
+          {detail.availability?.prices === 'unavailable' || detail.availability?.news === 'unavailable' ? (
+            <View style={styles.partialNotice}>
+              <Text style={styles.partialNoticeText}>
+                현재가는 조회됐지만 일부 보조 데이터
+                {detail.availability?.prices === 'unavailable' && detail.availability?.news === 'unavailable'
+                  ? '(일별 시세·뉴스)'
+                  : detail.availability?.prices === 'unavailable'
+                    ? '(일별 시세)'
+                    : '(뉴스)'}
+                를 불러오지 못했습니다.
+              </Text>
+            </View>
+          ) : null}
+
           <View style={styles.metricsRow}>
             <View style={styles.metricCard}>
               <Text style={styles.metricLabel}>거래량 배수</Text>
@@ -201,7 +215,11 @@ export default function StockDetailScreen() {
               <Text style={styles.sectionCaption}>최대 7개</Text>
             </View>
             {detail.prices.length === 0 ? (
-              <Text style={styles.emptyInline}>일별 시세를 가져오지 못했습니다.</Text>
+              <Text style={styles.emptyInline}>
+                {detail.availability?.prices === 'unavailable'
+                  ? '일별 시세 연결에 실패했습니다.'
+                  : '표시할 일별 시세가 없습니다.'}
+              </Text>
             ) : detail.prices.slice(0, 7).map((point) => (
               <View key={`${point.date}-${point.closePrice}`} style={styles.priceRow}>
                 <Text style={styles.rowDate}>{displayDate(point.date)}</Text>
@@ -223,7 +241,11 @@ export default function StockDetailScreen() {
               <Text style={styles.sectionCaption}>{detail.news.length}개</Text>
             </View>
             {detail.news.length === 0 ? (
-              <Text style={styles.emptyInline}>최근 뉴스를 가져오지 못했습니다.</Text>
+              <Text style={styles.emptyInline}>
+                {detail.availability?.news === 'unavailable'
+                  ? '뉴스 연결에 실패했습니다.'
+                  : '표시할 최근 뉴스가 없습니다.'}
+              </Text>
             ) : detail.news.slice(0, 8).map((item, index) => (
               <Pressable
                 key={`${index}-${item.title}`}
@@ -270,6 +292,13 @@ const styles = StyleSheet.create({
   symbol: { color: palette.textMuted, fontSize: 13, marginTop: spacing.xs },
   price: { color: palette.text, fontSize: 31, fontWeight: '900', marginTop: spacing.lg },
   change: { fontSize: 16, fontWeight: '900', marginTop: spacing.xs },
+  partialNotice: {
+    backgroundColor: '#3A321C',
+    borderRadius: 14,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
+  },
+  partialNoticeText: { color: palette.warning, fontSize: 11, lineHeight: 17 },
   metricsRow: { flexDirection: 'row', gap: spacing.md },
   metricCard: {
     flex: 1,
