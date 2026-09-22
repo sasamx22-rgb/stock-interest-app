@@ -23,7 +23,7 @@ test('HTTP preserves UTF-8 and handles invalid Host without terminating', async 
   const directory = await mkdtemp(join(tmpdir(), 'market-http-'));
   const child = spawn(process.execPath, ['src/server.mjs'], {
     env: { ...process.env, NODE_ENV: 'production', PORT: '0', DATA_DIR: directory,
-      MARKET_PULSE_API_KEY: 'test-only-key', OPENAI_API_KEY: '',
+      MARKET_PULSE_API_KEY: 'test-only-key', MARKET_PULSE_PUBLISH_KEY: 'publisher-key', OPENAI_API_KEY: '',
       NAVER_KR_MOVERS_URL: 'http://127.0.0.1:9', NAVER_US_MOVERS_URL: 'http://127.0.0.1:9' },
     stdio: ['ignore', 'pipe', 'ignore'],
   });
@@ -63,11 +63,28 @@ test('HTTP preserves UTF-8 and handles invalid Host without terminating', async 
     });
     assert.equal(authorizedRead.status, 200);
 
-    const reportResponse = await fetch(`http://127.0.0.1:${port}/api/reports`, {
+    const forbiddenPublish = await fetch(`http://127.0.0.1:${port}/api/reports`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'X-Market-Pulse-Key': 'test-only-key',
+      },
+      body: JSON.stringify({
+        id: 'forbidden-publish',
+        title: 'Forbidden',
+        publishedAt: '2026-09-23T08:00:00+09:00',
+        type: 'morning',
+        summary: 'test',
+        tickers: [],
+      }),
+    });
+    assert.equal(forbiddenPublish.status, 401);
+
+    const reportResponse = await fetch(`http://127.0.0.1:${port}/api/reports`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Market-Pulse-Key': 'publisher-key',
       },
       body: JSON.stringify({
         id: 'signed-pdf-test',
@@ -84,7 +101,7 @@ test('HTTP preserves UTF-8 and handles invalid Host without terminating', async 
       method: 'POST',
       headers: {
         'Content-Type': 'application/pdf',
-        'X-Market-Pulse-Key': 'test-only-key',
+        'X-Market-Pulse-Key': 'publisher-key',
       },
       body: Buffer.from('%PDF-1.4\n%%EOF'),
     });
