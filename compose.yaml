@@ -1,0 +1,21 @@
+services:
+  market-pulse-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8787:8787"
+    environment:
+      PORT: "8787"
+      DATA_DIR: "/data"
+      PUSH_INTERVAL_SECONDS: "120"
+      MARKET_PULSE_API_KEY: "${MARKET_PULSE_API_KEY:-}"
+      WATCHLIST: "${WATCHLIST:-KR:005930:삼성전자,KR:000660:SK하이닉스,US:NVDA.O:NVIDIA}"
+      NAVER_KR_MOVERS_URL: "${NAVER_KR_MOVERS_URL:-}"
+      NAVER_US_MOVERS_URL: "${NAVER_US_MOVERS_URL:-}"
+    volumes:
+      - market-pulse-data:/data
+    restart: unless-stopped
+
+volumes:
+  market-pulse-data:
