@@ -7,12 +7,7 @@ import { ScreenShell } from '@/components/screen-shell';
 import { SectionTitle } from '@/components/section-title';
 import { palette, spacing } from '@/constants/market-theme';
 import {
-  getAlertSettings,
-  getCalendarEvents,
-  getEngagementSummary,
-  getReports,
-  getTodayFocus,
-  getWeeklyReview,
+  getHomeBriefing,
   isLiveDataConfigured,
 } from '@/lib/market-api';
 import {
@@ -66,29 +61,14 @@ export default function DashboardScreen() {
   const refresh = useCallback(async () => {
     setLoading(true);
     try {
-      const [
-        focusData,
-        reportData,
-        alertRule,
-        engagementData,
-        reviewData,
-        calendarData,
-      ] = await Promise.all([
-        getTodayFocus(),
-        getReports(),
-        getAlertSettings(),
-        getEngagementSummary(),
-        getWeeklyReview(),
-        getCalendarEvents(7),
-      ]);
-
-      setFocusStocks(focusData);
-      setReports(reportData);
-      setRule(alertRule);
-      setEngagement(engagementData);
-      setWeeklyReview(reviewData);
-      setCalendar(calendarData);
-      setRefreshedAt(Date.now());
+      const briefing = await getHomeBriefing();
+      setFocusStocks(briefing.focusStocks);
+      setReports(briefing.reports);
+      setRule(briefing.alertRule);
+      setEngagement(briefing.engagement);
+      setWeeklyReview(briefing.weeklyReview);
+      setCalendar(briefing.calendar);
+      setRefreshedAt(Date.parse(briefing.generatedAt) || Date.now());
     } finally {
       setLoading(false);
     }
