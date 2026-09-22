@@ -13,14 +13,18 @@ import { ScreenShell } from '@/components/screen-shell';
 import { palette, spacing } from '@/constants/market-theme';
 import {
   addWatchlistItem,
-  getWatchlist,
+  getWatchlistItems,
   removeWatchlistItem,
   searchStocks,
 } from '@/lib/market-api';
-import { Quote, StockSearchResult } from '@/types/market';
+import { StockSearchResult, WatchlistItem } from '@/types/market';
+
+function displaySymbol(item: WatchlistItem) {
+  return item.market === 'US' ? item.code.split('.')[0] : item.code;
+}
 
 export default function WatchlistScreen() {
-  const [watchlist, setWatchlist] = useState<Quote[]>([]);
+  const [watchlist, setWatchlist] = useState<WatchlistItem[]>([]);
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<StockSearchResult[]>([]);
   const [loadingList, setLoadingList] = useState(true);
@@ -31,7 +35,7 @@ export default function WatchlistScreen() {
   const loadWatchlist = useCallback(async () => {
     setLoadingList(true);
     try {
-      setWatchlist(await getWatchlist());
+      setWatchlist(await getWatchlistItems());
     } finally {
       setLoadingList(false);
     }
@@ -73,14 +77,14 @@ export default function WatchlistScreen() {
     }
   };
 
-  const removeItem = async (quote: Quote) => {
-    const key = `${quote.market}:${quote.naverCode}`;
+  const removeItem = async (item: WatchlistItem) => {
+    const key = `${item.market}:${item.code}`;
     setPendingKey(key);
     setMessage('');
     try {
-      await removeWatchlistItem({ market: quote.market, code: quote.naverCode });
+      await removeWatchlistItem(item);
       await loadWatchlist();
-      setMessage(`${quote.name}을(를) 관심종목에서 삭제했습니다.`);
+      setMessage(`${item.name}을(를) 관심종목에서 삭제했습니다.`);
     } catch {
       setMessage('관심종목 삭제에 실패했습니다.');
     } finally {
@@ -88,7 +92,7 @@ export default function WatchlistScreen() {
     }
   };
 
-  const existing = new Set(watchlist.map((item) => `${item.market}:${item.naverCode}`));
+  const existing = new Set(watchlist.map((item) => `${item.market}:${item.code}`));
 
   return (
     <ScreenShell>
@@ -165,22 +169,20 @@ export default function WatchlistScreen() {
           </View>
         ) : (
           <View style={styles.card}>
-            {watchlist.map((quote) => {
-              const key = `${quote.market}:${quote.naverCode}`;
+            {watchlist.map((item) => {
+              const key = `${item.market}:${item.code}`;
               return (
                 <View key={key} style={styles.row}>
                   <View style={styles.identity}>
-                    <View style={styles.badge}><Text style={styles.badgeText}>{quote.market}</Text></View>
+                    <View style={styles.badge}><Text style={styles.badgeText}>{item.market}</Text></View>
                     <View style={styles.nameBlock}>
-                      <Text style={styles.name}>{quote.name}</Text>
-                      <Text style={styles.symbol}>
-                        {quote.symbol} · {quote.changePercent >= 0 ? '+' : ''}{quote.changePercent.toFixed(2)}%
-                      </Text>
+                      <Text style={styles.name}>{item.name}</Text>
+                      <Text style={styles.symbol}>{displaySymbol(item)}</Text>
                     </View>
                   </View>
                   <Pressable
                     disabled={pendingKey === key}
-                    onPress={() => removeItem(quote)}
+                    onPress={() => removeItem(item)}
                     style={styles.removeButton}>
                     <Text style={styles.removeText}>{pendingKey === key ? '삭제 중' : '삭제'}</Text>
                   </Pressable>
