@@ -234,3 +234,31 @@ test('a nonempty unknown ranking schema is not treated as an empty market', asyn
     /could not be normalized/,
   );
 });
+
+
+test('stock detail reports supplemental feed availability instead of silent empties', async () => {
+  const provider = new NaverMarketProvider();
+  provider.quote = async () => ({
+    symbol: '005930',
+    naverCode: '005930',
+    name: '삼성전자',
+    market: 'KR',
+    price: 10000,
+    currency: 'KRW',
+    changePercent: 1,
+    volumeRatio: 0,
+    volume: 100,
+    updatedAt: '2026-09-23T09:30:00+09:00',
+    source: 'naver',
+  });
+  provider.priceHistory = async () => { throw new Error('history offline'); };
+  provider.news = async () => { throw new Error('news offline'); };
+
+  const detail = await provider.stockDetail('005930', '삼성전자', 'KR', []);
+  assert.deepEqual(detail.prices, []);
+  assert.deepEqual(detail.news, []);
+  assert.deepEqual(detail.availability, {
+    prices: 'unavailable',
+    news: 'unavailable',
+  });
+});
