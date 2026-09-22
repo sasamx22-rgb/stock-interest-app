@@ -341,7 +341,17 @@ export async function getReport(id: string): Promise<Report | null> {
   }
 }
 
-export async function getReportPdfUrl(id: string): Promise<string | null> {
+export async function getReportPdfUrl(
+  id: string,
+  storedPdfUrl?: string,
+): Promise<string | null> {
+  if (storedPdfUrl && /^https?:\/\//i.test(storedPdfUrl)) {
+    const internalPrefix = API_BASE_URL ? `${API_BASE_URL}/api/reports/` : '';
+    if (!internalPrefix || !storedPdfUrl.startsWith(internalPrefix)) {
+      return storedPdfUrl;
+    }
+  }
+
   try {
     const result = await request<{ url: string }>(
       `/api/reports/${encodeURIComponent(id)}/pdf-link`,
