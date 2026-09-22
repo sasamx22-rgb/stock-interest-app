@@ -93,6 +93,8 @@ export type MovementReason = {
   summary: string;
   confidence: 'low' | 'medium' | 'high';
   evidence: MovementReasonEvidence[];
+  aiEnhanced?: boolean;
+  model?: string;
 };
 
 export type StockDetail = {
@@ -140,4 +142,11 @@ export type WeeklyReview = {
   currentWatchlistCount: number;
   reportsRead: number;
   reportsPublished: number;
+};
+
+export type AiStatus = {
+  enabled: boolean;
+  model: string;
+  callsToday: number;
+  dailyLimit: number;
 };
