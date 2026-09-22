@@ -56,7 +56,7 @@ export default function MoversScreen() {
 
       <View style={styles.statusRow}>
         <Text style={styles.statusCaption}>
-          앱 실행 중에는 2분마다 새 알림 조건을 확인합니다.
+          서버가 2분마다 새 알림 조건을 확인하고 시스템 푸시를 보냅니다.
         </Text>
         {lastUpdated ? (
           <Text style={styles.updatedAt}>
