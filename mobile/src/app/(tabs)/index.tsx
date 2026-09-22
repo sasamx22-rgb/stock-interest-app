@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { useFocusEffect } from 'expo-router';
 
 import { QuoteRow } from '@/components/quote-row';
 import { ScreenShell } from '@/components/screen-shell';
@@ -14,15 +15,25 @@ export default function DashboardScreen() {
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    Promise.all([getWatchlist(), getMovers(), getReports()])
-      .then(([watchlistData, moverData, reportData]) => {
-        setWatchlist(watchlistData);
-        setMovers(moverData);
-        setReports(reportData);
-      })
-      .finally(() => setLoading(false));
+  const refresh = useCallback(async () => {
+    setLoading(true);
+    try {
+      const [watchlistData, moverData, reportData] = await Promise.all([
+        getWatchlist(),
+        getMovers(),
+        getReports(),
+      ]);
+      setWatchlist(watchlistData);
+      setMovers(moverData);
+      setReports(reportData);
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useFocusEffect(useCallback(() => {
+    refresh();
+  }, [refresh]));
 
   return (
     <ScreenShell>
@@ -49,9 +60,15 @@ export default function DashboardScreen() {
 
       <View style={styles.section}>
         <SectionTitle title="내 관심 종목" action={`${watchlist.length}개`} />
-        <View style={styles.card}>
-          {watchlist.map((quote) => <QuoteRow key={`${quote.market}-${quote.symbol}`} quote={quote} />)}
-        </View>
+        {watchlist.length > 0 ? (
+          <View style={styles.card}>
+            {watchlist.map((quote) => <QuoteRow key={`${quote.market}-${quote.symbol}`} quote={quote} />)}
+          </View>
+        ) : (
+          <View style={styles.emptyCard}>
+            <Text style={styles.emptyText}>관심 탭에서 한국·미국 종목을 추가해보세요.</Text>
+          </View>
+        )}
       </View>
 
       <View style={styles.section}>
@@ -92,6 +109,8 @@ const styles = StyleSheet.create({
   signalCaption: { color: '#234B46', fontSize: 13, fontWeight: '700', marginTop: spacing.sm },
   section: { gap: spacing.md },
   card: { backgroundColor: palette.surface, borderRadius: 20, paddingHorizontal: spacing.lg, borderColor: palette.border, borderWidth: 1 },
+  emptyCard: { backgroundColor: palette.surface, borderRadius: 20, padding: spacing.lg, borderColor: palette.border, borderWidth: 1 },
+  emptyText: { color: palette.textMuted, fontSize: 13, textAlign: 'center' },
   reportCard: { backgroundColor: palette.surface, borderRadius: 20, padding: spacing.lg, borderColor: palette.border, borderWidth: 1 },
   reportType: { color: palette.primary, fontSize: 12, fontWeight: '900' },
   reportTitle: { color: palette.text, fontSize: 18, fontWeight: '900', marginTop: spacing.sm },
