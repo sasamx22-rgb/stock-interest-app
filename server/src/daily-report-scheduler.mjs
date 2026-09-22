@@ -27,15 +27,18 @@ export class DailyReportScheduler {
     enabled = true,
     intervalMs = 30_000,
     catchupWindowMinutes = 10,
+    retryDelayMs = 5 * 60_000,
     logger = console,
   }) {
     this.generateReport = generateReport;
     this.enabled = enabled;
     this.intervalMs = intervalMs;
     this.catchupWindowMinutes = catchupWindowMinutes;
+    this.retryDelayMs = retryDelayMs;
     this.logger = logger;
     this.completed = new Set();
     this.inFlight = new Set();
+    this.retryAfter = new Map();
     this.timer = null;
   }
 
@@ -48,6 +51,7 @@ export class DailyReportScheduler {
     for (const schedule of SCHEDULES) {
       const key = `${clock.date}:${schedule.type}`;
       if (this.completed.has(key) || this.inFlight.has(key)) continue;
+      if ((this.retryAfter.get(key) ?? 0) > now.getTime()) continue;
 
       const delta = clock.minutes - schedule.minuteOfDay;
       if (delta < 0 || delta >= this.catchupWindowMinutes) continue;
@@ -59,9 +63,11 @@ export class DailyReportScheduler {
           this.completed.add(key);
           results.push({ type: schedule.type, status: 'completed', reportId: report.id });
         } else {
+          this.retryAfter.set(key, now.getTime() + this.retryDelayMs);
           results.push({ type: schedule.type, status: 'skipped' });
         }
       } catch (error) {
+        this.retryAfter.set(key, now.getTime() + this.retryDelayMs);
         this.logger.error?.('Daily report generation failed', error);
         results.push({
           type: schedule.type,
