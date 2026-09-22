@@ -175,8 +175,8 @@ export async function getCalendarEvents(days = 14): Promise<CalendarEvent[]> {
 export async function getTodayFocus(): Promise<TodayFocusStock[]> {
   try {
     return await request<TodayFocusStock[]>('/api/today-focus');
-  } catch {
-    if (!DEMO_MODE) return [];
+  } catch (error) {
+    if (!DEMO_MODE) throw error;
     return sampleWatchlist.map((quote, index) => ({
       ...quote,
       sources: ['watchlist'],
