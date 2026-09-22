@@ -8,6 +8,7 @@ import { SectionTitle } from '@/components/section-title';
 import { palette, spacing } from '@/constants/market-theme';
 import {
   getHomeBriefing,
+  isDemoMode,
   isLiveDataConfigured,
 } from '@/lib/market-api';
 import {
@@ -57,9 +58,11 @@ export default function DashboardScreen() {
   const [rule, setRule] = useState<AlertRule>({ changePercent: 5, volumeRatio: 3 });
   const [refreshedAt, setRefreshedAt] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
 
   const refresh = useCallback(async () => {
     setLoading(true);
+    setLoadError(false);
     try {
       const briefing = await getHomeBriefing();
       setFocusStocks(briefing.focusStocks);
@@ -69,6 +72,8 @@ export default function DashboardScreen() {
       setWeeklyReview(briefing.weeklyReview);
       setCalendar(briefing.calendar);
       setRefreshedAt(Date.parse(briefing.generatedAt) || Date.now());
+    } catch {
+      setLoadError(true);
     } finally {
       setLoading(false);
     }
@@ -107,9 +112,11 @@ export default function DashboardScreen() {
       </View>
 
       <View style={styles.statusRow}>
-        <View style={[styles.livePill, !isLiveDataConfigured() && styles.samplePill]}>
+        <View style={[styles.livePill, (!isLiveDataConfigured() || loadError) && styles.samplePill]}>
           <View style={styles.liveDot} />
-          <Text style={styles.liveText}>{isLiveDataConfigured() ? 'LIVE DATA' : 'SAMPLE MODE'}</Text>
+          <Text style={styles.liveText}>
+            {loadError ? 'CONNECTION ERROR' : isDemoMode() ? 'SAMPLE MODE' : isLiveDataConfigured() ? 'LIVE DATA' : 'NOT CONFIGURED'}
+          </Text>
         </View>
         <Text style={styles.ruleText}>
           급등 기준 +{rule.changePercent}% · 거래량 {rule.volumeRatio}배
