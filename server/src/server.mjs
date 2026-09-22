@@ -1,6 +1,7 @@
 import { createServer } from 'node:http';
 import { join } from 'node:path';
 
+import { AiBudgetStore } from './ai-budget-store.mjs';
 import { AlertSettingsStore } from './alert-settings-store.mjs';
 import { CalendarEventStore } from './calendar-event-store.mjs';
 import { describeAlert, isAlertEligible } from './alerts.mjs';
@@ -10,6 +11,7 @@ import { buildEngagementSummary, buildWeeklyReview } from './engagement-service.
 import { EngagementStore } from './engagement-store.mjs';
 import { sendExpoPushNotifications } from './expo-push.mjs';
 import { NaverMarketProvider } from './naver-provider.mjs';
+import { OpenAiAnalysisService } from './openai-analysis.mjs';
 import { PushTokenStore } from './push-token-store.mjs';
 import { ReportPdfStore } from './report-pdf-store.mjs';
 import { ReportStore } from './report-store.mjs';
@@ -20,6 +22,17 @@ import { WatchlistStore } from './watchlist-store.mjs';
 
 const provider = new NaverMarketProvider();
 const calendarProvider = new EconomicCalendarProvider();
+
+const aiBudgetStore = new AiBudgetStore({
+  filePath: join(config.dataDir, 'ai-budget.json'),
+  dailyLimit: config.ai.dailyLimit,
+});
+
+const aiService = new OpenAiAnalysisService({
+  apiKey: config.ai.apiKey,
+  model: config.ai.model,
+  budgetStore: aiBudgetStore,
+});
 
 const alertSettingsStore = new AlertSettingsStore({
   filePath: join(config.dataDir, 'alert-settings.json'),
@@ -157,13 +170,96 @@ async function handler(request, response) {
   try {
     if (url.pathname === '/health') {
       if (request.method !== 'GET') return sendJson(response, 405, { error: 'Method not allowed' });
-      const pushTokens = await pushTokenStore.getAll();
+      const [pushTokens, aiStatus] = await Promise.all([
+        pushTokenStore.getAll(),
+        aiService.status(),
+      ]);
       return sendJson(response, 200, {
         ok: true,
         provider: 'naver',
         pushMonitor: pushMonitor.active ? 'active' : 'inactive',
         registeredDevices: pushTokens.length,
+        ai: aiStatus,
       });
+    }
+
+    if (url.pathname === '/api/ai/status') {
+      if (request.method !== 'GET') return sendJson(response, 405, { error: 'Method not allowed' });
+      return sendJson(response, 200, await aiService.status());
+    }
+
+    if (url.pathname === '/api/ai/reports/generate') {
+      if (request.method !== 'POST') return sendJson(response, 405, { error: 'Method not allowed' });
+      requireWriteAccess(request);
+
+      const body = await readJsonBody(request);
+      const type = body.type === 'premarket' ? 'premarket' : body.type === 'morning' ? 'morning' : null;
+      if (!type) return sendJson(response, 400, { error: 'Report type must be morning or premarket' });
+
+      const now = new Date();
+      const dateKey = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'Asia/Seoul',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+      }).format(now);
+      const reportId = `${dateKey}-${type}`;
+
+      if (!body.force) {
+        const existing = await reportStore.getById(reportId);
+        if (existing) return sendJson(response, 200, existing);
+      }
+
+      const [watchlistItems, reports, movers, manualEvents, alertRule] = await Promise.all([
+        watchlistStore.getAll(),
+        reportStore.getAll(),
+        loadMarketMovers(['KR', 'US']),
+        calendarEventStore.getAll().catch(() => []),
+        alertSettingsStore.get(),
+      ]);
+
+      const focusStocks = await buildTodayFocus({
+        provider,
+        watchlistItems,
+        reports,
+        movers,
+        now,
+      });
+
+      const usSymbols = focusStocks
+        .filter((item) => item.market === 'US')
+        .map((item) => item.symbol)
+        .slice(0, 10);
+      const automaticEvents = await calendarProvider
+        .upcoming({ days: 2, symbols: usSymbols, now })
+        .catch(() => []);
+      const calendarEvents = [...automaticEvents, ...manualEvents]
+        .filter((event, index, items) => items.findIndex((candidate) => candidate.id === event.id) === index)
+        .filter((event) => Date.parse(event.startsAt) >= now.getTime() - 6 * 60 * 60 * 1000)
+        .sort((a, b) => Date.parse(a.startsAt) - Date.parse(b.startsAt))
+        .slice(0, 15);
+
+      const generated = await aiService.generateReport({
+        type,
+        publishedAt: now.toISOString(),
+        focusStocks,
+        calendarEvents,
+        alertRule,
+      });
+
+      if (!generated) {
+        return sendJson(response, 503, {
+          error: 'AI report generation is disabled or daily AI budget is exhausted',
+        });
+      }
+
+      const report = await reportStore.upsert({
+        id: reportId,
+        type,
+        publishedAt: now.toISOString(),
+        ...generated,
+      });
+      return sendJson(response, 201, report);
     }
 
     if (url.pathname === '/api/engagement/summary') {
@@ -372,11 +468,29 @@ async function handler(request, response) {
           return event.tickers.some((ticker) => targets.has(String(ticker).toLowerCase()));
         });
 
-      return sendJson(
-        response,
-        200,
-        await provider.stockDetail(code, name, market, relevantEvents),
-      );
+      const detail = await provider.stockDetail(code, name, market, relevantEvents);
+
+      try {
+        const enhanced = await aiService.enhanceMovementReason({
+          quote: detail.quote,
+          news: detail.news,
+          events: relevantEvents,
+          ruleBased: detail.movementReason,
+        });
+        if (enhanced) {
+          detail.movementReason = {
+            ...detail.movementReason,
+            ...enhanced,
+            evidence: detail.movementReason?.evidence ?? [],
+            aiEnhanced: true,
+            model: config.ai.model,
+          };
+        }
+      } catch (error) {
+        console.warn('AI movement analysis failed; using rule-based fallback', error);
+      }
+
+      return sendJson(response, 200, detail);
     }
 
     if (url.pathname === '/api/search') {
