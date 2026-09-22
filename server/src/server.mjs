@@ -1,6 +1,7 @@
 import { createServer } from 'node:http';
 import { join } from 'node:path';
 
+import { AlertSettingsStore } from './alert-settings-store.mjs';
 import { describeAlert, isAlertEligible } from './alerts.mjs';
 import { config } from './config.mjs';
 import { sendExpoPushNotifications } from './expo-push.mjs';
@@ -13,6 +14,10 @@ import { SurgePushMonitor } from './surge-push-monitor.mjs';
 import { WatchlistStore } from './watchlist-store.mjs';
 
 const provider = new NaverMarketProvider();
+
+const alertSettingsStore = new AlertSettingsStore({
+  filePath: join(config.dataDir, 'alert-settings.json'),
+});
 
 const watchlistStore = new WatchlistStore({
   filePath: join(config.dataDir, 'watchlist.json'),
@@ -96,12 +101,15 @@ async function loadMarketMovers(markets) {
     markets.map((value) => provider.movers(value, config.moverUrls[value])),
   )).flat();
 
-  const enrichedQuotes = await provider.enrichVolumeRatios(quotes);
+  const [enrichedQuotes, rule] = await Promise.all([
+    provider.enrichVolumeRatios(quotes),
+    alertSettingsStore.get(),
+  ]);
 
   return enrichedQuotes.map((quote) => ({
     ...quote,
-    alertEligible: isAlertEligible(quote),
-    reason: describeAlert(quote),
+    alertEligible: isAlertEligible(quote, rule),
+    reason: describeAlert(quote, rule),
   }));
 }
 
@@ -279,6 +287,23 @@ async function handler(request, response) {
       }
 
       return sendJson(response, 200, await provider.searchStocks(query));
+    }
+
+    if (url.pathname === '/api/settings/alerts') {
+      if (request.method === 'GET') {
+        return sendJson(response, 200, await alertSettingsStore.get());
+      }
+
+      if (request.method === 'POST') {
+        requireWriteAccess(request);
+        return sendJson(
+          response,
+          200,
+          await alertSettingsStore.update(await readJsonBody(request)),
+        );
+      }
+
+      return sendJson(response, 405, { error: 'Method not allowed' });
     }
 
     if (url.pathname === '/api/push/status') {
