@@ -115,3 +115,29 @@ export type CalendarEvent = {
   description?: string;
   url?: string;
 };
+
+export type DailyPick = TodayFocusStock & {
+  pickReason: string;
+};
+
+export type EngagementSummary = {
+  unreadReportIds: string[];
+  unreadReportCount: number;
+  dailyPicks: DailyPick[];
+};
+
+export type WeeklyReview = {
+  periodDays: number;
+  stockViewCount: number;
+  uniqueStockCount: number;
+  topViewed: Array<{
+    market: Market;
+    code: string;
+    name: string;
+    viewedAt: string;
+    views: number;
+  }>;
+  currentWatchlistCount: number;
+  reportsRead: number;
+  reportsPublished: number;
+};
