@@ -4,7 +4,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 
 import { ScreenShell } from '@/components/screen-shell';
 import { palette, spacing } from '@/constants/market-theme';
-import { getStockDetail } from '@/lib/market-api';
+import { getStockDetail, recordStockView } from '@/lib/market-api';
 import { Market, StockDetail } from '@/types/market';
 
 function formatPrice(value: number, market: Market) {
@@ -53,6 +53,13 @@ export default function StockDetailScreen() {
 
     let active = true;
     getStockDetail(market, code, name).then((detail) => {
+      if (detail) {
+        void recordStockView({
+          market,
+          code,
+          name: detail.quote.name,
+        });
+      }
       if (active) setState({ status: 'ready', detail });
     });
 
