@@ -16,24 +16,24 @@ export default function ReportDetailScreen() {
   const router = useRouter();
   const id = Array.isArray(params.id) ? params.id[0] : params.id;
   const [state, setState] = useState<{
-    status: 'loading' | 'ready' | 'error';
+    id?: string;
+    status: 'ready' | 'error';
     report: Report | null;
-  }>({ status: 'loading', report: null });
+  }>({ id: undefined, status: 'ready', report: null });
 
   useEffect(() => {
     if (!id) return;
 
     let active = true;
-    setState({ status: 'loading', report: null });
     getReport(id)
       .then((value) => {
         if (value) void markReportRead(id);
         if (active) {
-          setState({ status: 'ready', report: value });
+          setState({ id, status: 'ready', report: value });
         }
       })
       .catch(() => {
-        if (active) setState({ status: 'error', report: null });
+        if (active) setState({ id, status: 'error', report: null });
       });
 
     return () => {
@@ -41,8 +41,9 @@ export default function ReportDetailScreen() {
     };
   }, [id]);
 
-  const loading = Boolean(id) && state.status === 'loading';
-  const report = state.report;
+  const loading = Boolean(id) && state.id !== id;
+  const report = state.id === id ? state.report : null;
+  const loadError = state.id === id && state.status === 'error';
 
   return (
     <ScreenShell>
@@ -52,7 +53,7 @@ export default function ReportDetailScreen() {
 
       {loading ? <ActivityIndicator color={palette.primary} /> : null}
 
-      {state.status === 'error' ? (
+      {loadError ? (
         <View style={styles.empty}>
           <Text style={styles.emptyTitle}>보고서를 불러오지 못했습니다.</Text>
           <Text style={styles.emptyText}>서버 연결 또는 API 키 설정을 확인해주세요.</Text>
