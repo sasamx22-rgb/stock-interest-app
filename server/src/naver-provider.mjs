@@ -388,7 +388,9 @@ export class NaverMarketProvider {
       const currentVolume = quote.volume > 0 ? quote.volume : rows[0].volume;
       if (!(currentVolume > 0)) return;
 
-      const baselineRows = quote.volume > 0 ? rows.slice(0, 20) : rows.slice(1, 21);
+      // The first daily-price row is the most recent session. Exclude it from
+      // the comparison baseline so today's surge does not inflate its own average.
+      const baselineRows = rows.slice(1, 21);
       if (baselineRows.length < 2) return;
 
       const averageVolume = baselineRows.reduce((sum, item) => sum + item.volume, 0) / baselineRows.length;
