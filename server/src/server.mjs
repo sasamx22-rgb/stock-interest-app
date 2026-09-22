@@ -348,7 +348,35 @@ async function handler(request, response) {
         return sendJson(response, 400, { error: 'Invalid US stock code' });
       }
 
-      return sendJson(response, 200, await provider.stockDetail(code, name, market));
+      const symbol = market === 'US' ? code.split('.')[0] : code;
+      const [automaticEvents, manualEvents] = await Promise.all([
+        calendarProvider.upcoming({ days: 2, symbols: [symbol] }).catch(() => []),
+        calendarEventStore.getAll().catch(() => []),
+      ]);
+      const now = Date.now();
+      const relevantEvents = [...automaticEvents, ...manualEvents]
+        .filter((event, index, items) => items.findIndex((candidate) => candidate.id === event.id) === index)
+        .filter((event) => {
+          const eventTime = Date.parse(event.startsAt);
+          if (eventTime < now - 36 * 60 * 60 * 1000 || eventTime > now + 12 * 60 * 60 * 1000) return false;
+
+          if (event.tickers.length === 0) {
+            return event.importance === 'high' && ['macro', 'fomc'].includes(event.type);
+          }
+
+          const targets = new Set([
+            symbol.toLowerCase(),
+            code.toLowerCase(),
+            name.toLowerCase(),
+          ]);
+          return event.tickers.some((ticker) => targets.has(String(ticker).toLowerCase()));
+        });
+
+      return sendJson(
+        response,
+        200,
+        await provider.stockDetail(code, name, market, relevantEvents),
+      );
     }
 
     if (url.pathname === '/api/search') {
