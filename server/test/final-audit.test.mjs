@@ -9,6 +9,7 @@ import { PushReceiptStore } from '../src/push-receipt-store.mjs';
 import { PushReceiptMonitor } from '../src/push-receipt-monitor.mjs';
 import { AiBudgetStore } from '../src/ai-budget-store.mjs';
 import { EngagementStore } from '../src/engagement-store.mjs';
+import { EconomicCalendarProvider } from '../src/economic-calendar-provider.mjs';
 
 const fixture = async (name) => JSON.parse(await readFile(new URL(`fixtures/${name}.json`, import.meta.url), 'utf8'));
 const deferred = () => { let resolve; const promise = new Promise((r) => { resolve = r; }); return { promise, resolve }; };
@@ -206,4 +207,16 @@ test('error-shaped ranking payload is not cached as an empty market', async () =
   await assert.rejects(provider.movers('KR', 'https://example.test/ranking'), /could not be normalized/);
   await assert.rejects(provider.movers('KR', 'https://example.test/ranking'), /could not be normalized/);
   assert.equal(calls, 2);
+});
+
+
+test('a total external calendar outage is not cached as an empty calendar', async () => {
+  const provider = new EconomicCalendarProvider({
+    fetchImpl: async () => { throw new Error('calendar upstream offline'); },
+    timeoutMs: 50,
+  });
+  await assert.rejects(
+    provider.upcoming({ days: 1, symbols: ['NVDA'], now: new Date('2026-09-23T00:00:00Z') }),
+    /calendar providers failed/i,
+  );
 });
