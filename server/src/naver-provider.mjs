@@ -1,3 +1,5 @@
+import { summarizeMovementReason } from './movement-reason.mjs';
+
 const DEFAULT_TIMEOUT_MS = 7_000;
 
 function numberFrom(value, fallback = 0) {
@@ -427,10 +429,13 @@ export class NaverMarketProvider {
       throw quoteResult.reason;
     }
 
+    const news = newsResult.status === 'fulfilled' ? newsResult.value : [];
+
     return {
       quote: quoteResult.value,
       prices: priceResult.status === 'fulfilled' ? priceResult.value : [],
-      news: newsResult.status === 'fulfilled' ? newsResult.value : [],
+      news,
+      movementReason: summarizeMovementReason(quoteResult.value, news),
       source: 'naver',
     };
   }
