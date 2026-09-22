@@ -1,5 +1,5 @@
 import { createServer } from 'node:http';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 
 import { describeAlert, isAlertEligible } from './alerts.mjs';
 import { config } from './config.mjs';
@@ -13,13 +13,24 @@ import { WatchlistStore } from './watchlist-store.mjs';
 const provider = new NaverMarketProvider();
 
 const watchlistStore = new WatchlistStore({
-  filePath: fileURLToPath(new URL('../data/watchlist.json', import.meta.url)),
+  filePath: join(config.dataDir, 'watchlist.json'),
   defaults: config.watchlist,
 });
 
 const pushTokenStore = new PushTokenStore({
-  filePath: fileURLToPath(new URL('../data/push-tokens.json', import.meta.url)),
+  filePath: join(config.dataDir, 'push-tokens.json'),
 });
+
+function requireWriteAccess(request) {
+  if (!config.apiKey) return;
+
+  const provided = request.headers['x-market-pulse-key'];
+  if (provided !== config.apiKey) {
+    const error = new Error('Unauthorized');
+    error.statusCode = 401;
+    throw error;
+  }
+}
 
 function sendJson(response, status, body) {
   response.writeHead(status, {
@@ -84,7 +95,7 @@ async function handler(request, response) {
   if (request.method === 'OPTIONS') {
     response.writeHead(204, {
       'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Headers': 'Content-Type, X-Market-Pulse-Key',
       'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
     });
     return response.end();
@@ -120,11 +131,13 @@ async function handler(request, response) {
       }
 
       if (request.method === 'POST') {
+        requireWriteAccess(request);
         const items = await watchlistStore.add(await readJsonBody(request));
         return sendJson(response, 201, items);
       }
 
       if (request.method === 'DELETE') {
+        requireWriteAccess(request);
         const market = url.searchParams.get('market');
         const code = url.searchParams.get('code');
         const items = await watchlistStore.remove(market, code);
@@ -157,6 +170,7 @@ async function handler(request, response) {
 
     if (url.pathname === '/api/push/register') {
       if (request.method === 'POST') {
+        requireWriteAccess(request);
         const body = await readJsonBody(request);
         const items = await pushTokenStore.register({
           token: body.token,
@@ -169,6 +183,7 @@ async function handler(request, response) {
       }
 
       if (request.method === 'DELETE') {
+        requireWriteAccess(request);
         const token = url.searchParams.get('token');
         const items = await pushTokenStore.remove(token);
         return sendJson(response, 200, {
