@@ -46,6 +46,7 @@ function eventTime(event?: CalendarEvent) {
 
 export default function DashboardScreen() {
   const router = useRouter();
+  const refreshGeneration = useRef(0);
   const [focusStocks, setFocusStocks] = useState<TodayFocusStock[]>([]);
   const [reports, setReports] = useState<Report[]>([]);
   const [calendar, setCalendar] = useState<CalendarEvent[]>([]);
