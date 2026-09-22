@@ -2,8 +2,10 @@ import { createServer } from 'node:http';
 import { join } from 'node:path';
 
 import { AlertSettingsStore } from './alert-settings-store.mjs';
+import { CalendarEventStore } from './calendar-event-store.mjs';
 import { describeAlert, isAlertEligible } from './alerts.mjs';
 import { config } from './config.mjs';
+import { EconomicCalendarProvider } from './economic-calendar-provider.mjs';
 import { sendExpoPushNotifications } from './expo-push.mjs';
 import { NaverMarketProvider } from './naver-provider.mjs';
 import { PushTokenStore } from './push-token-store.mjs';
@@ -15,6 +17,7 @@ import { buildTodayFocus } from './today-focus.mjs';
 import { WatchlistStore } from './watchlist-store.mjs';
 
 const provider = new NaverMarketProvider();
+const calendarProvider = new EconomicCalendarProvider();
 
 const alertSettingsStore = new AlertSettingsStore({
   filePath: join(config.dataDir, 'alert-settings.json'),
@@ -36,6 +39,10 @@ const reportStore = new ReportStore({
 
 const reportPdfStore = new ReportPdfStore({
   directory: join(config.dataDir, 'report-pdfs'),
+});
+
+const calendarEventStore = new CalendarEventStore({
+  filePath: join(config.dataDir, 'calendar-events.json'),
 });
 
 function requireWriteAccess(request) {
@@ -310,6 +317,37 @@ async function handler(request, response) {
       return sendJson(response, 200, await provider.searchStocks(query));
     }
 
+    if (url.pathname === '/api/calendar') {
+      if (request.method === 'GET') {
+        const days = Math.min(Math.max(Number(url.searchParams.get('days') ?? 14) || 14, 1), 30);
+        const [watchlistItems, manualEvents] = await Promise.all([
+          watchlistStore.getAll(),
+          calendarEventStore.getAll(),
+        ]);
+        const usSymbols = watchlistItems
+          .filter((item) => item.market === 'US')
+          .map((item) => item.code.split('.')[0]);
+        const automatic = await calendarProvider.upcoming({ days, symbols: usSymbols });
+        const now = Date.now() - 86_400_000;
+        const end = Date.now() + days * 86_400_000;
+        const merged = [...automatic, ...manualEvents]
+          .filter((event, index, items) => items.findIndex((candidate) => candidate.id === event.id) === index)
+          .filter((event) => {
+            const time = Date.parse(event.startsAt);
+            return time >= now && time <= end;
+          })
+          .sort((a, b) => Date.parse(a.startsAt) - Date.parse(b.startsAt));
+        return sendJson(response, 200, merged);
+      }
+
+      if (request.method === 'POST') {
+        requireWriteAccess(request);
+        const event = await calendarEventStore.upsert(await readJsonBody(request));
+        return sendJson(response, 201, event);
+      }
+
+      return sendJson(response, 405, { error: 'Method not allowed' });
+    }
     if (url.pathname === '/api/settings/alerts') {
       if (request.method === 'GET') {
         return sendJson(response, 200, await alertSettingsStore.get());
