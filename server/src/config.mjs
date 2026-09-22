@@ -21,12 +21,18 @@ function envOrDefault(value, fallback) {
 }
 
 const pushIntervalSeconds = Math.max(60, Number(process.env.PUSH_INTERVAL_SECONDS ?? 120) || 120);
+const aiDailyLimit = Math.max(0, Number(process.env.OPENAI_DAILY_LIMIT ?? 12) || 0);
 
 export const config = {
   port: Number(process.env.PORT ?? 8787),
   pushIntervalMs: pushIntervalSeconds * 1000,
   apiKey: process.env.MARKET_PULSE_API_KEY?.trim() ?? '',
   dataDir: envOrDefault(process.env.DATA_DIR, DEFAULT_DATA_DIR),
+  ai: {
+    apiKey: process.env.OPENAI_API_KEY?.trim() ?? '',
+    model: envOrDefault(process.env.OPENAI_MODEL, 'gpt-5.6-terra'),
+    dailyLimit: aiDailyLimit,
+  },
   watchlist: parseWatchlist(process.env.WATCHLIST),
   moverUrls: {
     KR: envOrDefault(process.env.NAVER_KR_MOVERS_URL, DEFAULT_MOVER_URLS.KR),
