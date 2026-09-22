@@ -44,12 +44,12 @@ function eventLabel(event) {
   return '기업 일정';
 }
 
-function sourceSignals(stock) {
-  const signals = [];
-  if (stock.sources.includes('watchlist')) signals.push('내 관심');
-  if (stock.sources.includes('report')) signals.push('보고서');
-  if (stock.sources.includes('surge')) signals.push('급등');
-  return signals;
+function sourceSignal(stock) {
+  const labels = [];
+  if (stock.sources.includes('watchlist')) labels.push('내 관심');
+  if (stock.sources.includes('report')) labels.push('보고서');
+  if (stock.sources.includes('surge')) labels.push('급등');
+  return labels.length > 0 ? labels.join('+') : null;
 }
 
 export async function buildDailyPicks({
@@ -83,7 +83,9 @@ export async function buildDailyPicks({
       0,
     );
 
-    const signals = sourceSignals(stock);
+    const signals = [];
+    const source = sourceSignal(stock);
+    if (source) signals.push(source);
     if (stock.volumeRatio >= 3) signals.push(`거래량 ${stock.volumeRatio.toFixed(1)}배`);
     if (strongNewsCount > 0) signals.push(`주요 뉴스 ${strongNewsCount}건`);
     if (matchedEvents.length > 0) signals.push(eventLabel(matchedEvents[0]));
