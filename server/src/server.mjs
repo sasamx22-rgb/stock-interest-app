@@ -209,8 +209,8 @@ async function loadCalendarEvents(days, watchlistItems, now = new Date()) {
     .map((item) => item.code.split('.')[0]);
 
   const [automatic, manualEvents] = await Promise.all([
-    calendarProvider.upcoming({ days: boundedDays, symbols: usSymbols, now }).catch(() => []),
-    calendarEventStore.getAll().catch(() => []),
+    calendarProvider.upcoming({ days: boundedDays, symbols: usSymbols, now }),
+    calendarEventStore.getAll(),
   ]);
 
   const start = now.getTime() - 86_400_000;
@@ -372,6 +372,20 @@ async function handler(request, response) {
       }
 
       return sendJson(response, 405, { error: 'Method not allowed' });
+    }
+
+    if (url.pathname === '/api/reports/read-state') {
+      if (request.method !== 'GET') return sendJson(response, 405, { error: 'Method not allowed' });
+      const [engagement, reports] = await Promise.all([
+        engagementStore.get(),
+        reportStore.getAll(),
+      ]);
+      return sendJson(response, 200, buildEngagementSummary({
+        reports,
+        engagement,
+        focusStocks: [],
+        dailyPicks: [],
+      }));
     }
 
     if (url.pathname.startsWith('/api/reports/') && url.pathname.endsWith('/read')) {
