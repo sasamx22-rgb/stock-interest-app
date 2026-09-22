@@ -32,25 +32,6 @@ const MOVEMENT_SCHEMA = {
   required: ['label', 'summary', 'confidence'],
 };
 
-const REPORT_SCHEMA = {
-  type: 'object',
-  additionalProperties: false,
-  properties: {
-    title: { type: 'string' },
-    summary: { type: 'string' },
-    marketSummary: { type: 'string' },
-    highlights: {
-      type: 'array',
-      items: { type: 'string' },
-    },
-    tickers: {
-      type: 'array',
-      items: { type: 'string' },
-    },
-  },
-  required: ['title', 'summary', 'marketSummary', 'highlights', 'tickers'],
-};
-
 export class OpenAiAnalysisService {
   constructor({
     apiKey = '',
@@ -187,55 +168,7 @@ export class OpenAiAnalysisService {
     return result;
   }
 
-  async generateReport({ type, publishedAt, focusStocks, calendarEvents, alertRule }) {
-    if (!this.enabled) return null;
 
-    const evidence = {
-      reportType: type,
-      publishedAt,
-      alertRule,
-      focusStocks: focusStocks.slice(0, 10).map((item) => ({
-        market: item.market,
-        symbol: item.symbol,
-        name: item.name,
-        changePercent: item.changePercent,
-        volumeRatio: item.volumeRatio,
-        sources: item.sources,
-      })),
-      calendarEvents: calendarEvents.slice(0, 12).map((event) => ({
-        type: event.type,
-        title: event.title,
-        startsAt: event.startsAt,
-        importance: event.importance,
-        tickers: event.tickers,
-        source: event.source,
-      })),
-    };
-
-    const result = await this.jsonResponse({
-      schema: REPORT_SCHEMA,
-      schemaName: 'market_pulse_daily_report',
-      reasoningEffort: 'medium',
-      maxOutputTokens: 1100,
-      input: [
-        '당신은 개인 투자자가 아침에 빠르게 시장을 파악하도록 돕는 한국어 시장 브리핑 작성자입니다.',
-        '제공된 데이터만 사용하세요. 사실을 창작하지 말고 투자 추천, 매수·매도 지시, 목표주가를 제시하지 마세요.',
-        type === 'premarket'
-          ? '08:50 프리마켓 보고서입니다. 08:00 이후 확인할 변화와 오늘 장 시작 직전 체크포인트를 우선하세요.'
-          : '08:00 모닝 브리프입니다. 밤사이 흐름과 오늘 확인할 종목·경제 일정을 우선하세요.',
-        'summary는 2~3문장, marketSummary는 4~6문장, highlights는 짧고 실행 가능한 확인 항목으로 작성하세요.',
-        '',
-        JSON.stringify(evidence),
-      ].join('\n'),
-    });
-
-    if (!result) return null;
-    return {
-      ...result,
-      highlights: Array.isArray(result.highlights) ? result.highlights.slice(0, 6) : [],
-      tickers: Array.isArray(result.tickers) ? result.tickers.slice(0, 8) : [],
-    };
-  }
 }
 
 export { extractOutputText };
