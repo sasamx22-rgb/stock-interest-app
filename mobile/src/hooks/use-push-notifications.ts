@@ -56,7 +56,7 @@ async function registerForRemoteNotifications() {
 
 export function usePushNotifications() {
   const router = useRouter();
-  const handledResponseId = useRef<string | null>(null);
+  const handledResponseIds = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     let cancelled = false;
@@ -73,22 +73,49 @@ export function usePushNotifications() {
 
     void register();
 
+    let liveResponseSeen = false;
+
+    const rememberResponse = (id: string) => {
+      const ids = handledResponseIds.current;
+      if (ids.has(id)) return false;
+      ids.add(id);
+      while (ids.size > 20) {
+        const oldest = ids.values().next().value;
+        if (typeof oldest !== 'string') break;
+        ids.delete(oldest);
+      }
+      return true;
+    };
+
     const handleResponse = (response: Notifications.NotificationResponse | null) => {
       if (!response) return;
       const id = response.notification.request.identifier;
-      if (handledResponseId.current === id) return;
-      handledResponseId.current = id;
+      if (!rememberResponse(id)) return;
       const screen = response.notification.request.content.data?.screen;
       if (screen === 'movers') {
         router.push('/(tabs)/movers');
       }
     };
 
+    const clearLastResponse = async () => {
+      try {
+        await Notifications.clearLastNotificationResponseAsync();
+      } catch (error) {
+        if (!cancelled) console.warn('Clearing notification response failed', error);
+      }
+    };
+
+    const responseSubscription = Notifications.addNotificationResponseReceivedListener((response) => {
+      liveResponseSeen = true;
+      handleResponse(response);
+      void clearLastResponse();
+    });
+
     void Notifications.getLastNotificationResponseAsync()
       .then((response) => {
         if (cancelled) return;
-        handleResponse(response);
-        if (response) void Notifications.clearLastNotificationResponseAsync();
+        if (!liveResponseSeen) handleResponse(response);
+        if (response) void clearLastResponse();
       })
       .catch((error) => {
         if (!cancelled) console.warn('Initial notification response failed', error);
@@ -96,11 +123,6 @@ export function usePushNotifications() {
 
     const appStateSubscription = AppState.addEventListener('change', (state) => {
       if (state === 'active') void register();
-    });
-
-    const responseSubscription = Notifications.addNotificationResponseReceivedListener((response) => {
-      handleResponse(response);
-      void Notifications.clearLastNotificationResponseAsync();
     });
 
     return () => {
