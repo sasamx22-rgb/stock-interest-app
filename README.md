@@ -8,7 +8,7 @@
 
 - `NODE_ENV=production`에서는 `MARKET_PULSE_API_KEY`가 없으면 서버 시작을 거부합니다. Docker/Compose 실행 전에도 키를 설정해야 합니다.
 - JSON 저장은 경로별 직렬화와 원자적 교체를 사용하며 **한 Node 프로세스**를 전제로 합니다. Railway에는 `/data` 영구 볼륨을 별도로 연결해야 합니다.
-- 개인 데이터의 GET 인증, PDF 전체 작업 일관성, Expo receipt 처리 및 실제 네이버 거래량 단위 검증은 아직 필요합니다.
+- 개인 API는 인증을 요구하고 PDF는 5분짜리 서명 URL로 열며, Expo push ticket/receipt를 후속 확인합니다. 실제 네이버 거래량 필드 단위 검증은 아직 필요합니다.
 - 현재 감시는 한국·미국 ranking 첫 페이지 후보를 사용합니다. 전체 상장 종목을 빠짐없이 감시하는 구현은 아닙니다.
 
 ## 현재 구현 범위
@@ -26,7 +26,7 @@
 - 경제 일정 탭: FOMC·주요 BLS 지표·관심 미국종목 실적/배당락
 - 읽지 않은 보고서 NEW 표시 + 최근 7일 주간 관심 종목 회고
 - PDF 원문과 앱용 요약을 위한 영구 보고서 보관함
-- 네이버 시세 어댑터와 샘플 데이터 자동 대체
+- 네이버 시세 어댑터와 명시적 데모 모드 샘플 데이터
 - Android APK용 EAS preview 프로필
 
 > 네이버 증권에는 공식 시세 Open API가 없습니다. 이 프로젝트는 개인용 실험으로 설계되며, 네이버 응답 구조가 변경되면 어댑터 수정이 필요합니다. 표시 데이터는 투자 참고용입니다.
@@ -38,7 +38,7 @@ mobile/  Expo SDK 57 + React Native + Expo Router
 server/  Node.js API + 교체 가능한 NaverMarketProvider
 ```
 
-앱은 `EXPO_PUBLIC_API_BASE_URL`이 없거나 서버 연결에 실패하면 샘플 데이터로 실행됩니다. 서버와 연결하면 API 응답을 사용합니다.
+운영 빌드는 서버 장애 시 샘플 가격으로 자동 대체하지 않습니다. 샘플 데이터는 `EXPO_PUBLIC_DEMO_MODE=true`인 명시적 데모 빌드에서만 사용합니다.
 
 ## 관심종목 관리
 
@@ -60,7 +60,8 @@ server/  Node.js API + 교체 가능한 NaverMarketProvider
 - 서버 최초 조회는 기준 상태만 잡고, 이후 새롭게 조건을 충족한 종목만 등록된 기기로 원격 푸시합니다.
 - 앱은 `expo-notifications`로 알림 권한을 받고 Expo push token을 서버에 자동 등록합니다.
 - Android에서는 `급등 알림` 채널을 만들며 알림을 누르면 급등 탭으로 이동합니다.
-- 앱이 백그라운드이거나 완전히 종료된 상태에서도 서버가 실행 중이고 EAS/FCM 자격증명이 정상이라면 시스템 알림을 받을 수 있습니다.
+- 앱이 백그라운드이거나 종료된 상태에서도 서버가 실행 중이고 EAS/FCM 자격증명이 정상이라면 시스템 알림을 받을 수 있습니다. 종료 상태에서 알림을 눌러 시작한 경우도 최근 notification response를 처리합니다.
+- Expo가 발급한 push ticket ID는 서버에 저장하고 약 15분 뒤 receipt를 확인해 `DeviceNotRegistered` 토큰을 제거합니다.
 - 같은 급등 목록을 여러 화면에서 조회할 때 네이버에 중복 요청하지 않도록 서버에서 45초간 후보 목록을 캐시합니다.
 
 ## 개인화 홈 기능
@@ -171,7 +172,7 @@ OpenAI API 키가 없어도 앱의 시세, 급등 탐지, 일정, 관심종목, 
 
 ```bash
 MARKET_PULSE_URL=https://your-service.up.railway.app \
-MARKET_PULSE_API_KEY=your-secret \
+MARKET_PULSE_PUBLISH_KEY=your-publisher-secret \
 npm run publish-report -- report.json report.pdf
 ```
 
@@ -181,7 +182,7 @@ JSON 형식은 `examples/report-template.json`을 기준으로 사용합니다. 
 
 ## 보고서 자동 저장 API
 
-08:00/08:50 보고서 생성기가 Market Pulse 서버에 결과를 넣을 수 있도록 저장 API가 준비되어 있습니다. 서버에 `MARKET_PULSE_API_KEY`를 설정했다면 아래 쓰기 요청에는 동일한 `X-Market-Pulse-Key` 헤더가 필요합니다.
+08:00/08:50 보고서 생성기가 Market Pulse 서버에 결과를 넣을 수 있도록 저장 API가 준비되어 있습니다. 가능하면 앱용 `MARKET_PULSE_API_KEY`와 별도로 `MARKET_PULSE_PUBLISH_KEY`를 설정하고, 보고서 게시·PDF 업로드·삭제에는 게시키를 사용합니다.
 
 ### 1. 앱용 요약 저장
 
@@ -232,12 +233,15 @@ JSON 형식은 `examples/report-template.json`을 기준으로 사용합니다. 
 
 ## 서버 공개 배포 시 보안
 
-로컬 네트워크에서만 사용할 때는 API 키 없이 실행할 수 있습니다. 서버를 인터넷에 공개할 경우에는 관심종목 변경과 푸시 토큰 등록 같은 쓰기 요청을 보호하기 위해 같은 키를 서버와 앱에 설정하는 것을 권장합니다.
+로컬 개발에서는 API 키 없이 실행할 수 있지만, `NODE_ENV=production`에서는 `MARKET_PULSE_API_KEY`가 반드시 필요합니다.
 
-- 서버: `MARKET_PULSE_API_KEY=<긴 임의 문자열>`
-- 모바일: `EXPO_PUBLIC_API_KEY=<같은 문자열>`
+- 앱 접근키: 서버 `MARKET_PULSE_API_KEY=<긴 임의 문자열>` / 모바일 `EXPO_PUBLIC_API_KEY=<같은 값>`
+- 게시 관리자키: 서버 `MARKET_PULSE_PUBLISH_KEY=<별도의 긴 임의 문자열>` 권장
+- production의 `/api/*` 읽기·쓰기 요청은 인증을 요구합니다.
+- 보고서 게시·PDF 업로드·보고서 삭제·수동 일정 등록은 게시 관리자키를 사용합니다.
+- PDF 원문은 앱이 인증된 API로 5분짜리 서명 URL을 발급받은 뒤 브라우저/뷰어로 엽니다.
 
-키가 설정되면 쓰기 요청은 `X-Market-Pulse-Key` 헤더가 일치해야 처리됩니다. 읽기 전용 시세/급등/보고서 API는 그대로 조회할 수 있습니다.
+`EXPO_PUBLIC_API_KEY`는 APK에 포함되므로 완전한 비밀로 간주할 수 없습니다. 게시 관리자키는 모바일 앱에 절대 포함하지 않습니다.
 
 `DATA_DIR`를 지정하면 관심종목과 푸시 토큰 JSON 저장 위치를 바꿀 수 있으므로, 클라우드 배포 시 영구 볼륨 경로를 연결할 수 있습니다.
 
@@ -256,6 +260,7 @@ docker compose up --build
 - 컨테이너 포트: `PORT` 환경변수 또는 기본 `8787`
 - 영구 볼륨: `/data`에 마운트
 - `MARKET_PULSE_API_KEY`: 충분히 긴 임의 문자열
+- `MARKET_PULSE_PUBLISH_KEY`: 앱 키와 다른 긴 임의 문자열 권장
 - `PUSH_INTERVAL_SECONDS`: 기본 120
 - 모바일 APK의 `EXPO_PUBLIC_API_BASE_URL`: 배포된 HTTPS 서버 주소
 - 모바일 APK의 `EXPO_PUBLIC_API_KEY`: 서버와 동일한 API 키
@@ -308,7 +313,8 @@ npx eas-cli@latest build --platform android --profile preview
 
 - `PORT`: 기본값 `8787`
 - `DATA_DIR`: 관심종목/푸시 토큰 영구 저장 디렉터리. 미지정 시 `server/data`
-- `MARKET_PULSE_API_KEY`: 인터넷 공개 배포 시 쓰기 API 보호용 선택 키
+- `MARKET_PULSE_API_KEY`: production 앱 API 접근키. production에서는 필수
+- `MARKET_PULSE_PUBLISH_KEY`: 보고서 게시·PDF 업로드·삭제·수동 일정 등록용 별도 관리자키. 미설정 시 앱 키를 호환용으로 사용
 - `WATCHLIST`: 최초 실행 시 사용할 관심종목. `KR:005930:삼성전자,US:NVDA.O:NVIDIA` 형식
 - `NAVER_KR_MOVERS_URL`: 기본 국내 급등 후보 URL을 바꾸고 싶을 때 지정
 - `NAVER_US_MOVERS_URL`: 기본 미국 급등 후보 URL을 바꾸고 싶을 때 지정
