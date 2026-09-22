@@ -40,3 +40,23 @@ test('does nothing when AI scheduling is disabled', async () => {
   await scheduler.check(new Date('2026-09-21T23:03:00Z'));
   assert.equal(calls, 0);
 });
+
+
+test('backs off after a failed report attempt to protect API budget', async () => {
+  let calls = 0;
+  const scheduler = new DailyReportScheduler({
+    generateReport: async () => {
+      calls += 1;
+      throw new Error('temporary failure');
+    },
+    enabled: true,
+    retryDelayMs: 5 * 60_000,
+    logger: { error() {} },
+  });
+
+  await scheduler.check(new Date('2026-09-21T23:01:00Z'));
+  await scheduler.check(new Date('2026-09-21T23:02:00Z'));
+  await scheduler.check(new Date('2026-09-21T23:07:00Z'));
+
+  assert.equal(calls, 2);
+});
