@@ -148,6 +148,29 @@ async function loadEligibleAlerts() {
     .sort((a, b) => b.changePercent - a.changePercent);
 }
 
+async function loadCalendarEvents(days, watchlistItems, now = new Date()) {
+  const boundedDays = Math.min(Math.max(Number(days) || 7, 1), 30);
+  const usSymbols = watchlistItems
+    .filter((item) => item.market === 'US')
+    .map((item) => item.code.split('.')[0]);
+
+  const [automatic, manualEvents] = await Promise.all([
+    calendarProvider.upcoming({ days: boundedDays, symbols: usSymbols, now }).catch(() => []),
+    calendarEventStore.getAll().catch(() => []),
+  ]);
+
+  const start = now.getTime() - 86_400_000;
+  const end = now.getTime() + boundedDays * 86_400_000;
+
+  return [...automatic, ...manualEvents]
+    .filter((event, index, items) => items.findIndex((candidate) => candidate.id === event.id) === index)
+    .filter((event) => {
+      const time = Date.parse(event.startsAt);
+      return time >= start && time <= end;
+    })
+    .sort((a, b) => Date.parse(a.startsAt) - Date.parse(b.startsAt));
+}
+
 async function loadCalendarForReport(focusStocks, now = new Date()) {
   const [manualEvents, automaticEvents] = await Promise.all([
     calendarEventStore.getAll().catch(() => []),
@@ -257,6 +280,58 @@ async function handler(request, response) {
         registeredDevices: pushTokens.length,
         ai: aiStatus,
         reportScheduler: reportScheduler.active ? 'active' : 'inactive',
+      });
+    }
+
+    if (url.pathname === '/api/home/briefing') {
+      if (request.method !== 'GET') return sendJson(response, 405, { error: 'Method not allowed' });
+
+      const now = new Date();
+      const [
+        watchlistItems,
+        reports,
+        engagement,
+        alertRule,
+        movers,
+        aiStatus,
+      ] = await Promise.all([
+        watchlistStore.getAll(),
+        reportStore.getAll(),
+        engagementStore.get(),
+        alertSettingsStore.get(),
+        loadMarketMovers(['KR', 'US']),
+        aiService.status(),
+      ]);
+
+      const [focusStocks, calendarEvents] = await Promise.all([
+        buildTodayFocus({
+          provider,
+          watchlistItems,
+          reports,
+          movers,
+          now,
+        }),
+        loadCalendarEvents(7, watchlistItems, now),
+      ]);
+
+      return sendJson(response, 200, {
+        generatedAt: now.toISOString(),
+        focusStocks,
+        reports: reports.slice(0, 5),
+        engagement: buildEngagementSummary({
+          reports,
+          engagement,
+          focusStocks,
+        }),
+        weeklyReview: buildWeeklyReview({
+          engagement,
+          reports,
+          watchlistItems,
+          now,
+        }),
+        calendar: calendarEvents.slice(0, 15),
+        alertRule,
+        ai: aiStatus,
       });
     }
 
@@ -527,24 +602,12 @@ async function handler(request, response) {
     if (url.pathname === '/api/calendar') {
       if (request.method === 'GET') {
         const days = Math.min(Math.max(Number(url.searchParams.get('days') ?? 14) || 14, 1), 30);
-        const [watchlistItems, manualEvents] = await Promise.all([
-          watchlistStore.getAll(),
-          calendarEventStore.getAll(),
-        ]);
-        const usSymbols = watchlistItems
-          .filter((item) => item.market === 'US')
-          .map((item) => item.code.split('.')[0]);
-        const automatic = await calendarProvider.upcoming({ days, symbols: usSymbols });
-        const now = Date.now() - 86_400_000;
-        const end = Date.now() + days * 86_400_000;
-        const merged = [...automatic, ...manualEvents]
-          .filter((event, index, items) => items.findIndex((candidate) => candidate.id === event.id) === index)
-          .filter((event) => {
-            const time = Date.parse(event.startsAt);
-            return time >= now && time <= end;
-          })
-          .sort((a, b) => Date.parse(a.startsAt) - Date.parse(b.startsAt));
-        return sendJson(response, 200, merged);
+        const watchlistItems = await watchlistStore.getAll();
+        return sendJson(
+          response,
+          200,
+          await loadCalendarEvents(days, watchlistItems),
+        );
       }
 
       if (request.method === 'POST') {
