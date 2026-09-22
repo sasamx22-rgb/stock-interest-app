@@ -4,17 +4,20 @@ import { useFocusEffect, useRouter } from 'expo-router';
 
 import { ScreenShell } from '@/components/screen-shell';
 import { palette, spacing } from '@/constants/market-theme';
-import { getReports } from '@/lib/market-api';
+import { getEngagementSummary, getReports } from '@/lib/market-api';
 import { Report } from '@/types/market';
 
 export default function ReportsScreen() {
   const [reports, setReports] = useState<Report[]>([]);
+  const [unreadReportIds, setUnreadReportIds] = useState<string[]>([]);
   const router = useRouter();
 
   useFocusEffect(useCallback(() => {
     let active = true;
-    getReports().then((items) => {
-      if (active) setReports(items);
+    Promise.all([getReports(), getEngagementSummary()]).then(([items, engagement]) => {
+      if (!active) return;
+      setReports(items);
+      setUnreadReportIds(engagement.unreadReportIds);
     });
     return () => {
       active = false;
@@ -37,7 +40,10 @@ export default function ReportsScreen() {
       ) : reports.map((report) => (
         <View key={report.id} style={styles.card}>
           <View style={styles.topRow}>
-            <Text style={styles.type}>{report.type === 'morning' ? '08:00 모닝 브리프' : '08:50 프리마켓'}</Text>
+            <View style={styles.typeRow}>
+              <Text style={styles.type}>{report.type === 'morning' ? '08:00 모닝 브리프' : '08:50 프리마켓'}</Text>
+              {unreadReportIds.includes(report.id) ? <Text style={styles.newBadge}>NEW</Text> : null}
+            </View>
             <Text style={styles.date}>{new Date(report.publishedAt).toLocaleDateString('ko-KR')}</Text>
           </View>
           <Text style={styles.title}>{report.title}</Text>
@@ -77,7 +83,18 @@ const styles = StyleSheet.create({
   description: { color: palette.textMuted, fontSize: 14, lineHeight: 20, marginTop: spacing.sm },
   card: { backgroundColor: palette.surface, borderRadius: 20, padding: spacing.lg, borderColor: palette.border, borderWidth: 1 },
   topRow: { flexDirection: 'row', justifyContent: 'space-between', gap: spacing.md },
+  typeRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.xs, flex: 1 },
   type: { color: palette.primary, fontSize: 12, fontWeight: '900' },
+  newBadge: {
+    color: palette.warning,
+    backgroundColor: '#3A321C',
+    fontSize: 9,
+    fontWeight: '900',
+    paddingHorizontal: 6,
+    paddingVertical: 3,
+    borderRadius: 7,
+    overflow: 'hidden',
+  },
   date: { color: palette.textMuted, fontSize: 11 },
   title: { color: palette.text, fontSize: 19, fontWeight: '900', marginTop: spacing.md },
   summary: { color: palette.textMuted, fontSize: 14, lineHeight: 21, marginTop: spacing.sm },
