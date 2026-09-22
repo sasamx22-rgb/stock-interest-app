@@ -9,6 +9,7 @@ import {
   PushStatus,
   StockDetail,
   StockSearchResult,
+  TodayFocusStock,
   WatchlistItem,
 } from '@/types/market';
 
@@ -40,6 +41,19 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
   }
 
   return response.json() as Promise<T>;
+}
+
+export async function getTodayFocus(): Promise<TodayFocusStock[]> {
+  try {
+    return await request<TodayFocusStock[]>('/api/today-focus');
+  } catch {
+    return sampleWatchlist.map((quote, index) => ({
+      ...quote,
+      sources: ['watchlist'],
+      reportIds: [],
+      priorityScore: sampleWatchlist.length - index,
+    }));
+  }
 }
 
 export async function getWatchlist(): Promise<Quote[]> {
