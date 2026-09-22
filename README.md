@@ -58,6 +58,17 @@ server/  Node.js API + 교체 가능한 NaverMarketProvider
 
 기본 급등 목록 URL은 서버에 내장되어 있으며, 네이버 응답 구조가 바뀌는 경우 아래 환경변수로 대체 URL을 지정할 수 있습니다.
 
+## 서버 공개 배포 시 보안
+
+로컬 네트워크에서만 사용할 때는 API 키 없이 실행할 수 있습니다. 서버를 인터넷에 공개할 경우에는 관심종목 변경과 푸시 토큰 등록 같은 쓰기 요청을 보호하기 위해 같은 키를 서버와 앱에 설정하는 것을 권장합니다.
+
+- 서버: `MARKET_PULSE_API_KEY=<긴 임의 문자열>`
+- 모바일: `EXPO_PUBLIC_API_KEY=<같은 문자열>`
+
+키가 설정되면 쓰기 요청은 `X-Market-Pulse-Key` 헤더가 일치해야 처리됩니다. 읽기 전용 시세/급등/보고서 API는 그대로 조회할 수 있습니다.
+
+`DATA_DIR`를 지정하면 관심종목과 푸시 토큰 JSON 저장 위치를 바꿀 수 있으므로, 클라우드 배포 시 영구 볼륨 경로를 연결할 수 있습니다.
+
 ## 로컬 실행
 
 Node.js 22.13 이상이 필요합니다.
@@ -103,6 +114,8 @@ npx eas-cli@latest build --platform android --profile preview
 서버는 아래 환경변수를 선택적으로 사용합니다.
 
 - `PORT`: 기본값 `8787`
+- `DATA_DIR`: 관심종목/푸시 토큰 영구 저장 디렉터리. 미지정 시 `server/data`
+- `MARKET_PULSE_API_KEY`: 인터넷 공개 배포 시 쓰기 API 보호용 선택 키
 - `WATCHLIST`: 최초 실행 시 사용할 관심종목. `KR:005930:삼성전자,US:NVDA.O:NVIDIA` 형식
 - `NAVER_KR_MOVERS_URL`: 기본 국내 급등 후보 URL을 바꾸고 싶을 때 지정
 - `NAVER_US_MOVERS_URL`: 기본 미국 급등 후보 URL을 바꾸고 싶을 때 지정
