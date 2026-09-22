@@ -36,6 +36,8 @@ export default function WatchlistScreen() {
     setLoadingList(true);
     try {
       setWatchlist(await getWatchlistItems());
+    } catch {
+      setMessage('관심종목을 불러오지 못했습니다. 서버 연결을 확인해주세요.');
     } finally {
       setLoadingList(false);
     }
