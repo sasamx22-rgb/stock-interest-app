@@ -12,6 +12,7 @@ export default function ReportsScreen() {
   const [unreadReportIds, setUnreadReportIds] = useState<string[]>([]);
   const [loadError, setLoadError] = useState(false);
   const [readStateError, setReadStateError] = useState(false);
+  const [pdfMessage, setPdfMessage] = useState('');
   const router = useRouter();
 
   useFocusEffect(useCallback(() => {
@@ -52,6 +53,7 @@ export default function ReportsScreen() {
         {readStateError && !loadError ? (
           <Text style={styles.stateWarning}>읽음 상태를 확인하지 못해 NEW 표시를 잠시 생략합니다.</Text>
         ) : null}
+        {pdfMessage ? <Text style={styles.stateWarning}>{pdfMessage}</Text> : null}
       </View>
 
       {loadError ? (
@@ -93,8 +95,17 @@ export default function ReportsScreen() {
               disabled={!report.pdfUrl}
               onPress={async () => {
                 if (!report.pdfUrl) return;
-                const url = await getReportPdfUrl(report.id);
-                if (url) await Linking.openURL(url);
+                setPdfMessage('');
+                const url = await getReportPdfUrl(report.id, report.pdfUrl);
+                if (!url) {
+                  setPdfMessage('PDF 링크를 열 수 없습니다.');
+                  return;
+                }
+                try {
+                  await Linking.openURL(url);
+                } catch {
+                  setPdfMessage('PDF 뷰어를 열지 못했습니다.');
+                }
               }}
               style={[styles.pdfButton, !report.pdfUrl && styles.pdfButtonDisabled]}>
               <Text style={[styles.pdfButtonText, !report.pdfUrl && styles.pdfButtonTextDisabled]}>
