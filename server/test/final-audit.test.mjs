@@ -173,3 +173,37 @@ test('two budget Store instances enforce one daily limit concurrently', async ()
     assert.equal((await stores[0].get()).calls, 12);
   } finally { await rm(directory, { recursive: true, force: true }); }
 });
+
+
+test('absolute tradeVolume is not interpreted as a volume ratio', () => {
+  const quote = normalizeBasicQuote({
+    closePrice: '10000',
+    fluctuationsRatio: '1.2',
+    tradeVolume: '14286739',
+    localTradedAt: '2026-09-23T09:30:00+09:00',
+  }, '005930');
+  assert.equal(quote.volume, 14286739);
+  assert.equal(quote.volumeRatio, 0);
+});
+
+test('watchlist throws when every upstream quote request fails', async () => {
+  const provider = new NaverMarketProvider();
+  provider.quote = async () => { throw new Error('upstream'); };
+  await assert.rejects(
+    provider.watchlist([{ code: '005930', name: '삼성전자' }, { code: '000660', name: 'SK하이닉스' }]),
+    /failed for all symbols/,
+  );
+});
+
+test('error-shaped ranking payload is not cached as an empty market', async () => {
+  let calls = 0;
+  const provider = new NaverMarketProvider({
+    fetchImpl: async () => {
+      calls += 1;
+      return { ok: true, json: async () => ({ success: false, error: 'schema changed' }) };
+    },
+  });
+  await assert.rejects(provider.movers('KR', 'https://example.test/ranking'), /could not be normalized/);
+  await assert.rejects(provider.movers('KR', 'https://example.test/ranking'), /could not be normalized/);
+  assert.equal(calls, 2);
+});
