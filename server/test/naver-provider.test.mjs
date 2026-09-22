@@ -130,3 +130,35 @@ test('uses Naver public stock autocomplete for watchlist search', async () => {
   );
   assert.equal(result[0].code, '005930');
 });
+
+
+test('caches mover feed briefly to avoid duplicate Naver requests', async () => {
+  let calls = 0;
+  const provider = new NaverMarketProvider({
+    fetchImpl: async () => {
+      calls += 1;
+      return {
+        ok: true,
+        json: async () => ({
+          data: {
+            stocks: [
+              {
+                itemCode: '000660',
+                stockName: 'SK하이닉스',
+                closePrice: '294,500',
+                fluctuationsRatio: '5.84',
+                volumeRatio: '3.36',
+              },
+            ],
+          },
+        }),
+      };
+    },
+  });
+
+  const url = 'https://example.test/movers';
+  await provider.movers('KR', url);
+  await provider.movers('KR', url);
+
+  assert.equal(calls, 1);
+});
