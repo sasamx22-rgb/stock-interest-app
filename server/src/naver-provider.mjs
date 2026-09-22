@@ -4,6 +4,26 @@ import { summarizeMovementReason } from './movement-reason.mjs';
 
 const DEFAULT_TIMEOUT_MS = 7_000;
 
+async function settleWithConcurrency(items, limit, mapper) {
+  const results = new Array(items.length);
+  let nextIndex = 0;
+  const workers = Array.from(
+    { length: Math.min(Math.max(1, limit), items.length) },
+    async () => {
+      while (nextIndex < items.length) {
+        const index = nextIndex++;
+        try {
+          results[index] = { status: 'fulfilled', value: await mapper(items[index], index) };
+        } catch (reason) {
+          results[index] = { status: 'rejected', reason };
+        }
+      }
+    },
+  );
+  await Promise.all(workers);
+  return results;
+}
+
 function numberFrom(value, fallback = 0) {
   if (typeof value === 'number') return Number.isFinite(value) ? value : fallback;
   if (typeof value !== 'string') return fallback;
@@ -324,10 +344,13 @@ export class NaverMarketProvider {
     this.moverCache = new BoundedCache();
     this.priceHistoryCache = new BoundedCache();
     this.newsCache = new BoundedCache();
+    this.inFlight = new Map();
   }
 
   async fetchJson(url) {
-    const response = await this.fetchImpl(url, {
+    if (this.inFlight.has(url)) return this.inFlight.get(url);
+    const operation = (async () => {
+      const response = await this.fetchImpl(url, {
       headers: {
         Accept: 'application/json',
         Referer: 'https://stock.naver.com/',
@@ -335,8 +358,15 @@ export class NaverMarketProvider {
       },
       signal: AbortSignal.timeout(this.timeoutMs),
     });
-    if (!response.ok) throw new Error(`Naver request failed: ${response.status}`);
-    return response.json();
+      if (!response.ok) throw new Error(`Naver request failed: ${response.status}`);
+      return response.json();
+    })();
+    this.inFlight.set(url, operation);
+    try {
+      return await operation;
+    } finally {
+      if (this.inFlight.get(url) === operation) this.inFlight.delete(url);
+    }
   }
 
   async quote(naverCode, fallbackName) {
@@ -350,7 +380,11 @@ export class NaverMarketProvider {
   }
 
   async watchlist(items) {
-    const settled = await Promise.allSettled(items.map((item) => this.quote(item.code, item.name)));
+    const settled = await settleWithConcurrency(
+      items,
+      6,
+      (item) => this.quote(item.code, item.name),
+    );
     return settled.flatMap((result) => result.status === 'fulfilled' ? [result.value] : []);
   }
 
@@ -389,8 +423,10 @@ export class NaverMarketProvider {
     if (targets.length === 0) return quotes;
 
     const enriched = [...quotes];
-    const settled = await Promise.allSettled(
-      targets.map(({ quote }) => this.priceHistory(quote.naverCode, quote.market)),
+    const settled = await settleWithConcurrency(
+      targets,
+      5,
+      ({ quote }) => this.priceHistory(quote.naverCode, quote.market),
     );
 
     settled.forEach((result, targetIndex) => {
