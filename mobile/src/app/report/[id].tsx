@@ -27,10 +27,9 @@ export default function ReportDetailScreen() {
     let active = true;
     getReport(id)
       .then((value) => {
+        if (!active) return;
+        setState({ id, status: 'ready', report: value });
         if (value) void markReportRead(id);
-        if (active) {
-          setState({ id, status: 'ready', report: value });
-        }
       })
       .catch(() => {
         if (active) setState({ id, status: 'error', report: null });
