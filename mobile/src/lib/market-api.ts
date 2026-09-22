@@ -10,17 +10,22 @@ import {
 
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL?.replace(/\/$/, '');
 
-async function request<T>(path: string, init?: RequestInit): Promise<T> {
+type RequestOptions = {
+  method?: 'GET' | 'POST' | 'DELETE';
+  body?: string;
+};
+
+async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
   if (!API_BASE_URL) {
     throw new Error('API base URL is not configured');
   }
 
   const response = await fetch(`${API_BASE_URL}${path}`, {
-    ...init,
+    method: options.method ?? 'GET',
+    body: options.body,
     headers: {
       Accept: 'application/json',
-      ...(init?.body ? { 'Content-Type': 'application/json' } : {}),
-      ...init?.headers,
+      ...(options.body ? { 'Content-Type': 'application/json' } : {}),
     },
   });
 
