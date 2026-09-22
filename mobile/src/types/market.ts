@@ -150,3 +150,14 @@ export type AiStatus = {
   callsToday: number;
   dailyLimit: number;
 };
+
+export type HomeBriefing = {
+  generatedAt: string;
+  focusStocks: TodayFocusStock[];
+  reports: Report[];
+  engagement: EngagementSummary;
+  weeklyReview: WeeklyReview;
+  calendar: CalendarEvent[];
+  alertRule: AlertRule;
+  ai: AiStatus;
+};
