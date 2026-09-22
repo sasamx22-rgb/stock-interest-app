@@ -1,5 +1,6 @@
 import { sampleMovers, sampleReports, sampleWatchlist } from '@/data/sample-data';
 import {
+  AlertRule,
   Market,
   MarketMover,
   Quote,
@@ -135,6 +136,21 @@ export async function registerPushToken(
 
 export async function getPushStatus(): Promise<PushStatus> {
   return request<PushStatus>('/api/push/status');
+}
+
+export async function getAlertSettings(): Promise<AlertRule> {
+  try {
+    return await request<AlertRule>('/api/settings/alerts');
+  } catch {
+    return { changePercent: 5, volumeRatio: 3 };
+  }
+}
+
+export async function updateAlertSettings(rule: AlertRule): Promise<AlertRule> {
+  return request<AlertRule>('/api/settings/alerts', {
+    method: 'POST',
+    body: JSON.stringify(rule),
+  });
 }
 
 export async function getMovers(market?: Market): Promise<MarketMover[]> {
