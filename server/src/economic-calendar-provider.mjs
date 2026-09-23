@@ -259,7 +259,7 @@ export class EconomicCalendarProvider {
       return time >= now.getTime() - 86_400_000 && time <= end.getTime();
     });
 
-    const sourceCacheKey = dateKey(now);
+    const sourceCacheKey = `${dateKey(now)}:${symbolSet.size > 0 ? 'corporate' : 'macro'}`;
     const cached = this.cache.get(sourceCacheKey);
     let externalEvents;
 
