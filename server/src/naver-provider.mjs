@@ -438,6 +438,7 @@ export class NaverMarketProvider {
     const url = `https://stock.naver.com/api/autocomplete/search/autoComplete?query=${encodeURIComponent(clean)}&target=stock`;
     const payload = await this.fetchJson(url);
     const items = normalizeSearchPayload(payload);
+    assertFeedResult(payload, items, 'Naver search');
     this.searchCache.set(cacheKey, { fetchedAt: now, items });
     return items;
   }
