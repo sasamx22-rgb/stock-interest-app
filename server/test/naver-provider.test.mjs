@@ -322,3 +322,18 @@ test('caches stock autocomplete results for repeated report ticker resolution', 
   await provider.searchStocks('삼성전자');
   assert.equal(calls, 1);
 });
+
+
+test('does not cache an unrecognized empty search response', async () => {
+  let calls = 0;
+  const provider = new NaverMarketProvider({
+    fetchImpl: async () => {
+      calls += 1;
+      return { ok: true, json: async () => ({ renamedRows: [{ code_v2: '005930' }] }) };
+    },
+  });
+
+  await assert.rejects(provider.searchStocks('삼성전자'), /could not be normalized/);
+  await assert.rejects(provider.searchStocks('삼성전자'), /could not be normalized/);
+  assert.equal(calls, 2);
+});
