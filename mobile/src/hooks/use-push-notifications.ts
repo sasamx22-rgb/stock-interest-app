@@ -6,6 +6,8 @@ import { useRouter } from 'expo-router';
 
 import { registerPushToken } from '@/lib/market-api';
 
+const SURGE_ALERTS_ENABLED = process.env.EXPO_PUBLIC_SURGE_ALERTS_ENABLED === 'true';
+
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowBanner: true,
@@ -59,6 +61,8 @@ export function usePushNotifications() {
   const handledResponseIds = useRef<Set<string>>(new Set());
 
   useEffect(() => {
+    if (!SURGE_ALERTS_ENABLED) return;
+
     let cancelled = false;
 
     const register = async () => {
