@@ -60,3 +60,31 @@ test('persists and upserts reports by id', async () => {
     await rm(directory, { recursive: true, force: true });
   }
 });
+
+
+test('clears only the PDF URL while keeping the report', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'market-pulse-report-'));
+  const filePath = join(directory, 'reports.json');
+
+  try {
+    const store = new ReportStore({ filePath, defaults: [] });
+    await store.upsert({
+      id: '2026-09-22-morning',
+      title: '모닝 브리프',
+      publishedAt: '2026-09-22T08:00:00+09:00',
+      type: 'morning',
+      summary: '핵심 요약',
+      pdfUrl: '/api/reports/2026-09-22-morning/pdf',
+    });
+
+    const cleared = await store.clearPdfUrl('2026-09-22-morning');
+    assert.equal(cleared.id, '2026-09-22-morning');
+    assert.equal(cleared.pdfUrl, undefined);
+
+    const persisted = await store.getById('2026-09-22-morning');
+    assert.equal(persisted.title, '모닝 브리프');
+    assert.equal(persisted.pdfUrl, undefined);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
