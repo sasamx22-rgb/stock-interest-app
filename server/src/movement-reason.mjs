@@ -104,10 +104,6 @@ export function summarizeMovementReason(quote, news = [], events = []) {
     : representativeEvent
       ? '주요 일정'
       : '주요 뉴스';
-  const volumeText = quote.volumeRatio >= 2
-    ? ` 거래량도 최근 기준의 약 ${quote.volumeRatio.toFixed(1)}배로 늘었습니다.`
-    : '';
-
   const evidenceText = representativeEvent
     ? `최근 일정·공시에서는 ${categoryLabel} 관련 “${compactTitle(representative.title)}”가 확인됩니다.`
     : `최근 뉴스에서는 ${categoryLabel} 관련 이슈가 가장 눈에 띄며, 대표적으로 “${compactTitle(representative.title)}”가 포착됩니다.`;
@@ -117,8 +113,7 @@ export function summarizeMovementReason(quote, news = [], events = []) {
     label: categoryLabel,
     summary:
       `${quote.name}은 현재 ${directionLabel(quote.changePercent)}(${quote.changePercent >= 0 ? '+' : ''}${quote.changePercent.toFixed(2)}%)입니다. `
-      + evidenceText
-      + volumeText,
+      + evidenceText,
     confidence: representativeEvent || dominant?.count >= 2 ? 'medium' : 'low',
     evidence: [
       ...eventEvidence.slice(0, 2).map((item) => ({
