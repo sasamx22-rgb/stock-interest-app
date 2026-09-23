@@ -3,6 +3,8 @@ import { ColorValue, Text } from 'react-native';
 
 import { palette } from '@/constants/market-theme';
 
+const SURGE_ALERTS_ENABLED = process.env.EXPO_PUBLIC_SURGE_ALERTS_ENABLED === 'true';
+
 const icon = (glyph: string, color: ColorValue) => <Text style={{ color, fontSize: 20 }}>{glyph}</Text>;
 
 export default function TabLayout() {
@@ -31,7 +33,9 @@ export default function TabLayout() {
       />
       <Tabs.Screen
         name="movers"
-        options={{ title: '급등', tabBarIcon: ({ color }) => icon('↗', color) }}
+        options={SURGE_ALERTS_ENABLED
+          ? { title: '급등', tabBarIcon: ({ color }) => icon('↗', color) }
+          : { href: null }}
       />
       <Tabs.Screen
         name="calendar"
