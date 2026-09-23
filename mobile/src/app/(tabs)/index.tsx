@@ -12,7 +12,6 @@ import {
   isLiveDataConfigured,
 } from '@/lib/market-api';
 import {
-  AlertRule,
   CalendarEvent,
   EngagementSummary,
   Report,
@@ -56,7 +55,6 @@ export default function DashboardScreen() {
     dailyPicks: [],
   });
   const [weeklyReview, setWeeklyReview] = useState<WeeklyReview | null>(null);
-  const [rule, setRule] = useState<AlertRule>({ changePercent: 5, volumeRatio: 3 });
   const [refreshedAt, setRefreshedAt] = useState(0);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
@@ -71,7 +69,6 @@ export default function DashboardScreen() {
       if (requestId !== refreshGeneration.current) return;
       setFocusStocks(briefing.focusStocks);
       setReports(briefing.reports);
-      setRule(briefing.alertRule);
       setEngagement(briefing.engagement);
       setWeeklyReview(briefing.weeklyReview);
       setCalendar(briefing.calendar);
@@ -91,7 +88,6 @@ export default function DashboardScreen() {
     };
   }, [refresh]));
 
-  const alertCount = focusStocks.filter((item) => item.alertEligible).length;
   const topMover = useMemo(
     () => [...focusStocks].sort((a, b) => Math.abs(b.changePercent) - Math.abs(a.changePercent))[0],
     [focusStocks],
@@ -137,9 +133,7 @@ export default function DashboardScreen() {
                     : 'NOT CONFIGURED'}
           </Text>
         </View>
-        <Text style={styles.ruleText}>
-          급등 기준 +{rule.changePercent}% · 거래량 {rule.volumeRatio}배
-        </Text>
+        <Text style={styles.ruleText}>관심종목 · 보고서 중심</Text>
       </View>
 
       {loading ? <ActivityIndicator color={palette.primary} /> : null}
@@ -184,9 +178,9 @@ export default function DashboardScreen() {
         <SectionTitle title="오늘 시장 한눈에" />
         <View style={styles.marketCard}>
           <View style={styles.marketMetric}>
-            <Text style={styles.marketMetricLabel}>급등 신호</Text>
-            <Text style={styles.marketMetricValue}>{alertCount}개</Text>
-            <Text style={styles.marketMetricCaption}>현재 설정 기준 충족</Text>
+            <Text style={styles.marketMetricLabel}>확인 종목</Text>
+            <Text style={styles.marketMetricValue}>{focusStocks.length}개</Text>
+            <Text style={styles.marketMetricCaption}>관심종목 + 보고서 기반</Text>
           </View>
           <View style={styles.marketDivider} />
           <View style={styles.marketMetric}>
