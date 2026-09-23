@@ -25,12 +25,14 @@ const aiDailyLimit = Math.max(0, Number(process.env.OPENAI_DAILY_LIMIT ?? 12) ||
 
 const apiKey = process.env.MARKET_PULSE_API_KEY?.trim() ?? '';
 const publishKey = process.env.MARKET_PULSE_PUBLISH_KEY?.trim() ?? '';
+const surgeAlertsEnabled = process.env.SURGE_ALERTS_ENABLED === 'true';
 
 export const config = {
   port: Number(process.env.PORT ?? 8787),
   pushIntervalMs: pushIntervalSeconds * 1000,
   apiKey,
   publishKey,
+  surgeAlertsEnabled,
   dataDir: envOrDefault(process.env.DATA_DIR, DEFAULT_DATA_DIR),
   ai: {
     apiKey: process.env.OPENAI_API_KEY?.trim() ?? '',
