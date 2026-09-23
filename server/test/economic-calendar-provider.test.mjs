@@ -85,3 +85,27 @@ test('skips Nasdaq calendar requests when there are no US watchlist symbols', as
   assert.equal(calls.length, 1);
   assert.match(calls[0], /bls\.ics$/);
 });
+
+
+test('macro-only cache does not suppress later corporate calendar loading', async () => {
+  const calls = [];
+  const provider = new EconomicCalendarProvider({
+    fetchImpl: async (url) => {
+      calls.push(String(url));
+      if (String(url).endsWith('.ics')) {
+        return { ok: true, text: async () => 'BEGIN:VCALENDAR\nEND:VCALENDAR' };
+      }
+      return {
+        ok: true,
+        json: async () => ({ data: { rows: [{ symbol: 'NVDA', time: 'After Hours' }] } }),
+      };
+    },
+  });
+
+  const now = new Date('2026-09-23T00:00:00Z');
+  await provider.upcoming({ days: 7, symbols: [], now });
+  assert.equal(calls.length, 1);
+
+  await provider.upcoming({ days: 2, symbols: ['NVDA'], now });
+  assert.equal(calls.length, 18);
+});
