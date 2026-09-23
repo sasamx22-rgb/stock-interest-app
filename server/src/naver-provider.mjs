@@ -1,3 +1,4 @@
+import { assertFeedResult } from './feed-validation.mjs';
 import { BoundedCache } from './bounded-cache.mjs';
 import { DEFAULT_ALERT_RULE } from './alerts.mjs';
 import { summarizeMovementReason } from './movement-reason.mjs';
@@ -134,15 +135,6 @@ export function normalizeBasicQuote(payload, requestedCode, fallbackName = reque
     updatedAt: source.localTradedAt ?? source.updatedAt ?? source.tradeTime ?? '',
     source: 'naver',
   };
-}
-
-function hasNonEmptyArray(value) {
-  if (!value || typeof value !== 'object') return false;
-  if (Array.isArray(value)) {
-    if (value.length > 0) return true;
-    return false;
-  }
-  return Object.values(value).some((child) => hasNonEmptyArray(child));
 }
 
 function walkForStockObjects(value, output = []) {
@@ -442,7 +434,9 @@ export class NaverMarketProvider {
       ? `https://stock.naver.com/api/stockSecurity/items/v2/domestic/${encodeURIComponent(naverCode)}/daily-prices?size=30`
       : `https://stock.naver.com/api/securityService/stock/${encodeURIComponent(naverCode)}/price?page=1&pageSize=30`;
 
-    const items = normalizePriceHistory(await this.fetchJson(url));
+    const payload = await this.fetchJson(url);
+    const items = normalizePriceHistory(payload);
+    assertFeedResult(payload, items, 'Naver history');
     this.priceHistoryCache.set(cacheKey, { fetchedAt: now, items });
     return items;
   }
@@ -510,7 +504,9 @@ export class NaverMarketProvider {
       ? `https://stock.naver.com/api/domestic/detail/news?itemCode=${encodeURIComponent(naverCode)}&page=1&pageSize=10`
       : `https://stock.naver.com/api/foreign/worldStock/list?reutersCode=${encodeURIComponent(naverCode)}&page=1&pageSize=10`;
 
-    const items = normalizeNewsPayload(await this.fetchJson(url));
+    const payload = await this.fetchJson(url);
+    const items = normalizeNewsPayload(payload);
+    assertFeedResult(payload, items, 'Naver news');
     this.newsCache.set(cacheKey, { fetchedAt: now, items });
     return items;
   }
@@ -552,25 +548,7 @@ export class NaverMarketProvider {
 
     const payload = await this.fetchJson(url);
     const items = normalizeRankingPayload(payload, market);
-    const candidateObjects = walkForStockObjects(payload);
-    const errorShaped = Boolean(
-      payload
-      && typeof payload === 'object'
-      && !Array.isArray(payload)
-      && (
-        payload.error
-        || payload.errors
-        || payload.success === false
-        || payload.status === 'error'
-      )
-    );
-    const schemaMismatch = items.length === 0 && (
-      candidateObjects.length > 0
-      || hasNonEmptyArray(payload)
-    );
-    if (errorShaped || schemaMismatch) {
-      throw new Error(`Naver ${market} ranking response could not be normalized`);
-    }
+    assertFeedResult(payload, items, `Naver ${market} ranking`);
     this.moverCache.set(url, { fetchedAt: now, items });
     return items;
   }
