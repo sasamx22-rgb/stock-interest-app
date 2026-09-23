@@ -69,17 +69,19 @@ export class ReportPdfStore {
     return expired.sort();
   }
 
-  async removeIfExpired(id, now = Date.now()) {
-    const filePath = this.pathFor(id);
+  async isExpired(id, now = Date.now()) {
     try {
-      const metadata = await stat(filePath);
-      if (metadata.mtimeMs > now - this.retentionMs) return false;
-      await unlink(filePath);
-      return true;
+      const metadata = await stat(this.pathFor(id));
+      return metadata.mtimeMs <= now - this.retentionMs;
     } catch (error) {
       if (error?.code === 'ENOENT') return false;
       throw error;
     }
+  }
+
+  async removeIfExpired(id, now = Date.now()) {
+    if (!(await this.isExpired(id, now))) return false;
+    return this.remove(id);
   }
 
   async remove(id) {
