@@ -181,6 +181,7 @@ function sendJson(response, status, body) {
 }
 
 async function loadMarketMovers(markets) {
+  if (!config.surgeAlertsEnabled) return [];
   const quotes = (await Promise.all(
     markets.map((value) => provider.movers(value, config.moverUrls[value])),
   )).flat();
@@ -308,6 +309,7 @@ async function handler(request, response) {
         provider,
         focusStocks,
         calendarEvents,
+        useVolumeRatio: config.surgeAlertsEnabled,
       });
 
       return sendJson(response, 200, {
@@ -588,7 +590,7 @@ async function handler(request, response) {
 
       const shouldEnhanceWithAi = aiService.enabled && (
         Math.abs(detail.quote.changePercent) >= 2
-        || detail.quote.volumeRatio >= 2
+        || (config.surgeAlertsEnabled && detail.quote.volumeRatio >= 2)
         || relevantEvents.length > 0
       );
 
@@ -668,8 +670,9 @@ async function handler(request, response) {
       if (request.method !== 'GET') return sendJson(response, 405, { error: 'Method not allowed' });
       const tokens = await pushTokenStore.getAll();
       return sendJson(response, 200, {
+        featureEnabled: config.surgeAlertsEnabled,
         registeredDevices: tokens.length,
-        monitorActive: pushMonitor.active,
+        monitorActive: config.surgeAlertsEnabled && pushMonitor.active,
         intervalSeconds: Math.round(config.pushIntervalMs / 1000),
       });
     }
@@ -728,8 +731,10 @@ const server = createServer(handler);
 
 server.listen(config.port, '0.0.0.0', () => {
   console.log(`Market Pulse API listening on http://0.0.0.0:${server.address().port}`);
-  pushMonitor.start();
-  pushReceiptMonitor.start();
+  if (config.surgeAlertsEnabled) {
+    pushMonitor.start();
+    pushReceiptMonitor.start();
+  }
 });
 
 for (const signal of ['SIGINT', 'SIGTERM']) {
