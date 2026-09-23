@@ -39,8 +39,10 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
   for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 20_000);
+    let response: Response;
+
     try {
-      const response = await fetch(`${API_BASE_URL}${path}`, {
+      response = await fetch(`${API_BASE_URL}${path}`, {
         signal: controller.signal,
         method,
         body: options.body,
@@ -50,24 +52,25 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
           ...(API_KEY ? { 'X-Market-Pulse-Key': API_KEY } : {}),
         },
       });
-
-      if (!response.ok) {
-        const retryable = [502, 503, 504].includes(response.status);
-        if (retryable && attempt + 1 < maxAttempts) {
-          await new Promise((resolve) => setTimeout(resolve, 1_000));
-          continue;
-        }
-        throw new Error(`Market API request failed: ${response.status}`);
-      }
-
-      return await response.json() as T;
     } catch (error) {
       lastError = error;
       if (attempt + 1 >= maxAttempts) throw error;
       await new Promise((resolve) => setTimeout(resolve, 1_000));
+      continue;
     } finally {
       clearTimeout(timeout);
     }
+
+    if (!response.ok) {
+      const retryable = [502, 503, 504].includes(response.status);
+      if (retryable && attempt + 1 < maxAttempts) {
+        await new Promise((resolve) => setTimeout(resolve, 1_000));
+        continue;
+      }
+      throw new Error(`Market API request failed: ${response.status}`);
+    }
+
+    return await response.json() as T;
   }
 
   throw lastError instanceof Error ? lastError : new Error('Market API request failed');
