@@ -361,6 +361,8 @@ export class NaverMarketProvider {
     this.fetchImpl = fetchImpl;
     this.timeoutMs = timeoutMs;
     this.moverCache = new BoundedCache();
+    this.quoteCache = new BoundedCache();
+    this.searchCache = new BoundedCache();
     this.priceHistoryCache = new BoundedCache();
     this.newsCache = new BoundedCache();
     this.inFlight = new Map();
@@ -390,12 +392,21 @@ export class NaverMarketProvider {
 
   async quote(naverCode, fallbackName) {
     const market = marketFromCode(naverCode);
+    const cacheKey = `${market}:${naverCode}`;
+    const now = Date.now();
+    const cached = this.quoteCache.get(cacheKey);
+    if (cached && now - cached.fetchedAt < 30_000) {
+      return cached.quote;
+    }
+
     const url = market === 'KR'
       ? `https://m.stock.naver.com/api/stock/${encodeURIComponent(naverCode)}/basic`
       : `https://stock.naver.com/api/securityService/stock/${encodeURIComponent(naverCode)}/basic`;
 
     const payload = await this.fetchJson(url);
-    return normalizeBasicQuote(payload, naverCode, fallbackName);
+    const quote = normalizeBasicQuote(payload, naverCode, fallbackName);
+    this.quoteCache.set(cacheKey, { fetchedAt: now, quote });
+    return quote;
   }
 
   async watchlist(items) {
@@ -417,9 +428,18 @@ export class NaverMarketProvider {
     const clean = String(query ?? '').trim();
     if (!clean) return [];
 
+    const cacheKey = clean.toLocaleLowerCase();
+    const now = Date.now();
+    const cached = this.searchCache.get(cacheKey);
+    if (cached && now - cached.fetchedAt < 6 * 60 * 60_000) {
+      return cached.items;
+    }
+
     const url = `https://stock.naver.com/api/autocomplete/search/autoComplete?query=${encodeURIComponent(clean)}&target=stock`;
     const payload = await this.fetchJson(url);
-    return normalizeSearchPayload(payload);
+    const items = normalizeSearchPayload(payload);
+    this.searchCache.set(cacheKey, { fetchedAt: now, items });
+    return items;
   }
 
   async priceHistory(naverCode, market = marketFromCode(naverCode)) {
