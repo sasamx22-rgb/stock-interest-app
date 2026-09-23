@@ -281,3 +281,44 @@ test('does not estimate volume ratio for sub-threshold price movers', async () =
   assert.equal(historyCalls, 0);
   assert.equal(quote.volumeRatio, 0);
 });
+
+
+test('caches quotes briefly across home, watchlist and detail reads', async () => {
+  let calls = 0;
+  const provider = new NaverMarketProvider({
+    fetchImpl: async () => {
+      calls += 1;
+      return {
+        ok: true,
+        json: async () => ({
+          stockName: '삼성전자',
+          closePrice: '100000',
+          fluctuationsRatio: '1.2',
+        }),
+      };
+    },
+  });
+
+  await provider.quote('005930', '삼성전자');
+  await provider.quote('005930', '삼성전자');
+  assert.equal(calls, 1);
+});
+
+test('caches stock autocomplete results for repeated report ticker resolution', async () => {
+  let calls = 0;
+  const provider = new NaverMarketProvider({
+    fetchImpl: async () => {
+      calls += 1;
+      return {
+        ok: true,
+        json: async () => ({
+          data: [{ itemCode: '005930', itemName: '삼성전자', nationType: 'KOR' }],
+        }),
+      };
+    },
+  });
+
+  await provider.searchStocks('삼성전자');
+  await provider.searchStocks('삼성전자');
+  assert.equal(calls, 1);
+});
