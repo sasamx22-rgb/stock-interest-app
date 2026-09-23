@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Linking, Pressable, StyleSheet, Text, View } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 
 import { ScreenShell } from '@/components/screen-shell';
 import { palette, spacing } from '@/constants/market-theme';
@@ -50,7 +50,7 @@ export default function StockDetailScreen() {
     detail: StockDetail | null;
   }>({ key: undefined, status: 'ready', detail: null });
 
-  useEffect(() => {
+  useFocusEffect(useCallback(() => {
     if (!market || !code) return;
 
     let active = true;
@@ -74,7 +74,7 @@ export default function StockDetailScreen() {
     return () => {
       active = false;
     };
-  }, [market, code, name]);
+  }, [market, code, name]));
 
   const loading = Boolean(resourceKey) && state.key !== resourceKey;
   const loadError = Boolean(resourceKey) && state.key === resourceKey && state.status === 'error';

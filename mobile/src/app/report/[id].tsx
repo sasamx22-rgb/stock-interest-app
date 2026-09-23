@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { ActivityIndicator, Linking, Pressable, StyleSheet, Text, View } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 
 import { ScreenShell } from '@/components/screen-shell';
 import { palette, spacing } from '@/constants/market-theme';
@@ -22,7 +22,7 @@ export default function ReportDetailScreen() {
   }>({ id: undefined, status: 'ready', report: null });
   const [pdfMessage, setPdfMessage] = useState('');
 
-  useEffect(() => {
+  useFocusEffect(useCallback(() => {
     if (!id) return;
 
     let active = true;
@@ -39,7 +39,7 @@ export default function ReportDetailScreen() {
     return () => {
       active = false;
     };
-  }, [id]);
+  }, [id]));
 
   const loading = Boolean(id) && state.id !== id;
   const report = state.id === id ? state.report : null;

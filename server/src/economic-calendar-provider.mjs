@@ -1,3 +1,4 @@
+import { hasFeedError } from './feed-validation.mjs';
 import { BoundedCache } from './bounded-cache.mjs';
 const BLS_ICS_URL = 'https://www.bls.gov/schedule/news_release/bls.ics';
 
@@ -83,6 +84,9 @@ function parseIcsDate(value, timeZone = 'America/New_York') {
 }
 
 export function parseBlsIcs(ics) {
+  if (typeof ics !== 'string' || !ics.includes('BEGIN:VCALENDAR') || !ics.includes('END:VCALENDAR')) {
+    throw new Error('BLS calendar response is not an ICS calendar');
+  }
   const blocks = unfoldIcs(ics).split('BEGIN:VEVENT').slice(1);
 
   return blocks.flatMap((block, index) => {
@@ -124,7 +128,14 @@ function normalizeNasdaqRows(payload) {
     data?.calendar?.rows,
     data?.calendar?.data,
   ];
-  return candidates.find(Array.isArray) ?? [];
+  if (hasFeedError(payload) || (payload?.status?.rCode != null && Number(payload.status.rCode) !== 200)) {
+    throw new Error('Nasdaq calendar provider returned an error');
+  }
+  const rows = candidates.find(Array.isArray);
+  if (rows) return rows;
+  // Nasdaq may explicitly return null data on dates without events.
+  if (payload?.data === null && Number(payload?.status?.rCode) === 200) return [];
+  throw new Error('Nasdaq calendar schema is unrecognized');
 }
 
 function textValue(value) {
@@ -286,7 +297,7 @@ export class EconomicCalendarProvider {
 
     events.push(...corporate);
 
-    if (externalFailures > 0 && externalSuccesses === 0 && events.length === 0) {
+    if (externalFailures > 0 && externalSuccesses === 0) {
       throw new Error('Economic calendar providers failed');
     }
 
