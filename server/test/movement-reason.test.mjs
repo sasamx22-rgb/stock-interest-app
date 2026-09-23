@@ -20,7 +20,7 @@ test('summarizes earnings-related movement cautiously', () => {
   assert.equal(result.label, '실적·가이던스');
   assert.equal(result.confidence, 'medium');
   assert.match(result.summary, /최근 뉴스에서는 실적·가이던스/);
-  assert.match(result.summary, /3.4배/);
+  assert.doesNotMatch(result.summary, /3\.4배|거래량/);
 });
 
 test('returns low-confidence message when no news exists', () => {
