@@ -10,13 +10,15 @@
 | 검증 | 이번 실행 결과 / 한계 |
 |---|---|
 | 원본 `npm test` | 104/104 통과. 과거 CI 결과 재인용 아님 |
-| 독립 추가 테스트 | 12개 통과: retry matrix, 본문 timeout 결함, 일정 동시 요청/부분 장애 캐시, production 서버/재시작 |
+| 독립 추가 테스트 | 12개 통과, 전체 재실행 116/116 통과: retry matrix, 본문 timeout 결함, 일정 동시 요청/부분 장애 캐시, production 서버/재시작 |
 | `npm run typecheck` | 통과 |
 | `npm run lint` | Expo lint 통과 |
 | `CI=1 npx --no-install expo export --platform android --output-dir /tmp/market-v1-android` | 통과. Hermes `.hbc` 약 2.9MB. APK native 빌드/설치는 아님 |
-| 로컬 `docker build -t market-pulse-v1-audit .` | 직접 시도, `docker: command not found`(127). Docker 실행 결과는 별도 새 감사 PR CI에서 확인 |
+| 로컬 `docker build -t market-pulse-v1-audit .` | 직접 시도, `docker: command not found`(127). 이후 [새 PR CI](https://github.com/sasamx22-rgb/stock-interest-app/actions/runs/35847532803)에서 Docker build **통과**. job 107137196910 로그의 image export/naming 완료 확인 |
 | production HTTP | 서로 다른 app/publisher key, health, 인증/권한, 저장된 보고서와 PDF, 시세/홈, 장애 응답을 child Node 서버로 실행 |
 | 재시작 | 동일 DATA_DIR에서 보고서 metadata 재게시 시 PDF 유지, 프로세스 종료/재시작 후 PDF signed GET과 관심종목 조회 성공 |
+
+검증 CI commit은 `5ecd7119e05e0c52dbee5b24e53914952e6a68b9`이며 원본 제품 코드와 동일하고 문서/테스트만 추가했다. CI Node22에서도 server116/116, typecheck, lint, Docker 전부 통과했다. Docker 이미지 실행 자체는 미검증이며 production HTTP는 로컬 Node 프로세스에서 실행했다.
 
 로컬 Node 24.19.0. CI Node 22.13.1, Docker 기반 이미지는 Node 22.13 Alpine. HTTP 테스트 외부 공급자는 통제된 mock이다. 실제 장중 Naver 계약, 실제 OpenAI 계정 권한, Railway Volume와 EAS native는 이 결과로 검증됐다고 주장하지 않는다.
 
@@ -127,6 +129,9 @@
 | L5 `server/src/daily-picks.mjs:62`, `today-focus.mjs:92,120` | **확정 범위 제약**. 보고서 미해석 후보 최대12, focus 최대20, news/top3 후보 첫8. 아홉 번째 종목의 중요한 뉴스는 점수 평가에 들어오지 않음 | 후보 기반 추천임을 명시; 비용과 균형 잡힌 후보 선택만 개선. 전체시장 순위라는 표현 금지. 차단 아님 |
 | L6 `server/src/server.mjs:721–725` | **확정**. 일부 오류의 `error.message`가 detail로 응답되어 공급자/파일 경로를 노출할 수 있음. 읽기 키 보유자가 I/O/provider failure 유발 시 확인 가능 | 외부 generic error와 내부 log 분리. 키/전체 stack 노출 증거는 없음. 차단 아님 |
 | L7 `server/src/naver-provider.mjs:99–137,393–400` | **확정 검증 부족**, 일반 UX 오발생 미확인. market은 6자리 code 형태로 추론, US route에도 숫자 6자리가 허용됨. `/api/stocks/US/005930`가 KR quote를 반환할 수 있음. 응답 종목 코드도 요청 code와 대조하지 않음 | market/code 조합 검증 및 공급자 code mismatch 거부. 일반 검색 UI의 KR/US code는 구분됨. 차단 아님 |
+| L8 `server/src/economic-calendar-provider.mjs:5–16` | **확정 장기 제약**. FOMC는 실시간 수집이 아니라 2027-12-08까지 상수. 2028년 날짜로 upcoming 호출 시 이후 FOMC 없음. 현재 수록 날짜는 [Fed 일정](https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm)과 대조했으며 미래 일정 변경 자동 반영은 안 됨 | 연간 일정 갱신/coverage 만료 경고. 현재 개인용 베타 차단 아님 |
+| L9 `mobile/src/app/report/[id].tsx:123–136` | **확정 lifecycle guard 부재**. PDF signed-link 요청 중 다른 보고서/화면으로 이동한 뒤 응답시키면 예전 PDF viewer 열기 또는 메시지 갱신 가능. 일반 상세 데이터의 A→B guard와 별개 | PDF open에도 focus/report ID 확인. 차단 아님 |
+| L10 `server/src/naver-provider.mjs:113–118` | **확정 fallback**. 유효한 price만 두고 등락률 필드를 제거/비정상 문자열로 바꾸면 changePercent가 0으로 반환됨. 가격은 맞아도 보합 표시/선정 점수가 부정확해질 수 있음. 실응답 스키마 변경 발생은 미확인 | unknown change와 실제 0 구분/부분 데이터 표시. 차단 아님 |
 
 ## V1 차단 경로 검증
 
@@ -168,7 +173,7 @@
 
 ## AI
 
-`server/src/openai-analysis.mjs`는 Responses `/v1/responses`, `text.format=json_schema`, strict schema/additionalProperties false/required 필드를 사용한다. reasoning low/standard, max_output_tokens 450. [공식 Terra 모델 문서](https://developers.openai.com/api/docs/models/gpt-5.6-terra)는 low reasoning 및 Structured Outputs를 지원한다. 실제 계정에서 모델 접근과 응답 성공은 별도 검증해야 한다. 적은 output cap에서 reasoning/incomplete가 발생하면 fallback으로 가며 성공 분석이 보장되지는 않는다.
+`server/src/openai-analysis.mjs`는 Responses `/v1/responses`, `text.format=json_schema`, strict schema/additionalProperties false/required 필드를 사용한다. reasoning low/standard, max_output_tokens 450. [공식 reasoning 문서](https://developers.openai.com/api/docs/guides/reasoning)에서도 GPT-5.6의 standard mode 형식을 확인했다. [공식 Terra 모델 문서](https://developers.openai.com/api/docs/models/gpt-5.6-terra)는 low reasoning 및 Structured Outputs를 지원한다. 실제 계정에서 모델 접근과 응답 성공은 별도 검증해야 한다. 적은 output cap에서 reasoning/incomplete가 발생하면 fallback으로 가며 성공 분석이 보장되지는 않는다.
 
 OpenAI key가 없으면 정상 rule-based fallback. budget는 파일 lock+reserve로 동시성 제어하고 기본 하루12회, 재시작에도 저장된다. 실패 호출도 예약을 소비한다(과금 상한 보호 측면의 보수적 정책). 결과 캐시6시간은 evidence 전체 hash라 changePercent/뉴스/문구 변화에 민감하다. M6 외에 인증 없이 예산을 소진하는 정상 API 경로는 발견하지 않았다. 입력 evidence는 가격 변화/뉴스/일정/규칙 문구이며 unverified ratio는 없다. 실제 주가의 인과관계를 확정할 수 있다는 뜻은 아니다.
 
@@ -201,7 +206,7 @@ cache가 전부 cold이고 report-only 추가 종목이 없을 때 홈 1회:
 
 ## 최종 여섯 항목
 
-1. **새 Critical/High:** 확정 발견 없음. Medium M1–M9, Low L1–L7 및 lifecycle 경계를 상세 기록했다.
+1. **새 Critical/High:** 확정 발견 없음. Medium M1–M9, Low L1–L10 및 lifecycle 경계를 상세 기록했다.
 2. **급등 V1 제외:** 정상 UI/홈/서버 자동 실행 경로에서는 제외. raw V2 deep-link 화면은 남지만 scan/token 등록을 재활성화하지 않는다.
 3. **Serverless 방해:** 앱의 주기 작업 없음. Docker HEALTHCHECK의 Railway 실제 동작은 확인 필요.
 4. **하루10회·10–20종목:** 요청량 구조는 합리적. KR 상세 Nasdaq과 일정 중복만 우선 줄일 가치가 있다.
