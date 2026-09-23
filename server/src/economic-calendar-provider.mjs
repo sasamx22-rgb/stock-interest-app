@@ -235,10 +235,6 @@ export class EconomicCalendarProvider {
 
   async upcoming({ days = 14, symbols = [], now = new Date() } = {}) {
     const boundedDays = Math.min(Math.max(Number(days) || 14, 1), 30);
-    const cacheKey = `${dateKey(now)}:${boundedDays}:${symbols.slice().sort().join(',')}`;
-    const cached = this.cache.get(cacheKey);
-    if (cached && Date.now() - cached.at < 15 * 60_000) return cached.events;
-
     const end = new Date(now.getTime() + boundedDays * 86_400_000);
     const symbolSet = new Set(symbols.map((symbol) => symbol.toUpperCase()));
 
@@ -263,52 +259,66 @@ export class EconomicCalendarProvider {
       return time >= now.getTime() - 86_400_000 && time <= end.getTime();
     });
 
-    let externalSuccesses = 0;
-    let externalFailures = 0;
-    try {
-      events.push(...parseBlsIcs(await this.fetchText(BLS_ICS_URL)));
-      externalSuccesses += 1;
-    } catch {
-      externalFailures += 1;
+    const sourceCacheKey = dateKey(now);
+    const cached = this.cache.get(sourceCacheKey);
+    let externalEvents;
+
+    if (cached && Date.now() - cached.at < 2 * 60 * 60_000) {
+      externalEvents = cached.events;
+    } else {
+      externalEvents = [];
+      let externalSuccesses = 0;
+      let externalFailures = 0;
+
+      try {
+        externalEvents.push(...parseBlsIcs(await this.fetchText(BLS_ICS_URL)));
+        externalSuccesses += 1;
+      } catch {
+        externalFailures += 1;
+      }
+
+      if (symbolSet.size > 0) {
+        const dates = [];
+        for (let i = 0; i <= 7; i += 1) {
+          dates.push(dateKey(new Date(now.getTime() + i * 86_400_000)));
+        }
+
+        const requests = dates.flatMap((date) => [
+          this.fetchJson(`https://api.nasdaq.com/api/calendar/earnings?date=${date}`)
+            .then((payload) => ({ ok: true, events: normalizeNasdaqCalendar(payload, 'earnings', date) }))
+            .catch(() => ({ ok: false, events: [] })),
+          this.fetchJson(`https://api.nasdaq.com/api/calendar/dividends?date=${date}`)
+            .then((payload) => ({ ok: true, events: normalizeNasdaqCalendar(payload, 'dividends', date) }))
+            .catch(() => ({ ok: false, events: [] })),
+        ]);
+
+        const requestResults = await Promise.all(requests);
+        for (const result of requestResults) {
+          if (result.ok) externalSuccesses += 1;
+          else externalFailures += 1;
+          externalEvents.push(...result.events);
+        }
+      }
+
+      if (externalFailures > 0 && externalSuccesses === 0) {
+        throw new Error('Economic calendar providers failed');
+      }
+
+      this.cache.set(sourceCacheKey, { at: Date.now(), events: externalEvents });
     }
 
-    const dates = [];
-    for (let i = 0; i <= Math.min(boundedDays, 7); i += 1) {
-      dates.push(dateKey(new Date(now.getTime() + i * 86_400_000)));
-    }
+    const filteredExternal = externalEvents.filter((event) => (
+      event.tickers.length === 0
+      || (symbolSet.size > 0 && event.tickers.some((ticker) => symbolSet.has(ticker.toUpperCase())))
+    ));
 
-    const requests = dates.flatMap((date) => [
-      this.fetchJson(`https://api.nasdaq.com/api/calendar/earnings?date=${date}`)
-        .then((payload) => ({ ok: true, events: normalizeNasdaqCalendar(payload, 'earnings', date) }))
-        .catch(() => ({ ok: false, events: [] })),
-      this.fetchJson(`https://api.nasdaq.com/api/calendar/dividends?date=${date}`)
-        .then((payload) => ({ ok: true, events: normalizeNasdaqCalendar(payload, 'dividends', date) }))
-        .catch(() => ({ ok: false, events: [] })),
-    ]);
+    events.push(...filteredExternal);
 
-    const requestResults = await Promise.all(requests);
-    for (const result of requestResults) {
-      if (result.ok) externalSuccesses += 1;
-      else externalFailures += 1;
-    }
-
-    const corporate = requestResults.flatMap((result) => result.events)
-      .filter((event) => symbolSet.size === 0 || event.tickers.some((ticker) => symbolSet.has(ticker.toUpperCase())));
-
-    events.push(...corporate);
-
-    if (externalFailures > 0 && externalSuccesses === 0) {
-      throw new Error('Economic calendar providers failed');
-    }
-
-    const result = events
+    return events
       .filter((event) => {
         const time = Date.parse(event.startsAt);
         return time >= now.getTime() - 86_400_000 && time <= end.getTime();
       })
       .sort((a, b) => Date.parse(a.startsAt) - Date.parse(b.startsAt));
-
-    this.cache.set(cacheKey, { at: Date.now(), events: result });
-    return result;
   }
 }
