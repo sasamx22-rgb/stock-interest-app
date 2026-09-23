@@ -20,6 +20,7 @@ import { PushReceiptMonitor } from './push-receipt-monitor.mjs';
 import { PushReceiptStore } from './push-receipt-store.mjs';
 import { PushTokenStore } from './push-token-store.mjs';
 import { ReportPdfStore } from './report-pdf-store.mjs';
+import { cleanupExpiredReportPdfs } from './report-pdf-retention.mjs';
 import { ReportStore } from './report-store.mjs';
 import { sampleReports } from './sample.mjs';
 import { SurgePushMonitor } from './surge-push-monitor.mjs';
@@ -84,6 +85,7 @@ const engagementStore = new EngagementStore({
 const apiRateBuckets = new Map();
 const API_RATE_LIMIT = 240;
 const API_RATE_WINDOW_MS = 60_000;
+const REPORT_PDF_CLEANUP_INTERVAL_MS = 6 * 60 * 60 * 1000;
 
 function requireApiAccess(request) {
   if (!config.apiKey) return;
@@ -169,6 +171,21 @@ function signedPdfRequestAllowed(request, url) {
 function reportOperationKey(id) {
   const safe = String(id ?? 'invalid').replace(/[^A-Za-z0-9._-]/g, '').slice(0, 80) || 'invalid';
   return join(config.dataDir, 'report-operations', `${safe}.lock`);
+}
+
+async function runReportPdfCleanup() {
+  try {
+    const removedIds = await cleanupExpiredReportPdfs({
+      reportPdfStore,
+      reportStore,
+      withReportLock: (id, operation) => withFileLock(reportOperationKey(id), operation),
+    });
+    if (removedIds.length > 0) {
+      console.log(`Removed ${removedIds.length} expired report PDF(s)`);
+    }
+  } catch (error) {
+    console.warn('Report PDF retention cleanup failed', error);
+  }
 }
 
 function sendJson(response, status, body) {
@@ -729,6 +746,12 @@ async function handler(request, response) {
 
 const server = createServer(handler);
 
+await runReportPdfCleanup();
+const reportPdfCleanupTimer = setInterval(() => {
+  void runReportPdfCleanup();
+}, REPORT_PDF_CLEANUP_INTERVAL_MS);
+reportPdfCleanupTimer.unref();
+
 server.listen(config.port, '0.0.0.0', () => {
   console.log(`Market Pulse API listening on http://0.0.0.0:${server.address().port}`);
   if (config.surgeAlertsEnabled) {
@@ -739,6 +762,7 @@ server.listen(config.port, '0.0.0.0', () => {
 
 for (const signal of ['SIGINT', 'SIGTERM']) {
   process.on(signal, () => {
+    clearInterval(reportPdfCleanupTimer);
     pushMonitor.stop();
     pushReceiptMonitor.stop();
     server.close(() => process.exit(0));
