@@ -69,7 +69,7 @@ function sortReports(items) {
 export class ReportStore {
   constructor({ filePath, defaults = [] }) {
     this.filePath = filePath;
-    serializeFileOperations(this, ['getAll', 'save', 'getById', 'upsert', 'remove']);
+    serializeFileOperations(this, ['getAll', 'save', 'getById', 'upsert', 'clearPdfUrl', 'remove']);
     this.defaults = defaults.flatMap((item) => {
       const report = normalizeReport(item);
       return report ? [report] : [];
@@ -124,6 +124,27 @@ export class ReportStore {
     const next = [merged, ...items.filter((item) => item.id !== report.id)];
     await this.save(next);
     return merged;
+  }
+
+  async clearPdfUrl(id) {
+    const clean = cleanString(id, 80);
+    if (!ID_PATTERN.test(clean)) {
+      const error = new Error('Invalid report id');
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const items = await this.getAll();
+    const current = items.find((item) => item.id === clean);
+    if (!current?.pdfUrl) return current ?? null;
+
+    const next = items.map((item) => {
+      if (item.id !== clean) return item;
+      const { pdfUrl: _pdfUrl, ...withoutPdfUrl } = item;
+      return withoutPdfUrl;
+    });
+    await this.save(next);
+    return next.find((item) => item.id === clean) ?? null;
   }
 
   async remove(id) {
