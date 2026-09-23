@@ -1,21 +1,15 @@
 import { useCallback, useRef, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 
 import { ScreenShell } from '@/components/screen-shell';
 import { palette, spacing } from '@/constants/market-theme';
 import {
   getAiStatus,
-  getAlertSettings,
-  getPushStatus,
   isDemoMode,
   isLiveDataConfigured,
-  updateAlertSettings,
 } from '@/lib/market-api';
-import { AiStatus, AlertRule, PushStatus } from '@/types/market';
-
-const CHANGE_OPTIONS = [3, 5, 7, 10];
-const VOLUME_OPTIONS = [2, 3, 4, 5];
+import { AiStatus } from '@/types/market';
 
 const SettingRow = ({ label, value }: { label: string; value: string }) => (
   <View style={styles.row}>
@@ -24,66 +18,18 @@ const SettingRow = ({ label, value }: { label: string; value: string }) => (
   </View>
 );
 
-function RuleSelector({
-  title,
-  options,
-  value,
-  suffix,
-  disabled,
-  onSelect,
-}: {
-  title: string;
-  options: number[];
-  value: number;
-  suffix: string;
-  disabled: boolean;
-  onSelect: (value: number) => void;
-}) {
-  return (
-    <View style={styles.ruleBlock}>
-      <View style={styles.ruleHeader}>
-        <Text style={styles.ruleTitle}>{title}</Text>
-        <Text style={styles.ruleValue}>{value}{suffix}</Text>
-      </View>
-      <View style={styles.optionRow}>
-        {options.map((option) => {
-          const selected = option === value;
-          return (
-            <Pressable
-              key={option}
-              disabled={disabled}
-              onPress={() => onSelect(option)}
-              style={[styles.option, selected && styles.optionSelected]}>
-              <Text style={[styles.optionText, selected && styles.optionTextSelected]}>
-                {option}{suffix}
-              </Text>
-            </Pressable>
-          );
-        })}
-      </View>
-    </View>
-  );
-}
-
 export default function SettingsScreen() {
   const loadGeneration = useRef(0);
-  const [pushStatus, setPushStatus] = useState<PushStatus | null>(null);
   const [aiStatus, setAiStatus] = useState<AiStatus | null>(null);
-  const [rule, setRule] = useState<AlertRule>({ changePercent: 5, volumeRatio: 3 });
-  const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
 
   useFocusEffect(useCallback(() => {
     const requestId = ++loadGeneration.current;
-    Promise.all([
-      getPushStatus().catch(() => null),
-      getAlertSettings(),
-      getAiStatus(),
-    ])
-      .then(([status, currentRule, currentAiStatus]) => {
+    setMessage('');
+
+    getAiStatus()
+      .then((currentAiStatus) => {
         if (requestId !== loadGeneration.current) return;
-        setPushStatus(status);
-        setRule(currentRule);
         setAiStatus(currentAiStatus);
       })
       .catch(() => {
@@ -97,21 +43,6 @@ export default function SettingsScreen() {
     };
   }, []));
 
-  const saveRule = async (nextRule: AlertRule) => {
-    loadGeneration.current += 1;
-    setSaving(true);
-    setMessage('');
-    try {
-      const saved = await updateAlertSettings(nextRule);
-      setRule(saved);
-      setMessage('급등 알림 기준을 저장했습니다.');
-    } catch {
-      setMessage('알림 기준 저장에 실패했습니다. 서버 연결을 확인해주세요.');
-    } finally {
-      setSaving(false);
-    }
-  };
-
   return (
     <ScreenShell>
       <View>
@@ -119,54 +50,17 @@ export default function SettingsScreen() {
         <Text style={styles.heading}>설정</Text>
       </View>
 
-      <View style={styles.ruleCard}>
-        <View>
-          <Text style={styles.cardTitle}>급등 알림 기준</Text>
-          <Text style={styles.cardCaption}>
-            변경한 기준은 급등 화면과 서버의 원격 푸시 판정에 동시에 적용됩니다.
-          </Text>
-        </View>
-
-        <RuleSelector
-          title="상승률"
-          options={CHANGE_OPTIONS}
-          value={rule.changePercent}
-          suffix="%"
-          disabled={saving}
-          onSelect={(changePercent) => saveRule({ ...rule, changePercent })}
-        />
-
-        <RuleSelector
-          title="거래량"
-          options={VOLUME_OPTIONS}
-          value={rule.volumeRatio}
-          suffix="배"
-          disabled={saving}
-          onSelect={(volumeRatio) => saveRule({ ...rule, volumeRatio })}
-        />
-
-        {message ? <Text style={styles.message}>{message}</Text> : null}
-      </View>
+      {message ? <Text style={styles.message}>{message}</Text> : null}
 
       <View style={styles.card}>
         <SettingRow label="대상 시장" value="한국 · 미국" />
         <SettingRow
-          label="서버 감시 주기"
-          value={pushStatus ? `${Math.round(pushStatus.intervalSeconds / 60)}분` : '2분'}
-        />
-        <SettingRow
           label="데이터 연결"
           value={isLiveDataConfigured() ? '백엔드 연결됨' : isDemoMode() ? '샘플 모드' : '연결 설정 필요'}
         />
-        <SettingRow label="데이터 출처" value="NAVER 우선" />
-        <SettingRow
-          label="푸시 감시"
-          value={pushStatus?.monitorActive ? '서버 실행 중' : '확인 필요'}
-        />
-        <SettingRow
-          label="등록 기기"
-          value={pushStatus ? `${pushStatus.registeredDevices}대` : '-'}
-        />
+        <SettingRow label="시세 출처" value="NAVER 우선" />
+        <SettingRow label="급등 알림" value="첫 버전 미사용" />
+        <SettingRow label="원격 푸시" value="비활성" />
       </View>
 
       <View style={styles.card}>
@@ -182,16 +76,17 @@ export default function SettingsScreen() {
       </View>
 
       <View style={styles.notice}>
-        <Text style={styles.noticeTitle}>Android 시스템 알림</Text>
+        <Text style={styles.noticeTitle}>급등 알림은 후속 기능</Text>
         <Text style={styles.noticeText}>
-          EAS 프로젝트와 Android 푸시 자격증명이 설정된 APK에서는 서버가 신규 급등 신호를 감지하면 앱이 백그라운드이거나 종료된 상태에서도 시스템 알림을 보냅니다.
+          첫 버전에서는 전체시장 커버리지와 거래량 배수 기준이 충분히 검증되지 않아 급등 탐지와 푸시를 사용하지 않습니다.
+          관심종목, 보고서, 뉴스, 일정과 가격 흐름을 중심으로 제공합니다.
         </Text>
       </View>
 
       <View style={styles.notice}>
         <Text style={styles.noticeTitle}>투자 참고용</Text>
         <Text style={styles.noticeText}>
-          표시된 정보와 거래량 배수 추정치는 지연되거나 오류가 있을 수 있으며 투자 판단의 유일한 근거로 사용할 수 없습니다.
+          표시된 시세·뉴스·일정은 외부 데이터 공급 상태에 따라 지연되거나 일부 누락될 수 있으며 투자 판단의 유일한 근거로 사용할 수 없습니다.
         </Text>
       </View>
     </ScreenShell>
@@ -201,32 +96,7 @@ export default function SettingsScreen() {
 const styles = StyleSheet.create({
   eyebrow: { color: palette.primary, fontSize: 12, fontWeight: '900', letterSpacing: 1.6 },
   heading: { color: palette.text, fontSize: 30, fontWeight: '900', marginTop: spacing.sm },
-  ruleCard: {
-    backgroundColor: palette.surface,
-    borderRadius: 20,
-    padding: spacing.lg,
-    borderColor: palette.border,
-    borderWidth: 1,
-    gap: spacing.lg,
-  },
-  cardTitle: { color: palette.text, fontSize: 17, fontWeight: '900' },
-  cardCaption: { color: palette.textMuted, fontSize: 12, lineHeight: 18, marginTop: spacing.xs },
-  ruleBlock: { gap: spacing.sm },
-  ruleHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  ruleTitle: { color: palette.textMuted, fontSize: 13, fontWeight: '700' },
-  ruleValue: { color: palette.primary, fontSize: 14, fontWeight: '900' },
-  optionRow: { flexDirection: 'row', gap: spacing.sm },
-  option: {
-    flex: 1,
-    alignItems: 'center',
-    paddingVertical: 10,
-    borderRadius: 11,
-    backgroundColor: palette.surfaceRaised,
-  },
-  optionSelected: { backgroundColor: palette.primary },
-  optionText: { color: palette.textMuted, fontSize: 12, fontWeight: '800' },
-  optionTextSelected: { color: palette.background },
-  message: { color: palette.textMuted, fontSize: 12, lineHeight: 18 },
+  message: { color: palette.warning, fontSize: 12, lineHeight: 18 },
   card: {
     backgroundColor: palette.surface,
     borderRadius: 20,
