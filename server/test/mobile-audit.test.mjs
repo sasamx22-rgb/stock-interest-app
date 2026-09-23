@@ -154,3 +154,49 @@ test('search responses arriving backwards preserve the newer result', async () =
   assert.ok(h.updates.includes(latestItems));
   assert.ok(!h.updates.includes(oldItems));
 });
+
+
+test('GET API retries a single Railway cold-start gateway failure', async () => {
+  let calls = 0;
+  const immediateTimers = [];
+  const api = moduleAt('mobile/src/lib/market-api.ts', {
+    '@/data/sample-data': {
+      sampleMovers: [],
+      sampleReports: [],
+      sampleWatchlist: [],
+    },
+  }, {
+    process: {
+      env: {
+        EXPO_PUBLIC_API_BASE_URL: 'https://app.example',
+        EXPO_PUBLIC_API_KEY: 'key',
+      },
+    },
+    fetch: async () => {
+      calls += 1;
+      if (calls === 1) return { ok: false, status: 502, json: async () => ({}) };
+      return {
+        ok: true,
+        status: 200,
+        json: async () => ({
+          enabled: false,
+          model: 'gpt-5.6-terra',
+          callsToday: 0,
+          dailyLimit: 0,
+        }),
+      };
+    },
+    setTimeout: (fn, ms) => {
+      if (ms === 1000) {
+        immediateTimers.push(Promise.resolve().then(fn));
+      }
+      return 1;
+    },
+    clearTimeout: () => {},
+  });
+
+  const result = await api.getAiStatus();
+  await Promise.all(immediateTimers);
+  assert.equal(calls, 2);
+  assert.equal(result.enabled, false);
+});
