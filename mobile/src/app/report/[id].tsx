@@ -5,6 +5,7 @@ import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { ScreenShell } from '@/components/screen-shell';
 import { palette, spacing } from '@/constants/market-theme';
 import { getReport, getReportPdfUrl, markReportRead } from '@/lib/market-api';
+import { saveReportPdf } from '@/lib/report-pdf-download';
 import { Report } from '@/types/market';
 
 function reportLabel(report: Report) {
@@ -21,6 +22,7 @@ export default function ReportDetailScreen() {
     report: Report | null;
   }>({ id: undefined, status: 'ready', report: null });
   const [pdfMessage, setPdfMessage] = useState('');
+  const [pdfSaving, setPdfSaving] = useState(false);
 
   useFocusEffect(useCallback(() => {
     if (!id) return;
@@ -118,27 +120,66 @@ export default function ReportDetailScreen() {
             </View>
           ) : null}
 
-          <Pressable
-            disabled={!report.pdfUrl}
-            onPress={async () => {
-              if (!report.pdfUrl) return;
-              setPdfMessage('');
-              const url = await getReportPdfUrl(report.id, report.pdfUrl);
-              if (!url) {
-                setPdfMessage('PDF 링크를 열 수 없습니다.');
-                return;
-              }
-              try {
-                await Linking.openURL(url);
-              } catch {
-                setPdfMessage('PDF 뷰어를 열지 못했습니다.');
-              }
-            }}
-            style={[styles.pdfButton, !report.pdfUrl && styles.pdfButtonDisabled]}>
-            <Text style={[styles.pdfButtonText, !report.pdfUrl && styles.pdfButtonTextDisabled]}>
-              {report.pdfUrl ? 'PDF 원문 열기' : 'PDF 원문 미연결'}
-            </Text>
-          </Pressable>
+          <View style={styles.pdfActions}>
+            <Pressable
+              disabled={!report.pdfUrl || pdfSaving}
+              onPress={async () => {
+                if (!report.pdfUrl) return;
+                setPdfMessage('');
+                const url = await getReportPdfUrl(report.id, report.pdfUrl);
+                if (!url) {
+                  setPdfMessage('PDF 링크를 열 수 없습니다.');
+                  return;
+                }
+                try {
+                  await Linking.openURL(url);
+                } catch {
+                  setPdfMessage('PDF 뷰어를 열지 못했습니다.');
+                }
+              }}
+              style={[
+                styles.pdfButton,
+                (!report.pdfUrl || pdfSaving) && styles.pdfButtonDisabled,
+              ]}>
+              <Text style={[
+                styles.pdfButtonText,
+                (!report.pdfUrl || pdfSaving) && styles.pdfButtonTextDisabled,
+              ]}>
+                {report.pdfUrl ? 'PDF 원문 열기' : 'PDF 원문 미연결'}
+              </Text>
+            </Pressable>
+
+            <Pressable
+              disabled={!report.pdfUrl || pdfSaving}
+              onPress={async () => {
+                if (!report.pdfUrl) return;
+                setPdfMessage('');
+                setPdfSaving(true);
+                try {
+                  const result = await saveReportPdf(report);
+                  setPdfMessage(
+                    result.sharingAvailable
+                      ? 'PDF를 저장했습니다. 원하는 앱이나 위치를 선택해주세요.'
+                      : 'PDF를 앱 문서 영역에 저장했습니다.',
+                  );
+                } catch {
+                  setPdfMessage('PDF 저장에 실패했습니다. 다시 시도해주세요.');
+                } finally {
+                  setPdfSaving(false);
+                }
+              }}
+              style={[
+                styles.pdfSaveButton,
+                (!report.pdfUrl || pdfSaving) && styles.pdfButtonDisabled,
+              ]}>
+              <Text style={[
+                styles.pdfSaveButtonText,
+                (!report.pdfUrl || pdfSaving) && styles.pdfButtonTextDisabled,
+              ]}>
+                {pdfSaving ? '저장 중...' : 'PDF 저장'}
+              </Text>
+            </Pressable>
+          </View>
           {pdfMessage ? <Text style={styles.pdfMessage}>{pdfMessage}</Text> : null}
         </>
       ) : null}
@@ -184,9 +225,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '800',
   },
-  pdfButton: { backgroundColor: palette.primary, borderRadius: 14, alignItems: 'center', paddingVertical: 14 },
+  pdfActions: { flexDirection: 'row', gap: spacing.sm },
+  pdfButton: { flex: 1, backgroundColor: palette.primary, borderRadius: 14, alignItems: 'center', paddingVertical: 14 },
+  pdfSaveButton: { flex: 1, backgroundColor: palette.surfaceRaised, borderRadius: 14, alignItems: 'center', paddingVertical: 14, borderWidth: 1, borderColor: palette.border },
   pdfButtonDisabled: { backgroundColor: palette.surfaceRaised },
   pdfButtonText: { color: palette.background, fontWeight: '900' },
+  pdfSaveButtonText: { color: palette.text, fontWeight: '900' },
   pdfButtonTextDisabled: { color: palette.textMuted },
   pdfMessage: { color: palette.warning, fontSize: 11, textAlign: 'center' },
   empty: { backgroundColor: palette.surface, borderRadius: 20, padding: spacing.xl },
