@@ -45,6 +45,7 @@ function screenHarness(params, api) {
       '@/components/section-title': { SectionTitle: 'Section' },
       '@/constants/market-theme': { palette: {}, spacing: {} },
       '@/lib/market-api': api,
+      '@/lib/report-pdf-download': { saveReportPdf: async () => ({ uri: 'file://report.pdf', sharingAvailable: true }) },
     },
   };
 }
