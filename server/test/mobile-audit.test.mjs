@@ -200,3 +200,29 @@ test('GET API retries a single Railway cold-start gateway failure', async () => 
   assert.equal(calls, 2);
   assert.equal(result.enabled, false);
 });
+
+
+test('GET API does not retry non-gateway HTTP failures', async () => {
+  let calls = 0;
+  const api = moduleAt('mobile/src/lib/market-api.ts', {
+    '@/data/sample-data': {
+      sampleMovers: [],
+      sampleReports: [],
+      sampleWatchlist: [],
+    },
+  }, {
+    process: {
+      env: {
+        EXPO_PUBLIC_API_BASE_URL: 'https://app.example',
+        EXPO_PUBLIC_API_KEY: 'bad-key',
+      },
+    },
+    fetch: async () => {
+      calls += 1;
+      return { ok: false, status: 401, json: async () => ({}) };
+    },
+  });
+
+  await assert.rejects(api.getAiStatus(), /401/);
+  assert.equal(calls, 1);
+});
