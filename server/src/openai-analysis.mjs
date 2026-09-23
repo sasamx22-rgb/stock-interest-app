@@ -124,7 +124,6 @@ export class OpenAiAnalysisService {
       symbol: quote.symbol,
       name: quote.name,
       changePercent: quote.changePercent,
-      volumeRatio: quote.volumeRatio,
       news: news.slice(0, 6).map((item) => ({
         title: item.title,
         publisher: item.publisher ?? '',
