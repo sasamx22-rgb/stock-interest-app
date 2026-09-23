@@ -93,6 +93,8 @@ test('live notification wins over delayed cold-start and duplicate IDs navigate 
       getLastNotificationResponseAsync: () => pending.promise,
       clearLastNotificationResponseAsync: async () => {},
     },
+  }, {
+    process: { env: { EXPO_PUBLIC_SURGE_ALERTS_ENABLED: 'true' } },
   });
   hook.usePushNotifications();
   listener(response('live')); listener(response('live'));
@@ -127,19 +129,15 @@ function findNode(tree, predicate) {
     const found = findNode(child, predicate); if (found) return found;
   }
 }
-test('settings initial GET cannot overwrite a newly saved rule', async () => {
-  const old = deferred();
-  const saved = { changePercent: 7, volumeRatio: 3 }, initial = { changePercent: 3, volumeRatio: 2 };
-  const h = screenHarness({}, { getPushStatus: async () => null, getAiStatus: async () => null,
-    getAlertSettings: () => old.promise, updateAlertSettings: async () => saved,
-    isLiveDataConfigured: () => true, isDemoMode: () => false });
+test('settings v1 exposes no surge rule controls', () => {
+  const h = screenHarness({}, {
+    getAiStatus: async () => null,
+    isLiveDataConfigured: () => true,
+    isDemoMode: () => false,
+  });
   const tree = moduleAt('mobile/src/app/(tabs)/settings.tsx', h.mocks).default();
   const control = findNode(tree, node => typeof node.props?.onSelect === 'function');
-  assert.ok(control);
-  await control.props.onSelect(7);
-  old.resolve(initial); await flush();
-  assert.ok(h.updates.includes(saved));
-  assert.ok(!h.updates.includes(initial));
+  assert.equal(control, undefined);
 });
 test('search responses arriving backwards preserve the newer result', async () => {
   const old = deferred(), latest = deferred(); let count = 0, stateIndex = 0;
