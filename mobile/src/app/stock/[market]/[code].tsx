@@ -161,8 +161,8 @@ export default function StockDetailScreen() {
 
           <View style={styles.metricsRow}>
             <View style={styles.metricCard}>
-              <Text style={styles.metricLabel}>거래량 배수</Text>
-              <Text style={styles.metricValue}>{detail.quote.volumeRatio.toFixed(1)}배</Text>
+              <Text style={styles.metricLabel}>거래량</Text>
+              <Text style={styles.metricValue}>{formatVolume(detail.quote.volume ?? 0)}</Text>
             </View>
             <View style={styles.metricCard}>
               <Text style={styles.metricLabel}>최근 5거래일</Text>
