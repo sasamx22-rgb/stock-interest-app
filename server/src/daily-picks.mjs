@@ -57,6 +57,7 @@ export async function buildDailyPicks({
   focusStocks,
   calendarEvents = [],
   limit = 3,
+  useVolumeRatio = false,
 }) {
   const candidates = focusStocks.slice(0, 8);
   const newsResults = await Promise.allSettled(
@@ -74,8 +75,8 @@ export async function buildDailyPicks({
 
     let score = Number(stock.priorityScore) || 0;
     score += Math.min(Math.abs(stock.changePercent) / 3, 2.5);
-    if (stock.volumeRatio >= 3) score += 2;
-    else if (stock.volumeRatio >= 2) score += 1;
+    if (useVolumeRatio && stock.volumeRatio >= 3) score += 2;
+    else if (useVolumeRatio && stock.volumeRatio >= 2) score += 1;
     score += Math.min(strongNewsCount, 2) * 1.5;
     score += news.length > 0 ? 0.5 : 0;
     score += matchedEvents.reduce(
@@ -86,7 +87,7 @@ export async function buildDailyPicks({
     const signals = [];
     const source = sourceSignal(stock);
     if (source) signals.push(source);
-    if (stock.volumeRatio >= 3) signals.push(`거래량 ${stock.volumeRatio.toFixed(1)}배`);
+    if (useVolumeRatio && stock.volumeRatio >= 3) signals.push(`거래량 ${stock.volumeRatio.toFixed(1)}배`);
     if (strongNewsCount > 0) signals.push(`주요 뉴스 ${strongNewsCount}건`);
     if (matchedEvents.length > 0) signals.push(eventLabel(matchedEvents[0]));
 
