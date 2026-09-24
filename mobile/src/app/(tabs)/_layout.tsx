@@ -1,5 +1,6 @@
 import { Tabs } from 'expo-router';
 import { ColorValue, Text } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { palette } from '@/constants/market-theme';
 
@@ -8,18 +9,22 @@ const SURGE_ALERTS_ENABLED = process.env.EXPO_PUBLIC_SURGE_ALERTS_ENABLED === 't
 const icon = (glyph: string, color: ColorValue) => <Text style={{ color, fontSize: 20 }}>{glyph}</Text>;
 
 export default function TabLayout() {
+  const insets = useSafeAreaInsets();
+  const bottomInset = Math.max(insets.bottom, 8);
+
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: palette.primary,
         tabBarInactiveTintColor: palette.textMuted,
+        tabBarHideOnKeyboard: true,
         tabBarStyle: {
           backgroundColor: palette.surface,
           borderTopColor: palette.border,
-          height: 70,
+          height: 62 + bottomInset,
           paddingTop: 8,
-          paddingBottom: 8,
+          paddingBottom: bottomInset,
         },
         tabBarLabelStyle: { fontSize: 10, fontWeight: '700' },
       }}>
