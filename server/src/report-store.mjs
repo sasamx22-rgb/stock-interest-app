@@ -34,6 +34,55 @@ function normalizeUrl(value) {
   }
 }
 
+function normalizeSectionRows(value) {
+  if (!Array.isArray(value)) return [];
+  return value.flatMap((item) => {
+    if (!item || typeof item !== 'object') return [];
+    const label = cleanString(item.label, 120);
+    const valueText = cleanString(item.value, 500);
+    const note = cleanString(item.note, 800);
+    if (!label || !valueText) return [];
+    return [{
+      label,
+      value: valueText,
+      ...(note ? { note } : {}),
+    }];
+  }).slice(0, 30);
+}
+
+function normalizeSectionLinks(value) {
+  if (!Array.isArray(value)) return [];
+  return value.flatMap((item) => {
+    if (!item || typeof item !== 'object') return [];
+    const label = cleanString(item.label, 120);
+    const url = normalizeUrl(item.url);
+    if (!label || !url || url.startsWith('/api/reports/')) return [];
+    return [{ label, url }];
+  }).slice(0, 20);
+}
+
+function normalizeReportSections(value) {
+  if (!Array.isArray(value)) return [];
+  return value.flatMap((item) => {
+    if (!item || typeof item !== 'object') return [];
+    const title = cleanString(item.title, 160);
+    const body = cleanString(item.body, 7000);
+    const bullets = normalizeStringArray(item.bullets, 30, 700);
+    const rows = normalizeSectionRows(item.rows);
+    const links = normalizeSectionLinks(item.links);
+    if (!title || (!body && bullets.length === 0 && rows.length === 0 && links.length === 0)) {
+      return [];
+    }
+    return [{
+      title,
+      ...(body ? { body } : {}),
+      ...(bullets.length ? { bullets } : {}),
+      ...(rows.length ? { rows } : {}),
+      ...(links.length ? { links } : {}),
+    }];
+  }).slice(0, 24);
+}
+
 export function normalizeReport(value) {
   if (!value || typeof value !== 'object') return null;
 
@@ -42,6 +91,8 @@ export function normalizeReport(value) {
   const summary = cleanString(value.summary, 4000);
   const marketSummary = cleanString(value.marketSummary, 6000);
   const pdfSourceVersion = cleanString(value.pdfSourceVersion, 120);
+  const sections = normalizeReportSections(value.sections);
+  const reconstructed = value.reconstructed === true;
   const type = value.type === 'premarket' ? 'premarket' : value.type === 'morning' ? 'morning' : null;
   const publishedAt = cleanString(value.publishedAt, 80);
   const publishedTime = Date.parse(publishedAt);
@@ -59,6 +110,8 @@ export function normalizeReport(value) {
     tickers: normalizeStringArray(value.tickers, 30, 40),
     highlights: normalizeStringArray(value.highlights, 12, 300),
     ...(marketSummary ? { marketSummary } : {}),
+    ...(sections.length ? { sections } : {}),
+    ...(reconstructed ? { reconstructed: true } : {}),
     ...(normalizeUrl(value.pdfUrl) ? { pdfUrl: normalizeUrl(value.pdfUrl) } : {}),
     ...(pdfSourceVersion ? { pdfSourceVersion } : {}),
   };

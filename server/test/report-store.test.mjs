@@ -15,12 +15,24 @@ test('normalizes report payloads and safe PDF URLs', () => {
     summary: '핵심 요약',
     tickers: ['삼성전자', '삼성전자', 'NVDA'],
     highlights: ['반도체 강세'],
+    reconstructed: true,
+    sections: [{
+      title: '시장 스냅샷',
+      body: '지수와 금리를 요약합니다.',
+      bullets: ['금리 확인'],
+      rows: [{ label: 'S&P 500', value: '+0.5%', note: '정규장' }],
+      links: [{ label: '공식 자료', url: 'https://example.com/source' }],
+    }],
     pdfUrl: 'https://example.com/report.pdf',
   });
 
   assert.equal(report.id, '2026-09-22-morning');
   assert.deepEqual(report.tickers, ['삼성전자', 'NVDA']);
   assert.equal(report.pdfUrl, 'https://example.com/report.pdf');
+  assert.equal(report.reconstructed, true);
+  assert.equal(report.sections[0].title, '시장 스냅샷');
+  assert.equal(report.sections[0].rows[0].value, '+0.5%');
+  assert.equal(report.sections[0].links[0].url, 'https://example.com/source');
   assert.equal(
     normalizeReport({ ...report, pdfUrl: '/api/reports/2026-09-22-morning/pdf' }).pdfUrl,
     '/api/reports/2026-09-22-morning/pdf',

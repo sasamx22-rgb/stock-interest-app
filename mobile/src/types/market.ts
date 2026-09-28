@@ -38,6 +38,25 @@ export type TodayFocusStock = Quote & {
   alertEligible?: boolean;
 };
 
+export type ReportSectionRow = {
+  label: string;
+  value: string;
+  note?: string;
+};
+
+export type ReportSectionLink = {
+  label: string;
+  url: string;
+};
+
+export type ReportSection = {
+  title: string;
+  body?: string;
+  bullets?: string[];
+  rows?: ReportSectionRow[];
+  links?: ReportSectionLink[];
+};
+
 export type Report = {
   id: string;
   title: string;
@@ -47,6 +66,8 @@ export type Report = {
   tickers: string[];
   highlights?: string[];
   marketSummary?: string;
+  sections?: ReportSection[];
+  reconstructed?: boolean;
   pdfUrl?: string;
 };
 

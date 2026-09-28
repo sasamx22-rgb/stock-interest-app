@@ -70,7 +70,10 @@ export default function ReportDetailScreen() {
       {report ? (
         <>
           <View>
-            <Text style={styles.eyebrow}>{reportLabel(report)}</Text>
+            <View style={styles.reportMetaRow}>
+              <Text style={styles.eyebrow}>{reportLabel(report)}</Text>
+              {report.reconstructed ? <Text style={styles.reconstructedBadge}>과거시점 복원</Text> : null}
+            </View>
             <Text style={styles.heading}>{report.title}</Text>
             <Text style={styles.date}>
               {new Date(report.publishedAt).toLocaleString('ko-KR', {
@@ -88,26 +91,78 @@ export default function ReportDetailScreen() {
             <Text style={styles.summary}>{report.summary}</Text>
           </View>
 
-          {report.marketSummary ? (
-            <View style={styles.card}>
-              <Text style={styles.sectionTitle}>시장 해설</Text>
-              <Text style={styles.body}>{report.marketSummary}</Text>
-            </View>
-          ) : null}
+          {report.sections && report.sections.length > 0 ? (
+            report.sections.map((section, sectionIndex) => (
+              <View key={`${sectionIndex}-${section.title}`} style={styles.card}>
+                <Text style={styles.sectionTitle}>{section.title}</Text>
 
-          {report.highlights && report.highlights.length > 0 ? (
-            <View style={styles.card}>
-              <Text style={styles.sectionTitle}>오늘의 체크포인트</Text>
-              <View style={styles.highlightList}>
-                {report.highlights.map((highlight, index) => (
-                  <View key={`${index}-${highlight}`} style={styles.highlightRow}>
-                    <View style={styles.bullet} />
-                    <Text style={styles.highlightText}>{highlight}</Text>
+                {section.body ? <Text style={styles.body}>{section.body}</Text> : null}
+
+                {section.rows && section.rows.length > 0 ? (
+                  <View style={styles.dataRows}>
+                    {section.rows.map((row, rowIndex) => (
+                      <View key={`${rowIndex}-${row.label}`} style={styles.dataRow}>
+                        <View style={styles.dataRowTop}>
+                          <Text style={styles.dataLabel}>{row.label}</Text>
+                          <Text style={styles.dataValue}>{row.value}</Text>
+                        </View>
+                        {row.note ? <Text style={styles.dataNote}>{row.note}</Text> : null}
+                      </View>
+                    ))}
                   </View>
-                ))}
+                ) : null}
+
+                {section.bullets && section.bullets.length > 0 ? (
+                  <View style={styles.highlightList}>
+                    {section.bullets.map((bullet, bulletIndex) => (
+                      <View key={`${bulletIndex}-${bullet}`} style={styles.highlightRow}>
+                        <View style={styles.bullet} />
+                        <Text style={styles.highlightText}>{bullet}</Text>
+                      </View>
+                    ))}
+                  </View>
+                ) : null}
+
+                {section.links && section.links.length > 0 ? (
+                  <View style={styles.sourceLinks}>
+                    {section.links.map((link, linkIndex) => (
+                      <Pressable
+                        key={`${linkIndex}-${link.url}`}
+                        onPress={() => {
+                          void Linking.openURL(link.url);
+                        }}
+                        style={styles.sourceLinkButton}>
+                        <Text style={styles.sourceLinkText}>{link.label} ↗</Text>
+                      </Pressable>
+                    ))}
+                  </View>
+                ) : null}
               </View>
-            </View>
-          ) : null}
+            ))
+          ) : (
+            <>
+              {report.marketSummary ? (
+                <View style={styles.card}>
+                  <Text style={styles.sectionTitle}>시장 해설</Text>
+                  <Text style={styles.body}>{report.marketSummary}</Text>
+                </View>
+              ) : null}
+
+              {report.highlights && report.highlights.length > 0 ? (
+                <View style={styles.card}>
+                  <Text style={styles.sectionTitle}>오늘의 체크포인트</Text>
+                  <View style={styles.highlightList}>
+                    {report.highlights.map((highlight, index) => (
+                      <View key={`${index}-${highlight}`} style={styles.highlightRow}>
+                        <View style={styles.bullet} />
+                        <Text style={styles.highlightText}>{highlight}</Text>
+                      </View>
+                    ))}
+                  </View>
+                </View>
+              ) : null}
+            </>
+          )}
 
           {report.tickers.length > 0 ? (
             <View style={styles.card}>
@@ -190,7 +245,18 @@ export default function ReportDetailScreen() {
 const styles = StyleSheet.create({
   backButton: { alignSelf: 'flex-start', paddingVertical: spacing.sm },
   backText: { color: palette.primary, fontSize: 14, fontWeight: '800' },
+  reportMetaRow: { flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: spacing.sm },
   eyebrow: { color: palette.primary, fontSize: 12, fontWeight: '900', letterSpacing: 1.2 },
+  reconstructedBadge: {
+    color: palette.warning,
+    backgroundColor: '#3A321C',
+    fontSize: 10,
+    fontWeight: '900',
+    paddingHorizontal: 7,
+    paddingVertical: 4,
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
   heading: { color: palette.text, fontSize: 28, lineHeight: 36, fontWeight: '900', marginTop: spacing.sm },
   date: { color: palette.textMuted, fontSize: 12, marginTop: spacing.sm },
   summaryCard: {
@@ -211,10 +277,31 @@ const styles = StyleSheet.create({
   },
   sectionTitle: { color: palette.text, fontSize: 16, fontWeight: '900' },
   body: { color: palette.textMuted, fontSize: 14, lineHeight: 22, marginTop: spacing.md },
+  dataRows: { gap: spacing.sm, marginTop: spacing.md },
+  dataRow: {
+    backgroundColor: palette.surfaceRaised,
+    borderRadius: 12,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    borderWidth: 1,
+    borderColor: palette.border,
+  },
+  dataRowTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', gap: spacing.md },
+  dataLabel: { flex: 1, color: palette.textMuted, fontSize: 12, fontWeight: '800' },
+  dataValue: { flex: 1, color: palette.text, fontSize: 13, fontWeight: '900', textAlign: 'right' },
+  dataNote: { color: palette.textMuted, fontSize: 11, lineHeight: 17, marginTop: spacing.xs },
   highlightList: { gap: spacing.md, marginTop: spacing.md },
   highlightRow: { flexDirection: 'row', alignItems: 'flex-start', gap: spacing.sm },
   bullet: { width: 7, height: 7, borderRadius: 4, backgroundColor: palette.primary, marginTop: 7 },
   highlightText: { flex: 1, color: palette.text, fontSize: 14, lineHeight: 21 },
+  sourceLinks: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, marginTop: spacing.md },
+  sourceLinkButton: {
+    backgroundColor: '#122C4A',
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+  },
+  sourceLinkText: { color: palette.blue, fontSize: 12, fontWeight: '800' },
   chipRow: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, marginTop: spacing.md },
   chip: {
     color: palette.blue,

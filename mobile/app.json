@@ -2,14 +2,15 @@
   "expo": {
     "name": "Market Pulse",
     "slug": "market-pulse",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "scheme": "marketpulse",
     "userInterfaceStyle": "dark",
     "ios": {},
     "android": {
       "package": "com.sasamx22.marketpulse",
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "versionCode": 2
     },
     "web": {
       "output": "static"
