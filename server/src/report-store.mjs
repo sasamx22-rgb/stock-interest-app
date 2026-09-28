@@ -41,6 +41,7 @@ export function normalizeReport(value) {
   const title = cleanString(value.title, 180);
   const summary = cleanString(value.summary, 4000);
   const marketSummary = cleanString(value.marketSummary, 6000);
+  const pdfSourceVersion = cleanString(value.pdfSourceVersion, 120);
   const type = value.type === 'premarket' ? 'premarket' : value.type === 'morning' ? 'morning' : null;
   const publishedAt = cleanString(value.publishedAt, 80);
   const publishedTime = Date.parse(publishedAt);
@@ -59,6 +60,7 @@ export function normalizeReport(value) {
     highlights: normalizeStringArray(value.highlights, 12, 300),
     ...(marketSummary ? { marketSummary } : {}),
     ...(normalizeUrl(value.pdfUrl) ? { pdfUrl: normalizeUrl(value.pdfUrl) } : {}),
+    ...(pdfSourceVersion ? { pdfSourceVersion } : {}),
   };
 }
 
@@ -119,7 +121,13 @@ export class ReportStore {
     const items = await this.getAll();
     const existing = items.find((item) => item.id === report.id);
     const merged = existing?.pdfUrl && !report.pdfUrl
-      ? { ...report, pdfUrl: existing.pdfUrl }
+      ? {
+          ...report,
+          pdfUrl: existing.pdfUrl,
+          ...(!report.pdfSourceVersion && existing.pdfSourceVersion
+            ? { pdfSourceVersion: existing.pdfSourceVersion }
+            : {}),
+        }
       : report;
     const next = [merged, ...items.filter((item) => item.id !== report.id)];
     await this.save(next);

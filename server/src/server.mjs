@@ -77,6 +77,7 @@ const reportPdfStore = new ReportPdfStore({
 
 const githubReportSync = new GitHubReportSync({
   reportStore,
+  reportPdfStore,
   ...config.reportGithubSync,
 });
 

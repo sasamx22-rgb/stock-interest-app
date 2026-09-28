@@ -175,13 +175,16 @@ JSON 형식은 `examples/report-template.json`을 기준으로 사용합니다. 
 이 방식은 게시 관리자키를 ChatGPT 예약 작업이나 모바일 APK에 노출하지 않으면서 기존 설치된 APK에 새 보고서를 자동 반영하기 위한 브리지입니다.
 
 - 자동 게시 파일: `auto-reports/reports.json`
+- PDF 전송 파일: `auto-reports/pdfs/*.b64` (PDF 원본을 Base64 ASCII로 분할 저장)
 - 기본 저장소: `sasamx22-rgb/stock-interest-app`
 - 기본 브랜치: `chatgpt/live-naver-market-data`
 - 서버 동기화: Docker production에서 기본 활성화
 - 기존 서버 PDF가 연결된 보고서는 GitHub 메타데이터가 갱신되어도 PDF 링크를 유지
 - 자동 게시 파일에는 민감정보나 API 키를 넣지 않음
 
-PDF 원문은 기존 `POST /api/reports/{id}/pdf` 경로로 업로드된 경우에만 앱의 PDF 열기/저장 기능을 사용합니다. GitHub 자동 게시 브리지는 보고서 요약·시장 해설·체크포인트·관련 종목을 즉시 앱에 반영하는 역할을 담당합니다.
+예약 작업은 렌더링·검수까지 끝난 최종 PDF 바이트를 Base64로 변환하여 필요하면 여러 `.b64` 파트로 나눠 GitHub에 저장하고, 보고서 객체에 `pdfBase64Parts`와 `pdfSourceVersion`을 기록합니다. Railway 서버는 이 파트를 다시 결합해 실제 PDF 바이트로 복원한 뒤 `DATA_DIR/report-pdfs/`에 저장하고 보고서의 `pdfUrl`을 자동 연결합니다. 따라서 새 보고서는 앱의 **PDF 원문 열기**와 **PDF 저장** 기능까지 자동으로 사용할 수 있습니다.
+
+PDF는 기존 정책대로 서버 저장 또는 마지막 교체 시점부터 30일 보관합니다. 30일이 지난 보고서는 GitHub에 원본 파트가 남아 있어도 서버가 자동 재수집하지 않습니다.
 
 ## 보고서 자동 저장 API
 
