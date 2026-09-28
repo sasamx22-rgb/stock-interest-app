@@ -9,6 +9,10 @@ import { saveReportPdf } from '@/lib/report-pdf-download';
 import { Report } from '@/types/market';
 
 function reportLabel(report: Report) {
+  if (report.reconstructed) {
+    const day = new Date(report.publishedAt).getDay();
+    if (day === 0 || day === 6) return '주말 복원 브리핑';
+  }
   return report.type === 'morning' ? '08:00 모닝 브리프' : '08:50 프리마켓';
 }
 
