@@ -22,7 +22,11 @@
       "HD현대일렉트릭",
       "NVDA",
       "MU"
-    ]
+    ],
+    "pdfBase64Parts": [
+      "auto-reports/pdfs/2026-09-28-morning.part001.b64"
+    ],
+    "pdfSourceVersion": "2026-09-28T12:58:21.660Z"
   },
   {
     "id": "2026-09-25-premarket",
