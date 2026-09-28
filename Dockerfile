@@ -7,6 +7,7 @@ COPY server ./server
 ENV NODE_ENV=production
 ENV PORT=8787
 ENV DATA_DIR=/data
+ENV REPORT_GITHUB_SYNC_ENABLED=true
 
 EXPOSE 8787
 

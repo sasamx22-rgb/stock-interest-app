@@ -26,6 +26,11 @@ const aiDailyLimit = Math.max(0, Number(process.env.OPENAI_DAILY_LIMIT ?? 12) ||
 const apiKey = process.env.MARKET_PULSE_API_KEY?.trim() ?? '';
 const publishKey = process.env.MARKET_PULSE_PUBLISH_KEY?.trim() ?? '';
 const surgeAlertsEnabled = process.env.SURGE_ALERTS_ENABLED === 'true';
+const reportGithubSyncEnabled = process.env.REPORT_GITHUB_SYNC_ENABLED === 'true';
+const reportGithubSyncIntervalSeconds = Math.max(
+  60,
+  Number(process.env.REPORT_GITHUB_SYNC_INTERVAL_SECONDS ?? 120) || 120,
+);
 
 export const config = {
   port: Number(process.env.PORT ?? 8787),
@@ -34,6 +39,22 @@ export const config = {
   publishKey,
   surgeAlertsEnabled,
   dataDir: envOrDefault(process.env.DATA_DIR, DEFAULT_DATA_DIR),
+  reportGithubSync: {
+    enabled: reportGithubSyncEnabled,
+    repository: envOrDefault(
+      process.env.REPORT_GITHUB_REPOSITORY,
+      'sasamx22-rgb/stock-interest-app',
+    ),
+    ref: envOrDefault(
+      process.env.REPORT_GITHUB_REF,
+      'chatgpt/live-naver-market-data',
+    ),
+    filePath: envOrDefault(
+      process.env.REPORT_GITHUB_FILE,
+      'auto-reports/reports.json',
+    ),
+    intervalMs: reportGithubSyncIntervalSeconds * 1000,
+  },
   ai: {
     apiKey: process.env.OPENAI_API_KEY?.trim() ?? '',
     model: envOrDefault(process.env.OPENAI_MODEL, 'gpt-5.6-terra'),

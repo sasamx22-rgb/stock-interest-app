@@ -20,6 +20,7 @@ import { PushReceiptMonitor } from './push-receipt-monitor.mjs';
 import { PushReceiptStore } from './push-receipt-store.mjs';
 import { PushTokenStore } from './push-token-store.mjs';
 import { ReportPdfStore } from './report-pdf-store.mjs';
+import { GitHubReportSync } from './github-report-sync.mjs';
 import { cleanupExpiredReportPdfs } from './report-pdf-retention.mjs';
 import { ReportStore } from './report-store.mjs';
 import { sampleReports } from './sample.mjs';
@@ -72,6 +73,11 @@ const reportStore = new ReportStore({
 
 const reportPdfStore = new ReportPdfStore({
   directory: join(config.dataDir, 'report-pdfs'),
+});
+
+const githubReportSync = new GitHubReportSync({
+  reportStore,
+  ...config.reportGithubSync,
 });
 
 const calendarEventStore = new CalendarEventStore({
@@ -171,6 +177,15 @@ function signedPdfRequestAllowed(request, url) {
 function reportOperationKey(id) {
   const safe = String(id ?? 'invalid').replace(/[^A-Za-z0-9._-]/g, '').slice(0, 80) || 'invalid';
   return join(config.dataDir, 'report-operations', `${safe}.lock`);
+}
+
+async function syncAutoPublishedReports() {
+  try {
+    return await githubReportSync.syncIfDue();
+  } catch (error) {
+    console.warn('Automatic report sync failed', error);
+    return { status: 'error', imported: 0 };
+  }
 }
 
 async function runReportPdfCleanup() {
@@ -279,6 +294,17 @@ async function handler(request, response) {
     if (url.pathname.startsWith('/api/')) {
       enforceApiRateLimit(request);
       if (!signedPdfAccess) requireApiAccess(request);
+    }
+
+    const reportBackedRequest = (
+      url.pathname === '/api/home/briefing'
+      || url.pathname === '/api/engagement/summary'
+      || url.pathname === '/api/review/weekly'
+      || url.pathname === '/api/today-focus'
+      || url.pathname.startsWith('/api/reports')
+    );
+    if (reportBackedRequest) {
+      await syncAutoPublishedReports();
     }
 
     if (url.pathname === '/health') {

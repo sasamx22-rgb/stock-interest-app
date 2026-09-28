@@ -168,6 +168,21 @@ JSON 형식은 `examples/report-template.json`을 기준으로 사용합니다. 
 
 최종적으로는 08:00/08:50 ChatGPT 보고서가 완성된 뒤 이 저장 API로 전달되도록 연결하면 됩니다. 서버 배포 전에는 실제 공개 URL이 없으므로, 먼저 Railway 배포를 마친 뒤 자동 전달 방식을 연결합니다.
 
+## ChatGPT 예약 보고서 자동 반영
+
+예약 보고서는 GitHub의 `auto-reports/reports.json`을 게시함으로 사용합니다. 08:00/08:50 예약 작업이 이 파일에 보고서 메타데이터를 추가하면, Railway 서버가 보고서 관련 API 요청 시 최대 2분 간격으로 해당 파일을 확인해 `DATA_DIR/reports.json`에 병합합니다.
+
+이 방식은 게시 관리자키를 ChatGPT 예약 작업이나 모바일 APK에 노출하지 않으면서 기존 설치된 APK에 새 보고서를 자동 반영하기 위한 브리지입니다.
+
+- 자동 게시 파일: `auto-reports/reports.json`
+- 기본 저장소: `sasamx22-rgb/stock-interest-app`
+- 기본 브랜치: `chatgpt/live-naver-market-data`
+- 서버 동기화: Docker production에서 기본 활성화
+- 기존 서버 PDF가 연결된 보고서는 GitHub 메타데이터가 갱신되어도 PDF 링크를 유지
+- 자동 게시 파일에는 민감정보나 API 키를 넣지 않음
+
+PDF 원문은 기존 `POST /api/reports/{id}/pdf` 경로로 업로드된 경우에만 앱의 PDF 열기/저장 기능을 사용합니다. GitHub 자동 게시 브리지는 보고서 요약·시장 해설·체크포인트·관련 종목을 즉시 앱에 반영하는 역할을 담당합니다.
+
 ## 보고서 자동 저장 API
 
 08:00/08:50 보고서 생성기가 Market Pulse 서버에 결과를 넣을 수 있도록 저장 API가 준비되어 있습니다. production에서는 앱용 `MARKET_PULSE_API_KEY`와 **서로 다른** `MARKET_PULSE_PUBLISH_KEY`를 반드시 설정하고, 보고서 게시·PDF 업로드·삭제에는 게시키를 사용합니다.
@@ -301,5 +316,10 @@ npx eas-cli@latest build --platform android --profile preview
 - `OPENAI_API_KEY`: 선택형 AI 분석용 서버 전용 키
 - `OPENAI_MODEL`: 기본 `gpt-5.6-terra`
 - `OPENAI_DAILY_LIMIT`: 종목 변동 원인 AI 보강의 하루 호출 상한. 기본 12회
+- `REPORT_GITHUB_SYNC_ENABLED`: GitHub 예약 보고서 브리지 활성화 여부. Docker production 기본 `true`
+- `REPORT_GITHUB_REPOSITORY`: 자동 보고서 저장소. 기본 `sasamx22-rgb/stock-interest-app`
+- `REPORT_GITHUB_REF`: 자동 보고서 브랜치. 기본 `chatgpt/live-naver-market-data`
+- `REPORT_GITHUB_FILE`: 자동 보고서 manifest. 기본 `auto-reports/reports.json`
+- `REPORT_GITHUB_SYNC_INTERVAL_SECONDS`: GitHub manifest 재확인 최소 간격. 기본 120초
 
 민감정보와 인증정보는 GitHub에 커밋하지 않습니다.
