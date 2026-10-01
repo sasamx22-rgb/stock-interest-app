@@ -1,0 +1,22 @@
+[
+  {
+    "reutersCode": "JAGX.O",
+    "symbolCode": "JAGX",
+    "koreanCodeName": "재규어 헬스",
+    "englishCodeName": "Jaguar Health Inc",
+    "currentPrice": "34.4600",
+    "closePrice": "34.4600",
+    "fluctuationsRatio": "1190.636",
+    "accumulatedTradingVolume": "25228271"
+  },
+  {
+    "reutersCode": "LHSW.O",
+    "symbolCode": "LHSW",
+    "koreanCodeName": "리안허 소웰 인터내셔널 그룹",
+    "englishCodeName": "Lianhe Sowell International Group Ltd",
+    "currentPrice": "0.8891",
+    "closePrice": "0.8891",
+    "fluctuationsRatio": "105.3344",
+    "accumulatedTradingVolume": "343405910"
+  }
+]

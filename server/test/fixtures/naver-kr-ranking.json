@@ -1,0 +1,22 @@
+[
+  {
+    "itemcode": "303810",
+    "itemname": "동국생명과학",
+    "nowPrice": "3035",
+    "prevChangeRate": "29.98",
+    "tradeVolume": "14286739",
+    "prevQuant": "71428",
+    "quantDiffRate": "19901.594",
+    "marketStatus": "CLOSE"
+  },
+  {
+    "itemcode": "009580",
+    "itemname": "무림P&P",
+    "nowPrice": "1775",
+    "prevChangeRate": "8.83",
+    "tradeVolume": "11874644",
+    "prevQuant": "89630",
+    "quantDiffRate": "13148.515",
+    "marketStatus": "CLOSE"
+  }
+]

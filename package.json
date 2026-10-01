@@ -11,7 +11,7 @@
     "server": "npm --workspace server run start",
     "typecheck": "npm --workspace mobile run typecheck",
     "lint": "npm --workspace mobile run lint",
-    "test": "npm --workspace server test"
+    "test": "npm --workspace server test",
+    "publish-report": "node scripts/publish-report.mjs"
   }
 }
-
