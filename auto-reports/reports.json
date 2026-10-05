@@ -1,5 +1,347 @@
 [
   {
+    "id": "2026-10-06-morning",
+    "type": "morning",
+    "publishedAt": "2026-10-06T08:00:00+09:00",
+    "title": "미국 증시 아침 브리핑: Nasdaq 최고치와 서비스 물가·장기금리의 충돌",
+    "summary": "10월 5일 미국 증시는 Nvidia와 대형 M&A 재료로 Nasdaq이 사상 최고치를 경신했습니다. 그러나 ISM 서비스 가격지수는 74.0으로 상승했고 미국 10년물은 5.333%로 올라, AI 이익 기대와 할인율 부담이 충돌했습니다. 한국은 10월 5일 휴장이어서 직전 핵심 종목은 모두 거래 없음으로 추적했습니다.",
+    "marketSummary": "S&P 500 +0.66%, Nasdaq +1.05%, Dow +0.18%, Russell 2000 +0.50%. 미 2년 4.856%(+3.3bp), 10년 5.333%(+5.7bp), DXY 102.21(+0.27%), VIX 15.52(+1.4%), WTI $89.43(-1.84%).",
+    "highlights": [
+      "ISM 서비스업 54.9(예상 55.0), 가격 74.0·고용 50.1",
+      "Nasdaq 최고지만 신고가/신저가 57/243으로 확산 취약",
+      "PTC·RXO M&A와 Vaxcyte 3상 발표로 개별주 변동성 확대",
+      "10/6 무역수지, 10/8 FOMC 의사록, 10/8~10/9 PepsiCo·Delta 실적"
+    ],
+    "tickers": [
+      "SK하이닉스",
+      "삼성전자",
+      "S-Oil",
+      "대한항공",
+      "한미반도체",
+      "DB하이텍",
+      "현대글로비스",
+      "NVDA",
+      "PTC",
+      "RXO",
+      "CHRW",
+      "PCVX",
+      "INTC"
+    ],
+    "sections": [
+      {
+        "title": "오늘 시장의 핵심 판단",
+        "body": "Nasdaq은 Nvidia를 중심으로 사상 최고치를 경신했지만 서비스 물가와 장기금리가 다시 올랐습니다. ISM 서비스업은 54.9로 예상 55.0을 소폭 밑돌았으나 가격지수는 74.0으로 2022년 7월 이후 최고였고, 10년물은 5.333%까지 상승했습니다. 10개 업종이 올라도 Nasdaq 신저가가 신고가의 4배를 넘고 S&P 구성종목의 70% 이상이 최근 고점보다 10% 넘게 낮아 상승의 폭은 취약합니다.",
+        "bullets": [
+          "사실: S&P +0.66%, Nasdaq +1.05%, Dow +0.18%, Russell +0.50%",
+          "해석: AI 이익 기대가 높은 할인율을 이겼지만 대형 기술주 집중이 큼",
+          "위험: 서비스 가격 고착과 10년물 5.35% 재돌파"
+        ],
+        "links": [
+          {
+            "label": "Reuters 미국시장",
+            "url": "https://www.reuters.com/world/europe/wall-st-futures-dip-tech-stocks-take-breather-2026-10-05/"
+          },
+          {
+            "label": "AP 지수",
+            "url": "https://apnews.com/article/7f89624b604f25f313502c77d4d0b010"
+          }
+        ]
+      },
+      {
+        "title": "시장 스냅샷",
+        "rows": [
+          {
+            "label": "S&P 500",
+            "value": "7,773.95 · +0.66%",
+            "note": "10/5 정규장"
+          },
+          {
+            "label": "Nasdaq",
+            "value": "27,477.31 · +1.05%",
+            "note": "사상 최고"
+          },
+          {
+            "label": "Dow",
+            "value": "51,267.90 · +0.18%",
+            "note": "10/5 정규장"
+          },
+          {
+            "label": "Russell 2000",
+            "value": "2,847.14 · +0.50%",
+            "note": "10/5 정규장"
+          },
+          {
+            "label": "미 국채 2년",
+            "value": "4.856% · +3.3bp",
+            "note": "미국 종가"
+          },
+          {
+            "label": "미 국채 10년",
+            "value": "5.333% · +5.7bp",
+            "note": "미국 종가"
+          },
+          {
+            "label": "DXY",
+            "value": "102.21 · +0.27%",
+            "note": "공급자 종가"
+          },
+          {
+            "label": "USD/KRW",
+            "value": "1,344.1원 · +1.5원",
+            "note": "역외 참고; 서울 현물 휴장"
+          },
+          {
+            "label": "VIX",
+            "value": "15.52 · +1.4%",
+            "note": "현물 종가"
+          },
+          {
+            "label": "WTI / Brent",
+            "value": "$89.43(-1.84%) / $100.32(-1.89%)",
+            "note": "10/5 정산"
+          }
+        ],
+        "links": [
+          {
+            "label": "AP 4대 지수",
+            "url": "https://apnews.com/article/7f89624b604f25f313502c77d4d0b010"
+          }
+        ]
+      },
+      {
+        "title": "시장을 움직인 원인",
+        "body": "ISM 서비스업 54.9는 예상 55.0과 이전 55.4를 소폭 밑돌았습니다. 사업활동 56.5, 신규주문 59.8은 둔화했지만 고용은 50.1로 확장 전환했고 가격은 74.0으로 상승했습니다. 10월 인상 가능성은 약 24%로 낮아졌어도 서비스 가격과 장기 인플레이션·재정 위험이 금리를 올렸습니다.",
+        "bullets": [
+          "확인된 사실: 가격 74.0(이전 72.6), 고용 50.1(47.8)",
+          "유가: Brent $100.32, WTI $89.43로 약 1.9% 하락",
+          "해석: 성장과 가격 압력이 공존해 주식과 할인율이 엇갈림"
+        ],
+        "links": [
+          {
+            "label": "경제지표 실제·예상·이전",
+            "url": "https://tradingeconomics.com/united-states/calendar"
+          }
+        ]
+      },
+      {
+        "title": "업종과 시장 확산",
+        "body": "11개 업종 중 10개가 상승했고 소재 +1.3%, 커뮤니케이션 +1.2%가 강했습니다. 부동산은 -0.3%였습니다. 상승/하락은 2,273/2,204로 근소한 상승 우위였지만 S&P 신고가/신저가 13/20, Nasdaq 57/243으로 신저가 우위가 뚜렷했습니다.",
+        "bullets": [
+          "하루 상승 종목 수는 개선됐지만 추세 확산은 약함",
+          "S&P 종목 70%+가 최근 고점 대비 10% 넘게 낮음",
+          "Nasdaq 최고치를 전면적 위험선호 회복으로 해석하지 않음"
+        ]
+      },
+      {
+        "title": "미국 기업·공시 관찰",
+        "rows": [
+          {
+            "label": "Nvidia",
+            "value": "+2.1% · $238.90 사상 최고",
+            "note": "새 실적 없음; 마진·현금흐름·CAPEX와 5.33% 금리 검증"
+          },
+          {
+            "label": "PTC",
+            "value": "약 +33% · Schneider 인수",
+            "note": "주당 $205 현금, EV $22.6bn, 종료수수료 $700m, 인수자 $25bn 브리지"
+          },
+          {
+            "label": "RXO / CHRW",
+            "value": "RXO +22%+ / CHRW 약 -11%",
+            "note": "$5.8bn 거래; 영업권·이자·운전자본·통합비용과 시너지 현금화 확인"
+          },
+          {
+            "label": "Vaxcyte",
+            "value": "약 +31% · VAX-31 3상 긍정",
+            "note": "장후 주식·선불워런트·전환사채 계획; 현금 런웨이와 희석·이자 부담"
+          },
+          {
+            "label": "Intel",
+            "value": "-2.6%",
+            "note": "TSMC의 Terafab 협상은 파운드리 경쟁 우려; 확정 계약 아님"
+          }
+        ],
+        "links": [
+          {
+            "label": "PTC SEC",
+            "url": "https://www.sec.gov/Archives/edgar/data/857005/000119312526413124/d174191d8k.htm"
+          },
+          {
+            "label": "RXO 공식",
+            "url": "https://rxo.com/news/c-h-robinson-to-acquire-rxo-redefining-the-future-of-third-party-logistics-while-unlocking-significant-shareholder-value/"
+          },
+          {
+            "label": "Vaxcyte 공식",
+            "url": "https://investors.vaxcyte.com/news-releases/news-release-details/vaxcyte-reports-positive-topline-data-opus-1-pivotal-adult-phase"
+          }
+        ]
+      },
+      {
+        "title": "한국 연관 종목 - 10월 6일",
+        "body": "한국은 10월 5일 휴장했습니다. 10월 2일 종가는 최근 확정 참조가격일 뿐이며 10월 5일 미국 뉴스의 성과로 계산하지 않습니다.",
+        "rows": [
+          {
+            "label": "SK하이닉스 000660",
+            "value": "긍정/혼재 · Nvidia 공식 파트너십",
+            "note": "HBM 우호·5.33% 금리 부담. ASP·계약·출하·OCF 확인; 일관된 선행 PER 미확인으로 밸류 유보"
+          },
+          {
+            "label": "삼성전자 005930",
+            "value": "긍정/혼재 · 업종·경쟁 관계",
+            "note": "AI 메모리 우호, HBM 인증·파운드리 가동률 별도 확인; 오늘 직접 거래 미확인"
+          },
+          {
+            "label": "S-Oil 010950",
+            "value": "부정/혼재 · 선반영 주의",
+            "note": "유가 하락은 재고평가 부담·운전자본 완화; 정제마진·Shaheen CAPEX·OCF 확인"
+          },
+          {
+            "label": "대한항공 003490",
+            "value": "긍정/혼재",
+            "note": "유가 하락 우호, 달러·원 상승 일부 상쇄; 헤지·할증료·화물운임·EV/EBITDAR·OCF 확인"
+          }
+        ],
+        "bullets": [
+          "관찰 한미반도체: HBM 장비 수주·매출·현금회수",
+          "관찰 DB하이텍: 특화공정 가동률·ASP·CAPEX",
+          "관찰 현대글로비스: 북미 물류 매출·운임·계약 갱신"
+        ],
+        "links": [
+          {
+            "label": "SK하이닉스-Nvidia 공식",
+            "url": "https://news.skhynix.com/en/multi-year-tech-partnership-with-nvidia/"
+          }
+        ]
+      },
+      {
+        "title": "직전 보고서 핵심 종목 점검",
+        "body": "2026-10-05 보고서 핵심 5종목 전체를 추적했습니다. 한국은 10월 5일 휴장이었고 첫 정규장은 10월 6일이므로 확정 성과가 없습니다. 선정 전 10월 2일 움직임을 선정 후 성과로 쓰지 않았습니다.",
+        "rows": [
+          {
+            "label": "SK하이닉스 000660",
+            "value": "거래 없음",
+            "note": "첫 거래일 10/6; 확정 종가 후 시장 대비 계산"
+          },
+          {
+            "label": "삼성전자 005930",
+            "value": "거래 없음",
+            "note": "첫 거래일 10/6; 확정 종가 후 시장 대비 계산"
+          },
+          {
+            "label": "현대차 005380",
+            "value": "거래 없음",
+            "note": "첫 거래일 10/6; 확정 종가 후 시장 대비 계산"
+          },
+          {
+            "label": "S-Oil 010950",
+            "value": "거래 없음",
+            "note": "첫 거래일 10/6; 확정 종가 후 시장 대비 계산"
+          },
+          {
+            "label": "대한항공 003490",
+            "value": "거래 없음",
+            "note": "첫 거래일 10/6; 확정 종가 후 시장 대비 계산"
+          }
+        ],
+        "bullets": [
+          "실제 매수가·추천 성과가 아님",
+          "하루 가격 방향은 인과관계 입증이 아님"
+        ]
+      },
+      {
+        "title": "다음 일정과 체크포인트",
+        "rows": [
+          {
+            "label": "10/6 21:30 미국 8월 무역수지",
+            "value": "-$102.0bn 예상 / -$88.6bn 이전",
+            "note": "더 큰 적자는 GDP 부담이나 AI 자본재 수입이면 CAPEX 신호; 수입 둔화형 개선은 내수 약화 가능"
+          },
+          {
+            "label": "10/8 03:00 FOMC 의사록",
+            "value": "수치 컨센서스 없음",
+            "note": "매파적 조건은 금리·달러 상승과 성장주 부담; 고용 부진은 회의 이후 정보"
+          },
+          {
+            "label": "10/8~10/9 PepsiCo / Delta",
+            "value": "PEP EPS $2.30·매출 $24.98bn / DAL EPS $1.94",
+            "note": "Pepsi 가격·물량·운전자본, Delta 연료·단위수익·현금흐름 확인"
+          }
+        ],
+        "links": [
+          {
+            "label": "주간 경제일정",
+            "url": "https://www.kiplinger.com/investing/economy/this-weeks-economic-calendar"
+          },
+          {
+            "label": "Fed 공식",
+            "url": "https://www.federalreserve.gov/monetarypolicy.htm"
+          },
+          {
+            "label": "Delta 공식",
+            "url": "https://ir.delta.com/news/news-details/2026/Delta-Air-Lines-Announces-Webcast-of-September-Quarter-2026-Financial-Results/default.aspx"
+          }
+        ]
+      },
+      {
+        "title": "판단을 바꿀 조건 3가지",
+        "rows": [
+          {
+            "label": "서비스 물가·금리",
+            "value": "서비스 가격 둔화와 10년물 5.20% 하회",
+            "note": "AI·반도체 할인율 부담 완화; 가격 고착·5.35% 상회면 보수화"
+          },
+          {
+            "label": "시장 확산·이익",
+            "value": "Nasdaq 신저가 감소·동일가중 개선·AI 매출과 FCF 증가",
+            "note": "대형주 집중 경고 완화; 신저가 확대·마진 둔화면 위험 확대"
+          },
+          {
+            "label": "에너지·환율",
+            "value": "Brent $100 아래 지속과 원/달러 안정 또는 공급차질 재발",
+            "note": "정상화 시 정유 재고이익 기대 축소·항공 전망 개선; 동반 급등이면 반대"
+          }
+        ]
+      },
+      {
+        "title": "주요 원문·데이터 출처",
+        "links": [
+          {
+            "label": "Reuters 시장",
+            "url": "https://www.reuters.com/world/europe/wall-st-futures-dip-tech-stocks-take-breather-2026-10-05/"
+          },
+          {
+            "label": "AP 지수",
+            "url": "https://apnews.com/article/7f89624b604f25f313502c77d4d0b010"
+          },
+          {
+            "label": "경제지표",
+            "url": "https://tradingeconomics.com/united-states/calendar"
+          },
+          {
+            "label": "PTC SEC",
+            "url": "https://www.sec.gov/Archives/edgar/data/857005/000119312526413124/d174191d8k.htm"
+          },
+          {
+            "label": "RXO 공식",
+            "url": "https://rxo.com/news/c-h-robinson-to-acquire-rxo-redefining-the-future-of-third-party-logistics-while-unlocking-significant-shareholder-value/"
+          },
+          {
+            "label": "Vaxcyte 공식",
+            "url": "https://investors.vaxcyte.com/news-releases/news-release-details/vaxcyte-reports-positive-topline-data-opus-1-pivotal-adult-phase"
+          },
+          {
+            "label": "SK하이닉스 공식",
+            "url": "https://news.skhynix.com/en/multi-year-tech-partnership-with-nvidia/"
+          }
+        ]
+      }
+    ],
+    "pdfBase64Parts": [
+      "auto-reports/pdfs/2026-10-06-morning.part001.b64"
+    ],
+    "pdfSourceVersion": "2026-10-05T23:08:47Z"
+  },
+  {
     "id": "2026-10-05-morning",
     "type": "morning",
     "publishedAt": "2026-10-05T08:00:00+09:00",
