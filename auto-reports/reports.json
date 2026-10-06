@@ -1,5 +1,393 @@
 [
   {
+    "id": "2026-10-07-morning",
+    "type": "morning",
+    "publishedAt": "2026-10-07T08:00:00+09:00",
+    "title": "미국 증시 아침 브리핑: 대형주 신고가와 소형주 확산 실패",
+    "summary": "10월 6일 미국 증시는 유가와 국채금리가 완화되며 S&P 500과 Nasdaq이 신고가를 경신했습니다. 다만 Russell 2000은 하락했고 Nasdaq 신저가가 신고가를 웃돌아 전면적 위험선호로 보기는 어렵습니다. 미국 무역적자는 예상보다 커졌지만 AI 자본재 수입과 기업 이익 기대가 대형주를 지지했습니다.",
+    "marketSummary": "S&P 500 +0.58%, Nasdaq +0.45%, Dow +0.49%, Russell 2000 -0.59%. 미 2년 4.789%(-4.2bp), 10년 5.269%(-4.1bp), DXY 101.85(-0.31%), USD/KRW 1,343.6원(-0.4원), VIX 15.01(-3.29%), WTI $89.44(+0.01%).",
+    "highlights": [
+      "미 무역적자 $105.6bn(예상 $102.0bn), 수입 사상 최고 $420.8bn",
+      "유틸리티 선두·대형 AI 강세, Russell 2000 -0.59%",
+      "Constellation +12.3%, Marvell +5.8%, AMD +2.8%",
+      "10/8 03:00 KST FOMC 의사록, 10/9 23:00 미시간 소비심리"
+    ],
+    "tickers": [
+      "SK하이닉스",
+      "삼성전자",
+      "LG전자",
+      "S-Oil",
+      "대한항공",
+      "삼성전기",
+      "한미반도체",
+      "CEG",
+      "MRVL",
+      "AMD",
+      "OPCH",
+      "LW"
+    ],
+    "sections": [
+      {
+        "title": "오늘 시장의 핵심 판단",
+        "body": "유가와 국채금리가 전일 급등분을 일부 되돌리자 S&P 500과 Nasdaq이 신고가를 경신했습니다. 그러나 대형 AI·유틸리티가 주도한 가운데 Russell 2000은 하락했고 Nasdaq 상승·하락 종목 수는 거의 같았습니다. 할인율 압력은 전일보다 완화됐지만 상승 확산은 완전하지 않습니다.",
+        "bullets": [
+          "사실: S&P +0.58%, Nasdaq +0.45%, Dow +0.49%, Russell -0.59%",
+          "민감 변수: 에너지발 인플레이션·장기금리·AI 이익 실현",
+          "위험: FOMC 의사록이 추가 긴축 문턱을 낮게 제시하는 경우"
+        ],
+        "links": [
+          {
+            "label": "Reuters 시장",
+            "url": "https://www.reuters.com/business/wall-st-futures-rise-yields-oil-dip-2026-10-06/"
+          },
+          {
+            "label": "AP 지수",
+            "url": "https://apnews.com/article/267ca73e15e09f7e8deb5f6076405f48"
+          }
+        ]
+      },
+      {
+        "title": "시장 스냅샷",
+        "rows": [
+          {
+            "label": "S&P 500",
+            "value": "7,818.93 · +0.58%",
+            "note": "10/6 정규장"
+          },
+          {
+            "label": "Nasdaq",
+            "value": "27,599.79 · +0.45%",
+            "note": "사상 최고"
+          },
+          {
+            "label": "Dow",
+            "value": "51,521.28 · +0.49%",
+            "note": "10/6 정규장"
+          },
+          {
+            "label": "Russell 2000",
+            "value": "2,830.30 · -0.59%",
+            "note": "소형주 확산 실패"
+          },
+          {
+            "label": "미 국채 2년",
+            "value": "4.789% · -4.2bp",
+            "note": "미국 종가"
+          },
+          {
+            "label": "미 국채 10년",
+            "value": "5.269% · -4.1bp",
+            "note": "미국 종가"
+          },
+          {
+            "label": "DXY",
+            "value": "101.85 · -0.31%",
+            "note": "글로벌 종가"
+          },
+          {
+            "label": "USD/KRW",
+            "value": "1,343.6원 · -0.4원",
+            "note": "10/6 15:30 KST 서울"
+          },
+          {
+            "label": "VIX",
+            "value": "15.01 · -3.29%",
+            "note": "현물 종가"
+          },
+          {
+            "label": "WTI / Brent",
+            "value": "$89.44(+0.01%) / 약 $100.6",
+            "note": "10/6 정산"
+          }
+        ],
+        "links": [
+          {
+            "label": "Reuters 유가",
+            "url": "https://www.reuters.com/world/china/global-markets-global-markets-2026-10-06/"
+          },
+          {
+            "label": "연합뉴스 원화",
+            "url": "https://en.yna.co.kr/view/AEN20261006006851320"
+          }
+        ]
+      },
+      {
+        "title": "시장을 움직인 원인",
+        "body": "8월 무역적자는 전월 대비 13.7% 늘어난 $105.6bn으로 예상 $102.0bn을 웃돌았습니다. 수입은 4.3% 증가한 사상 최고 $420.8bn, 수출은 1.4% 늘어난 $315.2bn이었습니다. 자본재 수입은 $6.2bn 늘었고 반도체·산업기계가 AI 인프라 투자를 반영했습니다.",
+        "bullets": [
+          "사실: 실질 상품적자도 $8.7bn 확대돼 3분기 GDP 감산 요인",
+          "사실: 10월 연준 인상 확률 약 19%",
+          "연준: Daly는 AI·관세·에너지 충격의 지속성이 추가 긴축 조건이라고 설명",
+          "해석: 적자 확대는 성장률에 부정적이나 AI 자본재 수입은 설비투자 신호"
+        ],
+        "links": [
+          {
+            "label": "Reuters 무역",
+            "url": "https://www.reuters.com/business/us-trade-deficit-widens-august-amid-strong-imports-2026-10-06/"
+          },
+          {
+            "label": "Axios Daly",
+            "url": "https://www.axios.com/2026/10/06/fed-ai-daly-inflation-chips"
+          }
+        ]
+      },
+      {
+        "title": "업종과 시장 확산",
+        "rows": [
+          {
+            "label": "S&P 업종",
+            "value": "헬스케어만 하락·유틸리티 선두",
+            "note": "AI 전력 수요 부각"
+          },
+          {
+            "label": "대형주",
+            "value": "Magnificent Seven 6개 상승",
+            "note": "지수 상승 중심"
+          },
+          {
+            "label": "NYSE",
+            "value": "상승/하락 1.93배·신고가/신저가 258/219",
+            "note": "상승 확산"
+          },
+          {
+            "label": "Nasdaq",
+            "value": "상승 2,394 / 하락 2,378·신고가/신저가 61/182",
+            "note": "종목 수 중립·신저가 우위"
+          },
+          {
+            "label": "Russell 2000",
+            "value": "-0.59%",
+            "note": "소형주 확산 실패"
+          }
+        ]
+      },
+      {
+        "title": "미국 기업·공시 관찰",
+        "rows": [
+          {
+            "label": "Constellation Energy",
+            "value": "+12.3% · Alphabet 3,590MW 전력 계약",
+            "note": "발전 CAPEX·허가·장기 계약의 현금흐름 전환 확인"
+          },
+          {
+            "label": "Marvell",
+            "value": "+5.8% · 2028 매출 전망 상향",
+            "note": "총마진·재고·매출채권·주식보상 희석 확인"
+          },
+          {
+            "label": "AMD",
+            "value": "+2.8% · 2027 AI 칩 공급 확대",
+            "note": "선급·재고·CAPEX·경쟁가격 확인"
+          },
+          {
+            "label": "Option Care Health",
+            "value": "+32.7% · $5.8bn 인수 합의",
+            "note": "종결·규제·매수자 금융·영업권 부담"
+          },
+          {
+            "label": "Lamb Weston",
+            "value": "+7.5% · 실적 호조·전망 상향",
+            "note": "재고 회전·OCF·GAAP-조정이익 차이 확인"
+          }
+        ],
+        "links": [
+          {
+            "label": "Reuters 기업 반응",
+            "url": "https://www.reuters.com/business/wall-st-futures-rise-yields-oil-dip-2026-10-06/"
+          }
+        ]
+      },
+      {
+        "title": "한국 연관 종목 - 10월 7일",
+        "body": "미국 주가 상승이 한국 종목 상승을 보장하지 않습니다. 확인된 사업 노출과 업종 추론을 구분했습니다.",
+        "rows": [
+          {
+            "label": "SK하이닉스 000660",
+            "value": "긍정/혼재 · HBM4 양산·약 10개 고객 LTA",
+            "note": "10/6 -3.69%. 수율·ASP·OCF·CAPEX 확인; 선행 PER 미확인으로 선반영 유보"
+          },
+          {
+            "label": "삼성전자 005930",
+            "value": "긍정/혼재 · 서버 DRAM·eSSD·HBM 수요",
+            "note": "10/6 -1.45%. HBM 인증·계약가격·파운드리 수율 확인"
+          },
+          {
+            "label": "LG전자 066570",
+            "value": "긍정/혼재 · 북미 5GW 냉각 장기계약",
+            "note": "10/6 +7.64%. 수주잔고의 매출·마진·OCF 전환, 미국 공장 CAPEX·지연 확인"
+          },
+          {
+            "label": "S-Oil 010950",
+            "value": "혼재 · 2025 매출 약 79% 정유",
+            "note": "10/6 +0.06%. 스프레드·재고평가·OCF·Shaheen CAPEX 확인"
+          },
+          {
+            "label": "대한항공 003490",
+            "value": "관찰 · 10/6 +1.80%",
+            "note": "유가·원화 비용효과, 헤지·유류할증료·화물운임 확인"
+          },
+          {
+            "label": "삼성전기 009150",
+            "value": "관찰 · AI 서버 MLCC",
+            "note": "미국 기업 직접 납품으로 확대 해석하지 않음"
+          },
+          {
+            "label": "한미반도체 042700",
+            "value": "관찰 · HBM 장비",
+            "note": "고객별 수주·매출인식·현금회수 확인"
+          }
+        ],
+        "links": [
+          {
+            "label": "SK하이닉스",
+            "url": "https://news.skhynix.com/en/q2-2026-business-results/"
+          },
+          {
+            "label": "삼성전자",
+            "url": "https://news.samsung.com/global/samsung-electronics-announces-second-quarter-2026-results"
+          },
+          {
+            "label": "LG전자 계약",
+            "url": "https://www.lge.co.kr/story/newsroom/236201"
+          },
+          {
+            "label": "S-Oil",
+            "url": "https://s-oil.com/en/m/relation/ir/Revenue.aspx"
+          }
+        ]
+      },
+      {
+        "title": "직전 보고서 핵심 종목 점검",
+        "body": "2026-10-06 핵심 4종목 전체를 선정 후 첫 한국 정규장인 10월 6일 종가로 추적했습니다. KOSPI는 -0.89%였습니다.",
+        "rows": [
+          {
+            "label": "SK하이닉스 000660",
+            "value": "1,773,000원 · -68,000원 / -3.69%",
+            "note": "KOSPI 대비 -2.80%p; 금리·외국인 수급 부담 우세"
+          },
+          {
+            "label": "삼성전자 005930",
+            "value": "272,000원 · -4,000원 / -1.45%",
+            "note": "KOSPI 대비 -0.56%p; HBM 실행·대형주 수급 경계"
+          },
+          {
+            "label": "S-Oil 010950",
+            "value": "165,000원 · +100원 / +0.06%",
+            "note": "KOSPI 대비 +0.95%p; 혼재 효과·방향 제한"
+          },
+          {
+            "label": "대한항공 003490",
+            "value": "31,150원 · +550원 / +1.80%",
+            "note": "KOSPI 대비 +2.69%p; 비용 완화 기대와 부합"
+          }
+        ],
+        "bullets": [
+          "단 하루 관찰값이며 추천 성과가 아님",
+          "단일 뉴스의 인과관계 입증이 아님",
+          "확인된 분할·권리락 왜곡 없음"
+        ],
+        "links": [
+          {
+            "label": "한국시장",
+            "url": "https://en.yna.co.kr/view/AEN20261006006851320"
+          }
+        ]
+      },
+      {
+        "title": "다음 일정과 체크포인트",
+        "rows": [
+          {
+            "label": "10/8 03:00 KST · FOMC 의사록",
+            "value": "수치 컨센서스 없음",
+            "note": "매파적이면 금리·달러 상승과 성장주·한국 반도체 부담. 9월 고용은 회의 후 정보"
+          },
+          {
+            "label": "10/8 21:30 KST · 신규실업수당",
+            "value": "이전 197천 · 신뢰할 시장 예상 미확인",
+            "note": "낮은 수치는 성장에 긍정적이나 금리 상승 경로로 주식에 부정적일 수 있음"
+          },
+          {
+            "label": "10/9 23:00 KST · 미시간 소비심리",
+            "value": "예상 47.7 / 이전 48.1",
+            "note": "심리 개선과 기대인플레 하락이 함께 나타나야 우호적"
+          },
+          {
+            "label": "실적",
+            "value": "Levi 장후·PepsiCo 목 장전·Delta 금 장전",
+            "note": "가격·물량·재고·채권·연료·단위수익·OCF·GAAP-조정 차이"
+          }
+        ],
+        "links": [
+          {
+            "label": "Fed",
+            "url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+          },
+          {
+            "label": "미 노동부",
+            "url": "https://www.dol.gov/ui/data.pdf"
+          }
+        ]
+      },
+      {
+        "title": "판단을 바꿀 조건 3가지",
+        "rows": [
+          {
+            "label": "에너지·금리",
+            "value": "Brent $100 하회 지속·10년물 5.20% 아래 안착",
+            "note": "할인율 위험 축소; 5.35% 재돌파면 보수화"
+          },
+          {
+            "label": "AI 이익의 현금화",
+            "value": "수주가 매출·마진·OCF로 전환",
+            "note": "재고·채권이 매출보다 빠르면 긍정 논리 약화"
+          },
+          {
+            "label": "시장 폭·한국 수급",
+            "value": "Russell·Nasdaq 폭 개선·한국 반도체 외국인 순매수",
+            "note": "집중 경고 완화; 신저가·외국인 매도 확대면 위험 증가"
+          }
+        ]
+      },
+      {
+        "title": "주요 원문·데이터 출처",
+        "links": [
+          {
+            "label": "Reuters 시장",
+            "url": "https://www.reuters.com/business/wall-st-futures-rise-yields-oil-dip-2026-10-06/"
+          },
+          {
+            "label": "AP 지수",
+            "url": "https://apnews.com/article/267ca73e15e09f7e8deb5f6076405f48"
+          },
+          {
+            "label": "Reuters 무역",
+            "url": "https://www.reuters.com/business/us-trade-deficit-widens-august-amid-strong-imports-2026-10-06/"
+          },
+          {
+            "label": "Reuters 유가",
+            "url": "https://www.reuters.com/world/china/global-markets-global-markets-2026-10-06/"
+          },
+          {
+            "label": "Axios Daly",
+            "url": "https://www.axios.com/2026/10/06/fed-ai-daly-inflation-chips"
+          },
+          {
+            "label": "연합뉴스 한국",
+            "url": "https://en.yna.co.kr/view/AEN20261006006851320"
+          },
+          {
+            "label": "LG전자",
+            "url": "https://www.lge.co.kr/story/newsroom/236201"
+          }
+        ]
+      }
+    ],
+    "pdfBase64Parts": [
+      "auto-reports/pdfs/2026-10-07-morning.part001.b64"
+    ],
+    "pdfSourceVersion": "2026-10-07T08:07:01.685+09:00"
+  },
+  {
     "id": "2026-10-06-morning",
     "type": "morning",
     "publishedAt": "2026-10-06T08:00:00+09:00",
