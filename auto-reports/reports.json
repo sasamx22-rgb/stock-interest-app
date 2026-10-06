@@ -1,0 +1,3469 @@
+[
+  {
+    "id": "2026-10-07-morning",
+    "type": "morning",
+    "publishedAt": "2026-10-07T08:00:00+09:00",
+    "title": "미국 증시 아침 브리핑: 대형주 신고가와 소형주 확산 실패",
+    "summary": "10월 6일 미국 증시는 유가와 국채금리가 완화되며 S&P 500과 Nasdaq이 신고가를 경신했습니다. 다만 Russell 2000은 하락했고 Nasdaq 신저가가 신고가를 웃돌아 전면적 위험선호로 보기는 어렵습니다. 미국 무역적자는 예상보다 커졌지만 AI 자본재 수입과 기업 이익 기대가 대형주를 지지했습니다.",
+    "marketSummary": "S&P 500 +0.58%, Nasdaq +0.45%, Dow +0.49%, Russell 2000 -0.59%. 미 2년 4.789%(-4.2bp), 10년 5.269%(-4.1bp), DXY 101.85(-0.31%), USD/KRW 1,343.6원(-0.4원), VIX 15.01(-3.29%), WTI $89.44(+0.01%).",
+    "highlights": [
+      "미 무역적자 $105.6bn(예상 $102.0bn), 수입 사상 최고 $420.8bn",
+      "유틸리티 선두·대형 AI 강세, Russell 2000 -0.59%",
+      "Constellation +12.3%, Marvell +5.8%, AMD +2.8%",
+      "10/8 03:00 KST FOMC 의사록, 10/9 23:00 미시간 소비심리"
+    ],
+    "tickers": [
+      "SK하이닉스",
+      "삼성전자",
+      "LG전자",
+      "S-Oil",
+      "대한항공",
+      "삼성전기",
+      "한미반도체",
+      "CEG",
+      "MRVL",
+      "AMD",
+      "OPCH",
+      "LW"
+    ],
+    "sections": [
+      {
+        "title": "오늘 시장의 핵심 판단",
+        "body": "유가와 국채금리가 전일 급등분을 일부 되돌리자 S&P 500과 Nasdaq이 신고가를 경신했습니다. 그러나 대형 AI·유틸리티가 주도한 가운데 Russell 2000은 하락했고 Nasdaq 상승·하락 종목 수는 거의 같았습니다. 할인율 압력은 전일보다 완화됐지만 상승 확산은 완전하지 않습니다.",
+        "bullets": [
+          "사실: S&P +0.58%, Nasdaq +0.45%, Dow +0.49%, Russell -0.59%",
+          "민감 변수: 에너지발 인플레이션·장기금리·AI 이익 실현",
+          "위험: FOMC 의사록이 추가 긴축 문턱을 낮게 제시하는 경우"
+        ],
+        "links": [
+          {
+            "label": "Reuters 시장",
+            "url": "https://www.reuters.com/business/wall-st-futures-rise-yields-oil-dip-2026-10-06/"
+          },
+          {
+            "label": "AP 지수",
+            "url": "https://apnews.com/article/267ca73e15e09f7e8deb5f6076405f48"
+          }
+        ]
+      },
+      {
+        "title": "시장 스냅샷",
+        "rows": [
+          {
+            "label": "S&P 500",
+            "value": "7,818.93 · +0.58%",
+            "note": "10/6 정규장"
+          },
+          {
+            "label": "Nasdaq",
+            "value": "27,599.79 · +0.45%",
+            "note": "사상 최고"
+          },
+          {
+            "label": "Dow",
+            "value": "51,521.28 · +0.49%",
+            "note": "10/6 정규장"
+          },
+          {
+            "label": "Russell 2000",
+            "value": "2,830.30 · -0.59%",
+            "note": "소형주 확산 실패"
+          },
+          {
+            "label": "미 국채 2년",
+            "value": "4.789% · -4.2bp",
+            "note": "미국 종가"
+          },
+          {
+            "label": "미 국채 10년",
+            "value": "5.269% · -4.1bp",
+            "note": "미국 종가"
+          },
+          {
+            "label": "DXY",
+            "value": "101.85 · -0.31%",
+            "note": "글로벌 종가"
+          },
+          {
+            "label": "USD/KRW",
+            "value": "1,343.6원 · -0.4원",
+            "note": "10/6 15:30 KST 서울"
+          },
+          {
+            "label": "VIX",
+            "value": "15.01 · -3.29%",
+            "note": "현물 종가"
+          },
+          {
+            "label": "WTI / Brent",
+            "value": "$89.44(+0.01%) / 약 $100.6",
+            "note": "10/6 정산"
+          }
+        ],
+        "links": [
+          {
+            "label": "Reuters 유가",
+            "url": "https://www.reuters.com/world/china/global-markets-global-markets-2026-10-06/"
+          },
+          {
+            "label": "연합뉴스 원화",
+            "url": "https://en.yna.co.kr/view/AEN20261006006851320"
+          }
+        ]
+      },
+      {
+        "title": "시장을 움직인 원인",
+        "body": "8월 무역적자는 전월 대비 13.7% 늘어난 $105.6bn으로 예상 $102.0bn을 웃돌았습니다. 수입은 4.3% 증가한 사상 최고 $420.8bn, 수출은 1.4% 늘어난 $315.2bn이었습니다. 자본재 수입은 $6.2bn 늘었고 반도체·산업기계가 AI 인프라 투자를 반영했습니다.",
+        "bullets": [
+          "사실: 실질 상품적자도 $8.7bn 확대돼 3분기 GDP 감산 요인",
+          "사실: 10월 연준 인상 확률 약 19%",
+          "연준: Daly는 AI·관세·에너지 충격의 지속성이 추가 긴축 조건이라고 설명",
+          "해석: 적자 확대는 성장률에 부정적이나 AI 자본재 수입은 설비투자 신호"
+        ],
+        "links": [
+          {
+            "label": "Reuters 무역",
+            "url": "https://www.reuters.com/business/us-trade-deficit-widens-august-amid-strong-imports-2026-10-06/"
+          },
+          {
+            "label": "Axios Daly",
+            "url": "https://www.axios.com/2026/10/06/fed-ai-daly-inflation-chips"
+          }
+        ]
+      },
+      {
+        "title": "업종과 시장 확산",
+        "rows": [
+          {
+            "label": "S&P 업종",
+            "value": "헬스케어만 하락·유틸리티 선두",
+            "note": "AI 전력 수요 부각"
+          },
+          {
+            "label": "대형주",
+            "value": "Magnificent Seven 6개 상승",
+            "note": "지수 상승 중심"
+          },
+          {
+            "label": "NYSE",
+            "value": "상승/하락 1.93배·신고가/신저가 258/219",
+            "note": "상승 확산"
+          },
+          {
+            "label": "Nasdaq",
+            "value": "상승 2,394 / 하락 2,378·신고가/신저가 61/182",
+            "note": "종목 수 중립·신저가 우위"
+          },
+          {
+            "label": "Russell 2000",
+            "value": "-0.59%",
+            "note": "소형주 확산 실패"
+          }
+        ]
+      },
+      {
+        "title": "미국 기업·공시 관찰",
+        "rows": [
+          {
+            "label": "Constellation Energy",
+            "value": "+12.3% · Alphabet 3,590MW 전력 계약",
+            "note": "발전 CAPEX·허가·장기 계약의 현금흐름 전환 확인"
+          },
+          {
+            "label": "Marvell",
+            "value": "+5.8% · 2028 매출 전망 상향",
+            "note": "총마진·재고·매출채권·주식보상 희석 확인"
+          },
+          {
+            "label": "AMD",
+            "value": "+2.8% · 2027 AI 칩 공급 확대",
+            "note": "선급·재고·CAPEX·경쟁가격 확인"
+          },
+          {
+            "label": "Option Care Health",
+            "value": "+32.7% · $5.8bn 인수 합의",
+            "note": "종결·규제·매수자 금융·영업권 부담"
+          },
+          {
+            "label": "Lamb Weston",
+            "value": "+7.5% · 실적 호조·전망 상향",
+            "note": "재고 회전·OCF·GAAP-조정이익 차이 확인"
+          }
+        ],
+        "links": [
+          {
+            "label": "Reuters 기업 반응",
+            "url": "https://www.reuters.com/business/wall-st-futures-rise-yields-oil-dip-2026-10-06/"
+          }
+        ]
+      },
+      {
+        "title": "한국 연관 종목 - 10월 7일",
+        "body": "미국 주가 상승이 한국 종목 상승을 보장하지 않습니다. 확인된 사업 노출과 업종 추론을 구분했습니다.",
+        "rows": [
+          {
+            "label": "SK하이닉스 000660",
+            "value": "긍정/혼재 · HBM4 양산·약 10개 고객 LTA",
+            "note": "10/6 -3.69%. 수율·ASP·OCF·CAPEX 확인; 선행 PER 미확인으로 선반영 유보"
+          },
+          {
+            "label": "삼성전자 005930",
+            "value": "긍정/혼재 · 서버 DRAM·eSSD·HBM 수요",
+            "note": "10/6 -1.45%. HBM 인증·계약가격·파운드리 수율 확인"
+          },
+          {
+            "label": "LG전자 066570",
+            "value": "긍정/혼재 · 북미 5GW 냉각 장기계약",
+            "note": "10/6 +7.64%. 수주잔고의 매출·마진·OCF 전환, 미국 공장 CAPEX·지연 확인"
+          },
+          {
+            "label": "S-Oil 010950",
+            "value": "혼재 · 2025 매출 약 79% 정유",
+            "note": "10/6 +0.06%. 스프레드·재고평가·OCF·Shaheen CAPEX 확인"
+          },
+          {
+            "label": "대한항공 003490",
+            "value": "관찰 · 10/6 +1.80%",
+            "note": "유가·원화 비용효과, 헤지·유류할증료·화물운임 확인"
+          },
+          {
+            "label": "삼성전기 009150",
+            "value": "관찰 · AI 서버 MLCC",
+            "note": "미국 기업 직접 납품으로 확대 해석하지 않음"
+          },
+          {
+            "label": "한미반도체 042700",
+            "value": "관찰 · HBM 장비",
+            "note": "고객별 수주·매출인식·현금회수 확인"
+          }
+        ],
+        "links": [
+          {
+            "label": "SK하이닉스",
+            "url": "https://news.skhynix.com/en/q2-2026-business-results/"
+          },
+          {
+            "label": "삼성전자",
+            "url": "https://news.samsung.com/global/samsung-electronics-announces-second-quarter-2026-results"
+          },
+          {
+            "label": "LG전자 계약",
+            "url": "https://www.lge.co.kr/story/newsroom/236201"
+          },
+          {
+            "label": "S-Oil",
+            "url": "https://s-oil.com/en/m/relation/ir/Revenue.aspx"
+          }
+        ]
+      },
+      {
+        "title": "직전 보고서 핵심 종목 점검",
+        "body": "2026-10-06 핵심 4종목 전체를 선정 후 첫 한국 정규장인 10월 6일 종가로 추적했습니다. KOSPI는 -0.89%였습니다.",
+        "rows": [
+          {
+            "label": "SK하이닉스 000660",
+            "value": "1,773,000원 · -68,000원 / -3.69%",
+            "note": "KOSPI 대비 -2.80%p; 금리·외국인 수급 부담 우세"
+          },
+          {
+            "label": "삼성전자 005930",
+            "value": "272,000원 · -4,000원 / -1.45%",
+            "note": "KOSPI 대비 -0.56%p; HBM 실행·대형주 수급 경계"
+          },
+          {
+            "label": "S-Oil 010950",
+            "value": "165,000원 · +100원 / +0.06%",
+            "note": "KOSPI 대비 +0.95%p; 혼재 효과·방향 제한"
+          },
+          {
+            "label": "대한항공 003490",
+            "value": "31,150원 · +550원 / +1.80%",
+            "note": "KOSPI 대비 +2.69%p; 비용 완화 기대와 부합"
+          }
+        ],
+        "bullets": [
+          "단 하루 관찰값이며 추천 성과가 아님",
+          "단일 뉴스의 인과관계 입증이 아님",
+          "확인된 분할·권리락 왜곡 없음"
+        ],
+        "links": [
+          {
+            "label": "한국시장",
+            "url": "https://en.yna.co.kr/view/AEN20261006006851320"
+          }
+        ]
+      },
+      {
+        "title": "다음 일정과 체크포인트",
+        "rows": [
+          {
+            "label": "10/8 03:00 KST · FOMC 의사록",
+            "value": "수치 컨센서스 없음",
+            "note": "매파적이면 금리·달러 상승과 성장주·한국 반도체 부담. 9월 고용은 회의 후 정보"
+          },
+          {
+            "label": "10/8 21:30 KST · 신규실업수당",
+            "value": "이전 197천 · 신뢰할 시장 예상 미확인",
+            "note": "낮은 수치는 성장에 긍정적이나 금리 상승 경로로 주식에 부정적일 수 있음"
+          },
+          {
+            "label": "10/9 23:00 KST · 미시간 소비심리",
+            "value": "예상 47.7 / 이전 48.1",
+            "note": "심리 개선과 기대인플레 하락이 함께 나타나야 우호적"
+          },
+          {
+            "label": "실적",
+            "value": "Levi 장후·PepsiCo 목 장전·Delta 금 장전",
+            "note": "가격·물량·재고·채권·연료·단위수익·OCF·GAAP-조정 차이"
+          }
+        ],
+        "links": [
+          {
+            "label": "Fed",
+            "url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+          },
+          {
+            "label": "미 노동부",
+            "url": "https://www.dol.gov/ui/data.pdf"
+          }
+        ]
+      },
+      {
+        "title": "판단을 바꿀 조건 3가지",
+        "rows": [
+          {
+            "label": "에너지·금리",
+            "value": "Brent $100 하회 지속·10년물 5.20% 아래 안착",
+            "note": "할인율 위험 축소; 5.35% 재돌파면 보수화"
+          },
+          {
+            "label": "AI 이익의 현금화",
+            "value": "수주가 매출·마진·OCF로 전환",
+            "note": "재고·채권이 매출보다 빠르면 긍정 논리 약화"
+          },
+          {
+            "label": "시장 폭·한국 수급",
+            "value": "Russell·Nasdaq 폭 개선·한국 반도체 외국인 순매수",
+            "note": "집중 경고 완화; 신저가·외국인 매도 확대면 위험 증가"
+          }
+        ]
+      },
+      {
+        "title": "주요 원문·데이터 출처",
+        "links": [
+          {
+            "label": "Reuters 시장",
+            "url": "https://www.reuters.com/business/wall-st-futures-rise-yields-oil-dip-2026-10-06/"
+          },
+          {
+            "label": "AP 지수",
+            "url": "https://apnews.com/article/267ca73e15e09f7e8deb5f6076405f48"
+          },
+          {
+            "label": "Reuters 무역",
+            "url": "https://www.reuters.com/business/us-trade-deficit-widens-august-amid-strong-imports-2026-10-06/"
+          },
+          {
+            "label": "Reuters 유가",
+            "url": "https://www.reuters.com/world/china/global-markets-global-markets-2026-10-06/"
+          },
+          {
+            "label": "Axios Daly",
+            "url": "https://www.axios.com/2026/10/06/fed-ai-daly-inflation-chips"
+          },
+          {
+            "label": "연합뉴스 한국",
+            "url": "https://en.yna.co.kr/view/AEN20261006006851320"
+          },
+          {
+            "label": "LG전자",
+            "url": "https://www.lge.co.kr/story/newsroom/236201"
+          }
+        ]
+      }
+    ],
+    "pdfBase64Parts": [
+      "auto-reports/pdfs/2026-10-07-morning.part001.b64"
+    ],
+    "pdfSourceVersion": "2026-10-07T08:07:01.685+09:00"
+  },
+  {
+    "id": "2026-10-06-morning",
+    "type": "morning",
+    "publishedAt": "2026-10-06T08:00:00+09:00",
+    "title": "미국 증시 아침 브리핑: Nasdaq 최고치와 서비스 물가·장기금리의 충돌",
+    "summary": "10월 5일 미국 증시는 Nvidia와 대형 M&A 재료로 Nasdaq이 사상 최고치를 경신했습니다. 그러나 ISM 서비스 가격지수는 74.0으로 상승했고 미국 10년물은 5.333%로 올라, AI 이익 기대와 할인율 부담이 충돌했습니다. 한국은 10월 5일 휴장이어서 직전 핵심 종목은 모두 거래 없음으로 추적했습니다.",
+    "marketSummary": "S&P 500 +0.66%, Nasdaq +1.05%, Dow +0.18%, Russell 2000 +0.50%. 미 2년 4.856%(+3.3bp), 10년 5.333%(+5.7bp), DXY 102.21(+0.27%), VIX 15.52(+1.4%), WTI $89.43(-1.84%).",
+    "highlights": [
+      "ISM 서비스업 54.9(예상 55.0), 가격 74.0·고용 50.1",
+      "Nasdaq 최고지만 신고가/신저가 57/243으로 확산 취약",
+      "PTC·RXO M&A와 Vaxcyte 3상 발표로 개별주 변동성 확대",
+      "10/6 무역수지, 10/8 FOMC 의사록, 10/8~10/9 PepsiCo·Delta 실적"
+    ],
+    "tickers": [
+      "SK하이닉스",
+      "삼성전자",
+      "S-Oil",
+      "대한항공",
+      "한미반도체",
+      "DB하이텍",
+      "현대글로비스",
+      "NVDA",
+      "PTC",
+      "RXO",
+      "CHRW",
+      "PCVX",
+      "INTC"
+    ],
+    "sections": [
+      {
+        "title": "오늘 시장의 핵심 판단",
+        "body": "Nasdaq은 Nvidia를 중심으로 사상 최고치를 경신했지만 서비스 물가와 장기금리가 다시 올랐습니다. ISM 서비스업은 54.9로 예상 55.0을 소폭 밑돌았으나 가격지수는 74.0으로 2022년 7월 이후 최고였고, 10년물은 5.333%까지 상승했습니다. 10개 업종이 올라도 Nasdaq 신저가가 신고가의 4배를 넘고 S&P 구성종목의 70% 이상이 최근 고점보다 10% 넘게 낮아 상승의 폭은 취약합니다.",
+        "bullets": [
+          "사실: S&P +0.66%, Nasdaq +1.05%, Dow +0.18%, Russell +0.50%",
+          "해석: AI 이익 기대가 높은 할인율을 이겼지만 대형 기술주 집중이 큼",
+          "위험: 서비스 가격 고착과 10년물 5.35% 재돌파"
+        ],
+        "links": [
+          {
+            "label": "Reuters 미국시장",
+            "url": "https://www.reuters.com/world/europe/wall-st-futures-dip-tech-stocks-take-breather-2026-10-05/"
+          },
+          {
+            "label": "AP 지수",
+            "url": "https://apnews.com/article/7f89624b604f25f313502c77d4d0b010"
+          }
+        ]
+      },
+      {
+        "title": "시장 스냅샷",
+        "rows": [
+          {
+            "label": "S&P 500",
+            "value": "7,773.95 · +0.66%",
+            "note": "10/5 정규장"
+          },
+          {
+            "label": "Nasdaq",
+            "value": "27,477.31 · +1.05%",
+            "note": "사상 최고"
+          },
+          {
+            "label": "Dow",
+            "value": "51,267.90 · +0.18%",
+            "note": "10/5 정규장"
+          },
+          {
+            "label": "Russell 2000",
+            "value": "2,847.14 · +0.50%",
+            "note": "10/5 정규장"
+          },
+          {
+            "label": "미 국채 2년",
+            "value": "4.856% · +3.3bp",
+            "note": "미국 종가"
+          },
+          {
+            "label": "미 국채 10년",
+            "value": "5.333% · +5.7bp",
+            "note": "미국 종가"
+          },
+          {
+            "label": "DXY",
+            "value": "102.21 · +0.27%",
+            "note": "공급자 종가"
+          },
+          {
+            "label": "USD/KRW",
+            "value": "1,344.1원 · +1.5원",
+            "note": "역외 참고; 서울 현물 휴장"
+          },
+          {
+            "label": "VIX",
+            "value": "15.52 · +1.4%",
+            "note": "현물 종가"
+          },
+          {
+            "label": "WTI / Brent",
+            "value": "$89.43(-1.84%) / $100.32(-1.89%)",
+            "note": "10/5 정산"
+          }
+        ],
+        "links": [
+          {
+            "label": "AP 4대 지수",
+            "url": "https://apnews.com/article/7f89624b604f25f313502c77d4d0b010"
+          }
+        ]
+      },
+      {
+        "title": "시장을 움직인 원인",
+        "body": "ISM 서비스업 54.9는 예상 55.0과 이전 55.4를 소폭 밑돌았습니다. 사업활동 56.5, 신규주문 59.8은 둔화했지만 고용은 50.1로 확장 전환했고 가격은 74.0으로 상승했습니다. 10월 인상 가능성은 약 24%로 낮아졌어도 서비스 가격과 장기 인플레이션·재정 위험이 금리를 올렸습니다.",
+        "bullets": [
+          "확인된 사실: 가격 74.0(이전 72.6), 고용 50.1(47.8)",
+          "유가: Brent $100.32, WTI $89.43로 약 1.9% 하락",
+          "해석: 성장과 가격 압력이 공존해 주식과 할인율이 엇갈림"
+        ],
+        "links": [
+          {
+            "label": "경제지표 실제·예상·이전",
+            "url": "https://tradingeconomics.com/united-states/calendar"
+          }
+        ]
+      },
+      {
+        "title": "업종과 시장 확산",
+        "body": "11개 업종 중 10개가 상승했고 소재 +1.3%, 커뮤니케이션 +1.2%가 강했습니다. 부동산은 -0.3%였습니다. 상승/하락은 2,273/2,204로 근소한 상승 우위였지만 S&P 신고가/신저가 13/20, Nasdaq 57/243으로 신저가 우위가 뚜렷했습니다.",
+        "bullets": [
+          "하루 상승 종목 수는 개선됐지만 추세 확산은 약함",
+          "S&P 종목 70%+가 최근 고점 대비 10% 넘게 낮음",
+          "Nasdaq 최고치를 전면적 위험선호 회복으로 해석하지 않음"
+        ]
+      },
+      {
+        "title": "미국 기업·공시 관찰",
+        "rows": [
+          {
+            "label": "Nvidia",
+            "value": "+2.1% · $238.90 사상 최고",
+            "note": "새 실적 없음; 마진·현금흐름·CAPEX와 5.33% 금리 검증"
+          },
+          {
+            "label": "PTC",
+            "value": "약 +33% · Schneider 인수",
+            "note": "주당 $205 현금, EV $22.6bn, 종료수수료 $700m, 인수자 $25bn 브리지"
+          },
+          {
+            "label": "RXO / CHRW",
+            "value": "RXO +22%+ / CHRW 약 -11%",
+            "note": "$5.8bn 거래; 영업권·이자·운전자본·통합비용과 시너지 현금화 확인"
+          },
+          {
+            "label": "Vaxcyte",
+            "value": "약 +31% · VAX-31 3상 긍정",
+            "note": "장후 주식·선불워런트·전환사채 계획; 현금 런웨이와 희석·이자 부담"
+          },
+          {
+            "label": "Intel",
+            "value": "-2.6%",
+            "note": "TSMC의 Terafab 협상은 파운드리 경쟁 우려; 확정 계약 아님"
+          }
+        ],
+        "links": [
+          {
+            "label": "PTC SEC",
+            "url": "https://www.sec.gov/Archives/edgar/data/857005/000119312526413124/d174191d8k.htm"
+          },
+          {
+            "label": "RXO 공식",
+            "url": "https://rxo.com/news/c-h-robinson-to-acquire-rxo-redefining-the-future-of-third-party-logistics-while-unlocking-significant-shareholder-value/"
+          },
+          {
+            "label": "Vaxcyte 공식",
+            "url": "https://investors.vaxcyte.com/news-releases/news-release-details/vaxcyte-reports-positive-topline-data-opus-1-pivotal-adult-phase"
+          }
+        ]
+      },
+      {
+        "title": "한국 연관 종목 - 10월 6일",
+        "body": "한국은 10월 5일 휴장했습니다. 10월 2일 종가는 최근 확정 참조가격일 뿐이며 10월 5일 미국 뉴스의 성과로 계산하지 않습니다.",
+        "rows": [
+          {
+            "label": "SK하이닉스 000660",
+            "value": "긍정/혼재 · Nvidia 공식 파트너십",
+            "note": "HBM 우호·5.33% 금리 부담. ASP·계약·출하·OCF 확인; 일관된 선행 PER 미확인으로 밸류 유보"
+          },
+          {
+            "label": "삼성전자 005930",
+            "value": "긍정/혼재 · 업종·경쟁 관계",
+            "note": "AI 메모리 우호, HBM 인증·파운드리 가동률 별도 확인; 오늘 직접 거래 미확인"
+          },
+          {
+            "label": "S-Oil 010950",
+            "value": "부정/혼재 · 선반영 주의",
+            "note": "유가 하락은 재고평가 부담·운전자본 완화; 정제마진·Shaheen CAPEX·OCF 확인"
+          },
+          {
+            "label": "대한항공 003490",
+            "value": "긍정/혼재",
+            "note": "유가 하락 우호, 달러·원 상승 일부 상쇄; 헤지·할증료·화물운임·EV/EBITDAR·OCF 확인"
+          }
+        ],
+        "bullets": [
+          "관찰 한미반도체: HBM 장비 수주·매출·현금회수",
+          "관찰 DB하이텍: 특화공정 가동률·ASP·CAPEX",
+          "관찰 현대글로비스: 북미 물류 매출·운임·계약 갱신"
+        ],
+        "links": [
+          {
+            "label": "SK하이닉스-Nvidia 공식",
+            "url": "https://news.skhynix.com/en/multi-year-tech-partnership-with-nvidia/"
+          }
+        ]
+      },
+      {
+        "title": "직전 보고서 핵심 종목 점검",
+        "body": "2026-10-05 보고서 핵심 5종목 전체를 추적했습니다. 한국은 10월 5일 휴장이었고 첫 정규장은 10월 6일이므로 확정 성과가 없습니다. 선정 전 10월 2일 움직임을 선정 후 성과로 쓰지 않았습니다.",
+        "rows": [
+          {
+            "label": "SK하이닉스 000660",
+            "value": "거래 없음",
+            "note": "첫 거래일 10/6; 확정 종가 후 시장 대비 계산"
+          },
+          {
+            "label": "삼성전자 005930",
+            "value": "거래 없음",
+            "note": "첫 거래일 10/6; 확정 종가 후 시장 대비 계산"
+          },
+          {
+            "label": "현대차 005380",
+            "value": "거래 없음",
+            "note": "첫 거래일 10/6; 확정 종가 후 시장 대비 계산"
+          },
+          {
+            "label": "S-Oil 010950",
+            "value": "거래 없음",
+            "note": "첫 거래일 10/6; 확정 종가 후 시장 대비 계산"
+          },
+          {
+            "label": "대한항공 003490",
+            "value": "거래 없음",
+            "note": "첫 거래일 10/6; 확정 종가 후 시장 대비 계산"
+          }
+        ],
+        "bullets": [
+          "실제 매수가·추천 성과가 아님",
+          "하루 가격 방향은 인과관계 입증이 아님"
+        ]
+      },
+      {
+        "title": "다음 일정과 체크포인트",
+        "rows": [
+          {
+            "label": "10/6 21:30 미국 8월 무역수지",
+            "value": "-$102.0bn 예상 / -$88.6bn 이전",
+            "note": "더 큰 적자는 GDP 부담이나 AI 자본재 수입이면 CAPEX 신호; 수입 둔화형 개선은 내수 약화 가능"
+          },
+          {
+            "label": "10/8 03:00 FOMC 의사록",
+            "value": "수치 컨센서스 없음",
+            "note": "매파적 조건은 금리·달러 상승과 성장주 부담; 고용 부진은 회의 이후 정보"
+          },
+          {
+            "label": "10/8~10/9 PepsiCo / Delta",
+            "value": "PEP EPS $2.30·매출 $24.98bn / DAL EPS $1.94",
+            "note": "Pepsi 가격·물량·운전자본, Delta 연료·단위수익·현금흐름 확인"
+          }
+        ],
+        "links": [
+          {
+            "label": "주간 경제일정",
+            "url": "https://www.kiplinger.com/investing/economy/this-weeks-economic-calendar"
+          },
+          {
+            "label": "Fed 공식",
+            "url": "https://www.federalreserve.gov/monetarypolicy.htm"
+          },
+          {
+            "label": "Delta 공식",
+            "url": "https://ir.delta.com/news/news-details/2026/Delta-Air-Lines-Announces-Webcast-of-September-Quarter-2026-Financial-Results/default.aspx"
+          }
+        ]
+      },
+      {
+        "title": "판단을 바꿀 조건 3가지",
+        "rows": [
+          {
+            "label": "서비스 물가·금리",
+            "value": "서비스 가격 둔화와 10년물 5.20% 하회",
+            "note": "AI·반도체 할인율 부담 완화; 가격 고착·5.35% 상회면 보수화"
+          },
+          {
+            "label": "시장 확산·이익",
+            "value": "Nasdaq 신저가 감소·동일가중 개선·AI 매출과 FCF 증가",
+            "note": "대형주 집중 경고 완화; 신저가 확대·마진 둔화면 위험 확대"
+          },
+          {
+            "label": "에너지·환율",
+            "value": "Brent $100 아래 지속과 원/달러 안정 또는 공급차질 재발",
+            "note": "정상화 시 정유 재고이익 기대 축소·항공 전망 개선; 동반 급등이면 반대"
+          }
+        ]
+      },
+      {
+        "title": "주요 원문·데이터 출처",
+        "links": [
+          {
+            "label": "Reuters 시장",
+            "url": "https://www.reuters.com/world/europe/wall-st-futures-dip-tech-stocks-take-breather-2026-10-05/"
+          },
+          {
+            "label": "AP 지수",
+            "url": "https://apnews.com/article/7f89624b604f25f313502c77d4d0b010"
+          },
+          {
+            "label": "경제지표",
+            "url": "https://tradingeconomics.com/united-states/calendar"
+          },
+          {
+            "label": "PTC SEC",
+            "url": "https://www.sec.gov/Archives/edgar/data/857005/000119312526413124/d174191d8k.htm"
+          },
+          {
+            "label": "RXO 공식",
+            "url": "https://rxo.com/news/c-h-robinson-to-acquire-rxo-redefining-the-future-of-third-party-logistics-while-unlocking-significant-shareholder-value/"
+          },
+          {
+            "label": "Vaxcyte 공식",
+            "url": "https://investors.vaxcyte.com/news-releases/news-release-details/vaxcyte-reports-positive-topline-data-opus-1-pivotal-adult-phase"
+          },
+          {
+            "label": "SK하이닉스 공식",
+            "url": "https://news.skhynix.com/en/multi-year-tech-partnership-with-nvidia/"
+          }
+        ]
+      }
+    ],
+    "pdfBase64Parts": [
+      "auto-reports/pdfs/2026-10-06-morning.part001.b64"
+    ],
+    "pdfSourceVersion": "2026-10-05T23:08:47Z"
+  },
+  {
+    "id": "2026-10-05-morning",
+    "type": "morning",
+    "publishedAt": "2026-10-05T08:00:00+09:00",
+    "title": "미국 증시 아침 브리핑: 고용 급감에도 장기금리 반등, 주말 유가 위험 재상승",
+    "summary": "9월 미국 고용은 2.9만명 증가에 그쳐 10월 금리 인상 우려를 낮췄고 Nasdaq은 1.19% 상승했습니다. 그러나 미국 2년·10년물 금리는 각각 5bp·4bp 올라 장기 물가·재정 위험은 남았습니다. 주말 OPEC+ 생산 동결과 사우디 시설 공격 소식으로 정유·항공의 유가 노출을 다시 점검해야 합니다.",
+    "marketSummary": "S&P 500 +0.73%, Nasdaq +1.19%, Dow +0.49%, Russell 2000 +0.94%. 10년물 5.28%(+4bp), DXY 101.93(-0.16%), VIX 15.31(-6.59%), WTI $91.11(-1.90%).",
+    "highlights": [
+      "비농업고용 +2.9만명(예상 +9만), 실업률 4.2%, 7~8월 합계 6만명 하향",
+      "금요일 11개 업종 중 10개 상승했지만 S&P 500 주간 -0.3%, Dow -1.3%",
+      "OPEC+ 11월 생산 목표 동결과 사우디 시설 공격 주장으로 주말 유가 재상승",
+      "10/5 23:00 ISM 서비스업, 10/8 03:00 FOMC 의사록, 10/9 23:00 소비심리"
+    ],
+    "tickers": [
+      "SK하이닉스",
+      "삼성전자",
+      "현대차",
+      "S-Oil",
+      "대한항공",
+      "한미반도체",
+      "삼성전기",
+      "HD현대일렉트릭",
+      "TSLA",
+      "NVDA",
+      "HPE",
+      "NKE",
+      "STX",
+      "WDC"
+    ],
+    "sections": [
+      {
+        "title": "오늘 시장의 핵심 판단",
+        "body": "고용 급감은 10월 인상 우려를 낮췄지만 미국 2년·10년물 금리는 각각 5bp·4bp 상승했습니다. Nasdaq이 1.19% 오르고 10개 업종이 상승했으나 주간 S&P 500은 -0.3%, Dow는 -1.3%였고 장기 시장 폭도 약합니다. 고용 둔화와 물가·재정 위험이 동시에 존재합니다.",
+        "bullets": [
+          "사실: 비농업고용 +2.9만명, 예상 +9만명",
+          "해석: 약한 고용만으로 장기금리 하락을 전제하기 어려움",
+          "위험: 서비스 가격 재상승과 중동 공급시설 피해"
+        ],
+        "links": [
+          {
+            "label": "BLS 고용",
+            "url": "https://www.bls.gov/news.release/archives/empsit_10022026.htm"
+          },
+          {
+            "label": "Reuters 시장",
+            "url": "https://www.reuters.com/world/china/global-markets-wrapup-1-2026-10-02/"
+          }
+        ]
+      },
+      {
+        "title": "시장 스냅샷",
+        "rows": [
+          {
+            "label": "S&P 500",
+            "value": "7,722.72 · +0.73%",
+            "note": "10/2 정규장"
+          },
+          {
+            "label": "Nasdaq",
+            "value": "27,190.86 · +1.19%",
+            "note": "10/2 정규장"
+          },
+          {
+            "label": "Dow",
+            "value": "51,176.96 · +0.49%",
+            "note": "10/2 정규장"
+          },
+          {
+            "label": "Russell 2000",
+            "value": "2,832.90 · +0.94%",
+            "note": "10/2 정규장"
+          },
+          {
+            "label": "미 국채 2년",
+            "value": "4.83% · +5bp",
+            "note": "미 재무부 CMT"
+          },
+          {
+            "label": "미 국채 10년",
+            "value": "5.28% · +4bp",
+            "note": "발표 직후 하락 뒤 반등"
+          },
+          {
+            "label": "DXY",
+            "value": "101.93 · -0.16%",
+            "note": "10/2 종가"
+          },
+          {
+            "label": "USD/KRW",
+            "value": "1,350.6원 · -7.8원",
+            "note": "10/2 서울 15:30"
+          },
+          {
+            "label": "VIX",
+            "value": "15.31 · -6.59%",
+            "note": "Cboe 종가"
+          },
+          {
+            "label": "WTI / Brent",
+            "value": "$91.11(-1.90%) / $102.25(-0.06%)",
+            "note": "10/2 정산"
+          }
+        ],
+        "links": [
+          {
+            "label": "AP 지수",
+            "url": "https://apnews.com/article/48e9066481cba91a5d7c6688aa74a5cd"
+          },
+          {
+            "label": "미 재무부",
+            "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_yield_curve"
+          },
+          {
+            "label": "Cboe VIX",
+            "url": "https://www.cboe.com/en/tradable-products/vix/"
+          }
+        ]
+      },
+      {
+        "title": "시장 원인과 주말 변화",
+        "body": "비농업고용은 +2.9만명으로 예상 +9만명과 수정된 8월 +13.3만명을 밑돌고 실업률은 4.2%로 상승했습니다. 참가율은 61.8%, 시간당 임금은 전월 대비 0.1%·전년 대비 3.0%였습니다. 10월 인상 확률은 약 20%로 낮아졌지만 10년물은 5.28%로 반등했습니다.",
+        "bullets": [
+          "확인된 사실: 7~8월 고용 합계 6만명 하향",
+          "주말: OPEC+ 11월 생산 목표 동결",
+          "주말: 후티의 사우디 아람코 시설 공격 주장 뒤 유가 상승"
+        ],
+        "links": [
+          {
+            "label": "Reuters 고용",
+            "url": "https://www.reuters.com/business/us-job-growth-slows-sharply-september-unemployment-rate-rises-42-2026-10-02/"
+          },
+          {
+            "label": "OPEC+",
+            "url": "https://www.reuters.com/business/energy/opec-agrees-principle-keep-november-oil-output-targets-steady-sources-say-2026-10-04/"
+          },
+          {
+            "label": "주말 유가",
+            "url": "https://www.reuters.com/business/energy/oil-climbs-after-yemeni-houthis-attack-saudi-aramco-sites-2026-10-04/"
+          }
+        ]
+      },
+      {
+        "title": "업종과 시장 확산",
+        "body": "금요일에는 11개 업종 중 10개가 상승하고 경기소비재·기술이 주도했습니다. SOX는 +2.40%였고 의료만 하락했습니다. S&P 신고가/신저가는 9/14, Nasdaq은 35/100으로 신저가 우위가 남았습니다.",
+        "bullets": [
+          "금요일 폭은 개선됐으나 주간 S&P -0.3%, Dow -1.3%",
+          "Nasdaq 주간 +0.5%로 대형 기술주 집중 지속",
+          "동일가중과 시총가중 지수 격차를 계속 확인"
+        ]
+      },
+      {
+        "title": "미국 기업·공시 관찰",
+        "rows": [
+          {
+            "label": "Tesla",
+            "value": "+4.7% · Q3 인도 486,532대",
+            "note": "생산 46.4만대 이상, 저장 13.7GWh. ASP·마진·재고·OCF는 10/21 확인"
+          },
+          {
+            "label": "Nvidia",
+            "value": "+1.4% · 자사주 매입 잔여 $235bn",
+            "note": "AI 투자와 주주환원 간 현금배분 확인"
+          },
+          {
+            "label": "HPE",
+            "value": "+7.4% · AI 네트워킹 전망",
+            "note": "수주가 매출·현금흐름으로 전환되는지와 재고·채권 확인"
+          },
+          {
+            "label": "Nike",
+            "value": "-3.5%",
+            "note": "FY27 매출 감소 가이던스, 중국 -26%, AR +6%, 재고 -3%"
+          },
+          {
+            "label": "Seagate / WDC",
+            "value": "각 약 -10%",
+            "note": "Toshiba HDD 증설 보도. 실제 속도·장기계약·수율이 반대 변수"
+          }
+        ],
+        "links": [
+          {
+            "label": "Tesla 공식",
+            "url": "https://ir.tesla.com/press-release/tesla-third-quarter-2026-production-deliveries-and-deployments"
+          },
+          {
+            "label": "Nvidia",
+            "url": "https://www.reuters.com/business/nvidia-adds-150-billion-existing-share-repurchase-plan-2026-09-28/"
+          },
+          {
+            "label": "Nike SEC",
+            "url": "https://www.sec.gov/Archives/edgar/data/320187/000032018726000184/q1fy27exhibit991er.htm"
+          }
+        ]
+      },
+      {
+        "title": "한국 연관 종목 - 10월 5일 핵심",
+        "body": "한국 시장은 10월 3~5일 휴장입니다. 가격은 10월 2일 확정 종가이며 주말 뉴스는 아직 반영되지 않았습니다.",
+        "rows": [
+          {
+            "label": "SK하이닉스 000660",
+            "value": "긍정/혼재 · 1,841,000원(+0.44%)",
+            "note": "AI 메모리 우호, 10년물 부담. HBM ASP·계약·OCF 확인; 밸류 판단 유보"
+          },
+          {
+            "label": "삼성전자 005930",
+            "value": "긍정/혼재 · 276,000원(0.00%)",
+            "note": "메모리 우호, HBM 인증·파운드리 가동률 확인"
+          },
+          {
+            "label": "현대차 005380",
+            "value": "긍정/혼재·업종 비교 · 346,500원(-0.72%)",
+            "note": "Tesla는 업종 비교치. 미국 금융비용 완화와 고용 둔화가 혼재; 인센티브·재고 확인"
+          },
+          {
+            "label": "S-Oil 010950",
+            "value": "긍정/혼재·선반영 주의 · 166,200원(+11.69%)",
+            "note": "제품 공급위험 우호, 원료·운전자본 부담. 스프레드·Shaheen CAPEX·OCF 확인"
+          },
+          {
+            "label": "대한항공 003490",
+            "value": "부정/혼재 · 30,450원(-2.40%)",
+            "note": "주말 유가 부담, 원화·헤지·할증료가 상쇄 변수; EV/EBITDAR·OCF 확인"
+          }
+        ],
+        "bullets": [
+          "관찰 한미반도체: HBM 장비 실제 수주·매출인식",
+          "관찰 삼성전기: AI 서버 CAPEX의 MLCC·기판 주문 전환",
+          "관찰 HD현대일렉트릭: 미국 수주잔고·납기·원자재·환율"
+        ]
+      },
+      {
+        "title": "직전 보고서 핵심 종목 점검",
+        "body": "2026-10-02 보고서 핵심 5종목 전체의 선정 후 첫 한국 정규장 종가입니다. 같은 날 KOSPI +0.46%. 하루 등락은 추천 성과나 인과관계 입증이 아닙니다.",
+        "rows": [
+          {
+            "label": "SK하이닉스",
+            "value": "+0.44%",
+            "note": "KOSPI 대비 -0.02%p"
+          },
+          {
+            "label": "삼성전자",
+            "value": "0.00%",
+            "note": "KOSPI 대비 -0.46%p"
+          },
+          {
+            "label": "한미반도체",
+            "value": "+1.30%",
+            "note": "KOSPI 대비 +0.84%p"
+          },
+          {
+            "label": "S-Oil",
+            "value": "+11.69%",
+            "note": "KOSPI 대비 +11.23%p"
+          },
+          {
+            "label": "대한항공",
+            "value": "-2.40%",
+            "note": "KOSPI 대비 -2.86%p"
+          }
+        ],
+        "bullets": [
+          "배당 제외, 확인된 분할·권리락 없음",
+          "가격 방향과 원인을 구분"
+        ]
+      },
+      {
+        "title": "다음 일정과 체크포인트",
+        "rows": [
+          {
+            "label": "10/5 23:00 ISM 서비스업",
+            "value": "55.0 예상 / 55.4 이전",
+            "note": "가격 72.9 전망/72.6 이전. 상회+가격 상승은 금리·달러와 성장주 부담; 하회는 이익 둔화 위험"
+          },
+          {
+            "label": "10/8 03:00 FOMC 의사록",
+            "value": "예상치 없음",
+            "note": "9월 인상의 근거와 추가 인상 조건. 고용 급감은 회의 이후 정보라는 한계"
+          },
+          {
+            "label": "10/9 23:00 미시간대 소비심리",
+            "value": "47.7 예상 / 47.8 이전",
+            "note": "상회는 소비 긍정·금리 부담, 하회는 소비재 이익 우려. 기대인플레이션 확인"
+          }
+        ],
+        "links": [
+          {
+            "label": "Fed 공식",
+            "url": "https://www.federalreserve.gov/monetarypolicy.htm"
+          },
+          {
+            "label": "미국 일정",
+            "url": "https://tradingeconomics.com/united-states/calendar"
+          }
+        ]
+      },
+      {
+        "title": "주간 복기 부록 - 9월 28일 최초 선정",
+        "body": "선정 직전 9월 25일 종가를 관찰 참조가격으로 하고 제5 한국 거래일인 10월 2일 종가와 비교했습니다. 실제 매수가가 아니며 배당 제외, 확인된 분할·권리락 없음. 관찰 종목은 제외했습니다.",
+        "rows": [
+          {
+            "label": "SK하이닉스",
+            "value": "5일 -1.13% / 시장 대비 -0.04%p",
+            "note": "AI 수요 유지·금리 부담 유지. 20일 미도래"
+          },
+          {
+            "label": "삼성전자",
+            "value": "5일 -3.33% / 시장 대비 -2.24%p",
+            "note": "메모리 기대 유지·실행 확인 전. 20일 미도래"
+          },
+          {
+            "label": "S-Oil",
+            "value": "5일 +6.81% / 시장 대비 +7.90%p",
+            "note": "제품 공급위험으로 논리 강화. 20일 미도래"
+          },
+          {
+            "label": "대한항공",
+            "value": "5일 -3.33% / 시장 대비 -2.24%p",
+            "note": "유가 비용 위험 유지. 20일 미도래"
+          }
+        ],
+        "bullets": [
+          "같은 기간 KOSPI -1.09%",
+          "재선정일은 별도 기록하고 최초 선정일을 소급 변경하지 않음"
+        ]
+      },
+      {
+        "title": "판단을 바꿀 조건 3가지",
+        "rows": [
+          {
+            "label": "서비스 물가·금리",
+            "value": "ISM 가격 둔화와 10년물 5.20% 하회",
+            "note": "AI·반도체 할인율 부담 완화. 가격 상승·5.30% 재돌파면 보수화"
+          },
+          {
+            "label": "고용·소비",
+            "value": "실업률 추가 상승과 소비·신규주문 동반 약화",
+            "note": "금리 호재보다 기업이익 둔화 위험 우선. 임금·해고 안정이면 연착륙 유지"
+          },
+          {
+            "label": "에너지 공급",
+            "value": "Brent $100 하회·중동 물류 정상화 또는 실제 시설피해",
+            "note": "정상화 시 항공 전망 개선·정유 위험프리미엄 축소; 공급차질이면 반대"
+          }
+        ]
+      }
+    ],
+    "pdfBase64Parts": [
+      "auto-reports/pdfs/2026-10-05-morning.part001.b64"
+    ],
+    "pdfSourceVersion": "2026-10-04T23:13:22Z"
+  },
+  {
+    "id": "2026-10-02-morning",
+    "type": "morning",
+    "publishedAt": "2026-10-02T08:00:00+09:00",
+    "title": "미국 증시 아침 브리핑: 금리 급반전 속 제한적 반등, 유가·고용이 다음 변수",
+    "summary": "10월 1일 미국 증시는 S&P 500 +0.20%, Nasdaq +0.04%, Dow +0.04%, Russell 2000 +0.35%로 소폭 상승했습니다. 견조한 실업수당과 ISM 가격 급등으로 10년물이 장중 5.34%까지 올랐지만 연준의 인내 가능성 발언과 채권 매수로 5.24%까지 반락했습니다. Micron·Accenture는 AI 이익을 지지했지만 유가 급등과 Nike의 장후 약세는 물가·소비재 위험을 높였습니다.",
+    "marketSummary": "장기금리의 장중 급등과 급반락이 주식 방향을 지배했습니다. 에너지 +1.9%, 기술 +0.8%가 지수를 지지하고 상승 종목 수는 소폭 우세했으나 Nasdaq 신저가 287개가 신고가 41개를 크게 웃돌았습니다. 오늘 미국 고용보고서가 금리·달러와 한국 반도체·자동차·항공의 다음 방향을 가를 핵심 변수입니다.",
+    "highlights": [
+      "신규 실업수당 19.7만건으로 예상 20.0만건 하회",
+      "ISM 제조업 54.5, 가격지수 77.9로 급등",
+      "미 2년 4.79%(약 -10bp), 10년 5.24%(약 -5bp), 장중 5.34%",
+      "WTI +2.71%, Brent +4.37%; Nike 시간외 -8.5%"
+    ],
+    "tickers": [
+      "SK하이닉스",
+      "삼성전자",
+      "한미반도체",
+      "S-Oil",
+      "대한항공",
+      "현대차",
+      "삼성SDS",
+      "영원무역",
+      "MU",
+      "ACN",
+      "NKE",
+      "MAT",
+      "CEG"
+    ],
+    "pdfBase64Parts": [
+      "auto-reports/pdfs/2026-10-02-morning.part001.b64"
+    ],
+    "pdfSourceVersion": "2026-10-01T23:07:31Z",
+    "sections": [
+      {
+        "title": "오늘 시장의 핵심 판단",
+        "body": "강한 고용과 제조업 투입가격으로 10년물이 장중 5.34%까지 치솟았지만, 연준 Jefferson 부의장의 추가 인상 전 인내 가능성 발언과 채권 저가매수로 5.24%까지 급반락했습니다. 지수는 소폭 상승했으나 Nasdaq 신저가가 신고가의 약 7배여서 상승의 질은 약했습니다. Micron과 Accenture는 AI 수요를 지지한 반면 Nike의 장후 가이던스는 소비재 이익 위험을 보여줬습니다.",
+        "bullets": [
+          "S&P 500 +0.20%, Nasdaq +0.04%, Dow +0.04%, Russell 2000 +0.35%",
+          "실업수당 19.7만건, ISM 제조업 54.5·가격지수 77.9",
+          "오늘의 위험: 21:30 KST 고용보고서, 유가·달러의 추가 상승"
+        ]
+      },
+      {
+        "title": "시장 스냅샷",
+        "rows": [
+          {
+            "label": "S&P 500",
+            "value": "7,666.45 · +0.20%",
+            "note": "10/1 미국 정규장"
+          },
+          {
+            "label": "Nasdaq",
+            "value": "26,871.60 · +0.04%",
+            "note": "10/1 미국 정규장"
+          },
+          {
+            "label": "Dow",
+            "value": "50,926.56 · +0.04%",
+            "note": "10/1 미국 정규장"
+          },
+          {
+            "label": "Russell 2000",
+            "value": "2,806.63 · +0.35%",
+            "note": "10/1 미국 정규장"
+          },
+          {
+            "label": "미 국채 2년 / 10년",
+            "value": "4.79%(약 -10bp) / 5.24%(약 -5bp)",
+            "note": "10년물 장중 5.34% 후 반락"
+          },
+          {
+            "label": "DXY / VIX",
+            "value": "102.03(+0.57%) / 16.39(+0.31%)",
+            "note": "10/1 종가"
+          },
+          {
+            "label": "USD/KRW",
+            "value": "1,358.4원 · +5.6원",
+            "note": "10/1 서울 15:30"
+          },
+          {
+            "label": "WTI / Brent 12월",
+            "value": "$92.87(+2.71%) / $102.31(+4.37%)",
+            "note": "10/1 정산"
+          }
+        ],
+        "links": [
+          {
+            "label": "Reuters 미국시장",
+            "url": "https://www.reuters.com/business/dow-futures-hit-three-month-low-yields-surge-micron-earnings-offer-support-2026-10-01/"
+          },
+          {
+            "label": "AP 4대 지수",
+            "url": "https://apnews.com/article/wall-street-stocks-dow-nasdaq-c367e6e87c621f06078ea223ab7ce6d1"
+          },
+          {
+            "label": "Reuters 유가",
+            "url": "https://www.reuters.com/business/energy/oil-prices-barely-changed-investors-assess-us-iran-peace-talks-gulf-exports-2026-10-01/"
+          }
+        ]
+      },
+      {
+        "title": "시장을 움직인 원인",
+        "bullets": [
+          "[사실] 신규 실업수당은 19.7만건으로 예상 20.0만건과 이전 19.8만건을 하회했고, 계속청구는 170.1만건으로 감소했습니다.",
+          "[사실] ISM 제조업은 54.5로 예상 55.0과 이전 54.6을 소폭 하회했지만 가격지수는 71.1에서 77.9로 급등했습니다.",
+          "[사실] Jefferson 부의장은 추가 인상 전 인내 가능성을 시사했고, Kashkari 총재는 추가 인상 필요성을 보면서도 10월 시점은 확정하지 않았습니다.",
+          "[해석] 장 초반 고용·가격 압력이 금리를 올렸고 이후 연준 발언과 채권 매수가 반응을 뒤집었습니다. 유가·달러 상승이 지속되면 금리 완화도 되돌려질 수 있습니다."
+        ],
+        "links": [
+          {
+            "label": "Reuters 실업수당·ISM",
+            "url": "https://www.reuters.com/legal/litigation/us-weekly-jobless-claims-fall-layoffs-drop-september-2026-10-01/"
+          }
+        ]
+      },
+      {
+        "title": "업종과 시장 확산",
+        "body": "에너지와 기술이 지수를 지지했지만 신고가·신저가 구도는 약했습니다. 지수 상승을 전면적 위험선호 회복보다 에너지·AI·실적 서프라이즈 중심의 제한적 반등으로 봅니다.",
+        "rows": [
+          {
+            "label": "에너지",
+            "value": "+1.9%",
+            "note": "중국 연료수출 중단·중동 위험으로 유가 급등"
+          },
+          {
+            "label": "기술",
+            "value": "+0.8%",
+            "note": "Micron·Accenture가 AI·소프트웨어 심리 지지"
+          },
+          {
+            "label": "시장 폭",
+            "value": "NYSE 상승/하락 1.234배 · Nasdaq 1.04배",
+            "note": "상승 종목 수는 소폭 우세"
+          },
+          {
+            "label": "신고가/신저가",
+            "value": "S&P 4/41 · Nasdaq 41/287",
+            "note": "신저가 집중으로 추세의 질은 약함"
+          }
+        ]
+      },
+      {
+        "title": "미국 기업·공시 관찰",
+        "rows": [
+          {
+            "label": "Accenture",
+            "value": "정규장 큰 폭 상승; Reuters 보도 중 약 +22%",
+            "note": "Q4 매출 $18.68bn, 수주 $22.17bn, FY27 매출 +3~6%. FY26 GAAP EPS $13.56 vs 조정 $13.97, FCF $11.6bn. FY27 인수 약 $5bn 예정."
+          },
+          {
+            "label": "Micron",
+            "value": "+3.0% 정규장",
+            "note": "강한 가이던스와 $32bn 공급약정 재평가. 매출채권·재고가 현금회수와 출하로 전환되는지 확인."
+          },
+          {
+            "label": "Nike",
+            "value": "정규장 -0.7% · 시간외 -8.5%",
+            "note": "Q1 매출 $11.21bn(-4%, 예상 $11.32bn), EPS $0.48. FY27 매출 high-single digit 감소, 조정 EPS $1.15~1.35. 재고 -3%, 매출채권 +6%, 중국 -26%."
+          },
+          {
+            "label": "Mattel",
+            "value": "+18.8%",
+            "note": "인수 관심 보도. 실적 개선이 아닌 거래 기대이므로 실제 제안·자금조달·승인 확인."
+          },
+          {
+            "label": "Constellation Energy",
+            "value": "+1.9%",
+            "note": "Amazon $3bn 확장 계약 보도. CAPEX·계약기간·매출인식과 자금조달 확인."
+          }
+        ],
+        "links": [
+          {
+            "label": "Accenture SEC",
+            "url": "https://www.sec.gov/Archives/edgar/data/1467373/000146737326000037/q4fy26earnings8-kexhibit.htm"
+          },
+          {
+            "label": "Nike SEC",
+            "url": "https://www.sec.gov/Archives/edgar/data/320187/000032018726000184/q1fy27exhibit991er.htm"
+          }
+        ]
+      },
+      {
+        "title": "한국 연관 종목 - 10월 2일 핵심",
+        "body": "확인된 사업 노출과 전달 경로가 있는 5개만 핵심으로 선정했습니다. 미국 주가 반응은 한국 종목의 방향을 보장하지 않습니다.",
+        "rows": [
+          {
+            "label": "SK하이닉스 000660",
+            "value": "긍정/혼재",
+            "note": "Micron은 HBM·DRAM 업황에 긍정, 5%대 장기금리는 반대. 10/1 1,833,000원(+3.21%)으로 일부 반영. HBM ASP·계약·영업현금흐름 확인; 최신 일관된 선행 PER 없어 판단 유보."
+          },
+          {
+            "label": "삼성전자 005930",
+            "value": "긍정/혼재",
+            "note": "메모리 가격에는 긍정 가능, 파운드리 가동률·HBM 인증은 별도 변수. 276,000원(+2.79%). 사업부별 손익 개선 확인 전."
+          },
+          {
+            "label": "한미반도체 042700",
+            "value": "긍정/혼재·업종 추론",
+            "note": "HBM용 TC 본더 노출은 확인되나 Micron 직접 납품은 전제하지 않음. 268,500원(+4.68%). 실제 수주·매출인식·고객 다변화 확인."
+          },
+          {
+            "label": "S-Oil 010950",
+            "value": "긍정/혼재",
+            "note": "미국 장 유가 급등은 한국 종가 이후. 148,800원(-7.98%). 재고평가와 원료·운전자본의 반대 효과, 제품 스프레드·Shaheen CAPEX 확인."
+          },
+          {
+            "label": "대한항공 003490",
+            "value": "부정/혼재",
+            "note": "유가·원달러 동반 상승은 비용 부담. 31,200원(-2.50%). 헤지·유류할증료·화물운임·예약률 확인; EV/EBITDAR·OCF·순차입금이 적합."
+          }
+        ],
+        "bullets": [
+          "추가 관찰 — 현대차 005380: 미 고용·자동차금융과 판매량·인센티브·재고일수.",
+          "추가 관찰 — 삼성SDS 018260: Accenture는 AI·IT서비스 업종 참고치이며 직접 거래관계가 아닌 업종 추론.",
+          "추가 관찰 — 영원무역 111770: Nike 재고·중국 부진은 스포츠웨어 공급망 위험 신호. Nike 직접 매출 비중은 최신 공시 확인 전."
+        ],
+        "links": [
+          {
+            "label": "SK하이닉스 IR",
+            "url": "https://www.skhynix.com/ir/UI-FR-IR01/"
+          },
+          {
+            "label": "삼성전자 IR",
+            "url": "https://www.samsung.com/global/ir/"
+          },
+          {
+            "label": "한미반도체 IR",
+            "url": "https://www.hanmisemi.com/ir/"
+          },
+          {
+            "label": "S-Oil IR",
+            "url": "https://www.s-oil.com/ir/"
+          },
+          {
+            "label": "대한항공 IR",
+            "url": "https://ir.koreanair.com/"
+          }
+        ]
+      },
+      {
+        "title": "직전 보고서 핵심 종목 점검",
+        "body": "2026-10-01 아침 보고서 핵심 5종목 전체의 선정 후 첫 한국 정규장 종가입니다. KOSPI는 6,971.35(+1.95%). 가격변동은 추천 성과나 인과관계 입증이 아닙니다.",
+        "rows": [
+          {
+            "label": "SK하이닉스 000660",
+            "value": "1,833,000원 · +57,000원 / +3.21%",
+            "note": "KOSPI 대비 +1.26%p"
+          },
+          {
+            "label": "삼성전자 005930",
+            "value": "276,000원 · +7,500원 / +2.79%",
+            "note": "KOSPI 대비 +0.84%p"
+          },
+          {
+            "label": "한미반도체 042700",
+            "value": "268,500원 · +12,000원 / +4.68%",
+            "note": "KOSPI 대비 +2.73%p"
+          },
+          {
+            "label": "S-Oil 010950",
+            "value": "148,800원 · -12,900원 / -7.98%",
+            "note": "KOSPI 대비 -9.93%p"
+          },
+          {
+            "label": "대한항공 003490",
+            "value": "31,200원 · -800원 / -2.50%",
+            "note": "KOSPI 대비 -4.45%p"
+          }
+        ],
+        "bullets": [
+          "배당 제외, 확인된 분할·권리락 없음",
+          "하루 움직임과 원인을 구분하며 실제 매수가·추천 성과로 해석하지 않음"
+        ]
+      },
+      {
+        "title": "다음 일정과 체크포인트",
+        "rows": [
+          {
+            "label": "10/2 21:30 KST · 9월 고용",
+            "value": "비농업 +9만 / 이전 +16.2만 · 실업률 4.1% / 4.1% · 임금 y/y 3.1% / 3.1%",
+            "note": "기본은 완만한 둔화. 상회하면 금리·달러·추가인상 기대 상승, 큰 하회면 소비·이익 둔화 우려. 참가율·임금이 판단 변경 조건."
+          },
+          {
+            "label": "10/2 23:00 KST · 공장주문",
+            "value": "+0.2% 예상 / +0.9% 이전",
+            "note": "상회는 산업재·설비수요에 긍정이나 금리 부담. 하회는 제조업 둔화와 금리 완화가 공존. 항공기 제외 자본재·수정치 확인."
+          },
+          {
+            "label": "10/5 23:00 KST · ISM 서비스업",
+            "value": "이전 55.4 · 컨센서스 미확인",
+            "note": "서비스 물가·고용이 제조업 가격 급등을 확인하는지가 핵심. 확인되지 않은 예상치는 기재하지 않음."
+          }
+        ],
+        "links": [
+          {
+            "label": "BLS 고용 일정",
+            "url": "https://www.bls.gov/schedule/news_release/empsit.htm"
+          },
+          {
+            "label": "ISM 발표 일정",
+            "url": "https://www.ismworld.org/supply-management-news-and-reports/reports/rob-report-calendar/"
+          }
+        ]
+      },
+      {
+        "title": "판단을 바꿀 조건 3가지",
+        "bullets": [
+          "고용 +9만 안팎·임금 안정·10년물 5.20% 하회가 동반되면 AI·반도체 할인율 부담을 낮춥니다. 강한 고용과 금리 재급등이면 다시 보수화합니다.",
+          "Brent $100 하회 또는 중국 연료수출 재개·중동 공급 정상화가 확인되면 정유 위험 프리미엄을 낮추고 항공 비용 전망을 개선합니다.",
+          "Micron 공급약정이 현금회수로, Accenture 수주가 유기적 매출로 전환되면 AI 이익 판단을 강화합니다. 운전자본·인수 의존만 커지면 이익 질 판단을 낮춥니다."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "2026-10-01-morning",
+    "type": "morning",
+    "publishedAt": "2026-10-01T08:00:00+09:00",
+    "title": "미국 증시 아침 브리핑: 물가 둔화에도 장기금리 상승, 기술주만 선별 강세",
+    "summary": "9월 30일 미국 증시는 S&P 500 -0.25%, Dow -0.86%, Russell 2000 -0.39%였지만 Nasdaq은 +0.24%로 엇갈렸습니다. PCE 물가는 예상보다 낮았고 ADP 고용은 예상을 웃돌았으나 10년물 금리가 5.29%로 3bp 올라 광범위한 위험선호를 제한했습니다. Micron의 강한 가이던스는 AI 메모리 수요를 확인했지만 높은 기대와 장후 약세, 유가 반등을 함께 점검해야 합니다.",
+    "marketSummary": "PCE 둔화와 ADP 고용 호조가 동시에 나온 가운데 단기물은 소폭 내리고 장기물은 상승했습니다. 기술업종은 +0.6%였지만 S&P 11개 업종 중 9개가 하락하고 NYSE·Nasdaq 모두 하락 종목이 우세했습니다. 한국 연결은 메모리 실적 검증과 할인율, 정유의 재고효과, 항공의 연료비 부담을 분리해 봐야 합니다.",
+    "highlights": [
+      "근원 PCE +0.2% MoM·+3.0% YoY로 시장 예상 하회",
+      "미 2년물 4.88%(-1bp), 10년물 5.29%(+3bp): 장기 할인율 부담",
+      "Micron FQ1 매출 가이던스 $61.5bn±$1.5bn, 비GAAP EPS $38.15±$1.00",
+      "S&P 11개 업종 중 9개 하락, NYSE 하락/상승 1.66배"
+    ],
+    "tickers": [
+      "SK하이닉스",
+      "삼성전자",
+      "한미반도체",
+      "S-Oil",
+      "대한항공",
+      "현대차",
+      "삼성전기",
+      "MU",
+      "HPE",
+      "MRNA",
+      "MSFT",
+      "AAPL",
+      "NVDA"
+    ],
+    "pdfBase64Parts": [
+      "auto-reports/pdfs/2026-10-01-morning.part001.b64"
+    ],
+    "pdfSourceVersion": "2026-09-30T23:10:01Z",
+    "sections": [
+      {
+        "title": "오늘 시장의 핵심 판단",
+        "body": "시장은 예상보다 낮은 PCE보다 장기금리와 기업이익의 질에 더 민감했습니다. 헤드라인·근원 PCE가 모두 예상치를 밑돌고 2년물은 1bp 내렸지만, 견조한 GDP 수정치와 ADP 고용으로 10년물은 3bp 올라 5.29%가 됐습니다. Nasdaq과 기술업종만 상승하고 S&P 11개 업종 중 9개가 내려 상승 확산은 제한적이었습니다.",
+        "bullets": [
+          "S&P 500 -0.25%, Nasdaq +0.24%, Dow -0.86%, Russell 2000 -0.39%",
+          "물가 둔화와 성장 견조가 공존해 금리곡선 가팔라짐",
+          "오늘의 위험: 10년물 추가 상승, 유가 반등, 강한 지표가 금리 부담으로 전환될 가능성"
+        ]
+      },
+      {
+        "title": "시장 스냅샷",
+        "rows": [
+          {
+            "label": "S&P 500",
+            "value": "7,651.54 · -0.25%",
+            "note": "9/30 미국 정규장"
+          },
+          {
+            "label": "Nasdaq",
+            "value": "26,861.06 · +0.24%",
+            "note": "9/30 미국 정규장"
+          },
+          {
+            "label": "Dow",
+            "value": "50,906.05 · -0.86%",
+            "note": "9/30 미국 정규장"
+          },
+          {
+            "label": "Russell 2000",
+            "value": "2,796.86 · -0.39%",
+            "note": "9/30 미국 정규장"
+          },
+          {
+            "label": "미 국채 2년 / 10년",
+            "value": "4.88%(-1bp) / 5.29%(+3bp)",
+            "note": "9/30 미 재무부 CMT"
+          },
+          {
+            "label": "DXY / VIX",
+            "value": "101.47(+0.10%) / 16.34(+1.87%)",
+            "note": "9/30 종가"
+          },
+          {
+            "label": "USD/KRW",
+            "value": "1,352.8원 · -3.9원",
+            "note": "9/30 서울 종가"
+          },
+          {
+            "label": "WTI / Brent",
+            "value": "$90.42(+1.2%) / $103.50(+0.9%)",
+            "note": "9/30 정산, Brent 11월물"
+          }
+        ],
+        "links": [
+          {
+            "label": "Reuters 미국 증시",
+            "url": "https://www.reuters.com/business/wall-street-futures-edge-higher-investors-digest-inflation-data-2026-09-30/"
+          },
+          {
+            "label": "미 재무부 금리",
+            "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?field_tdr_date_value=2026&type=daily_treasury_yield_curve"
+          },
+          {
+            "label": "Cboe VIX",
+            "url": "https://www.cboe.com/tradable-products/vix/"
+          }
+        ]
+      },
+      {
+        "title": "시장을 움직인 원인",
+        "bullets": [
+          "[사실] 8월 헤드라인 PCE는 +0.3% MoM·+3.4% YoY(예상 +0.4%·+3.7%), 근원 PCE는 +0.2%·+3.0%(예상 +0.3%·+3.3%)였습니다.",
+          "[사실] 2분기 GDP는 연율 +2.2%로 종전 +1.5%에서 상향됐고, 9월 ADP 민간고용은 +9.0만명으로 예상 +7.0만명을 웃돌았습니다.",
+          "[사실] 10월 금리 인상 확률은 약 51%에서 37%로 낮아졌지만 10년물은 3bp 상승했습니다.",
+          "[해석] 물가 둔화는 정책금리 기대를 낮췄지만 성장·고용의 회복력과 장기 위험 프리미엄이 장기물을 밀어 올려 주식의 할인율 부담을 남겼습니다."
+        ],
+        "links": [
+          {
+            "label": "BEA PCE",
+            "url": "https://www.bea.gov/news/glance"
+          },
+          {
+            "label": "BEA GDP",
+            "url": "https://www.bea.gov/data/gdp/gross-domestic-product"
+          },
+          {
+            "label": "ADP 고용",
+            "url": "https://adpemploymentreport.com/"
+          }
+        ]
+      },
+      {
+        "title": "업종과 시장 확산",
+        "body": "기술업종은 약 +0.6%로 가장 강했지만 S&P 11개 업종 중 9개가 하락했습니다. NYSE 하락/상승 비율은 1.66배, Nasdaq은 1.51배였고 Nasdaq 신저가 212개가 신고가 54개를 크게 웃돌았습니다.",
+        "rows": [
+          {
+            "label": "기술",
+            "value": "+0.6%",
+            "note": "Microsoft·Apple·Nvidia 각각 1% 이상 상승"
+          },
+          {
+            "label": "시장 내부",
+            "value": "하락 종목 우세",
+            "note": "NYSE 1.66배, Nasdaq 1.51배"
+          },
+          {
+            "label": "신고가/신저가",
+            "value": "S&P 11/24 · Nasdaq 54/212",
+            "note": "지수보다 내부 확산이 약함"
+          },
+          {
+            "label": "에너지·운송",
+            "value": "WTI +1.2%",
+            "note": "정유 재고효과에는 우호 가능, 항공 연료비에는 반대"
+          }
+        ]
+      },
+      {
+        "title": "미국 기업·공시 관찰",
+        "rows": [
+          {
+            "label": "Micron",
+            "value": "정규장 강세 후 장후 약 -0.9% 내외",
+            "note": "FQ4 매출 $54.229bn, 비GAAP EPS $33.42. FQ1 매출 $61.5bn±$1.5bn, 비GAAP EPS $38.15±$1.00 가이던스."
+          },
+          {
+            "label": "Micron 재무",
+            "value": "OCF $43.97bn · 순CAPEX $10.77bn",
+            "note": "매출채권 $36.197bn, 재고 $10.372bn, 고객계약부채 $12.895bn. FY SBC $1.333bn; 높은 가격·선수금 효과의 지속성 확인."
+          },
+          {
+            "label": "HPE",
+            "value": "+3.9%",
+            "note": "네트워킹 장기성장 전망 상향과 Vultr $1.2bn 계약. 수주가 매출·현금흐름으로 전환되는 속도 확인."
+          },
+          {
+            "label": "Moderna",
+            "value": "-5.3%",
+            "note": "Citi 등급하향. 파이프라인·현금소진·비용조정이 핵심."
+          },
+          {
+            "label": "Microsoft / Apple / Nvidia",
+            "value": "각 +1% 이상",
+            "note": "기술주 선별 강세이나 신규 분기실적 발표 반응은 아님."
+          }
+        ],
+        "links": [
+          {
+            "label": "Micron 공식 실적",
+            "url": "https://investors.micron.com/news-releases/news-release-details/micron-technology-inc-reports-results-fourth-quarter-and-full-6"
+          }
+        ]
+      },
+      {
+        "title": "한국 연관 종목 — 10월 1일 핵심",
+        "body": "확인된 사업 노출과 전달 경로가 뚜렷한 5개만 핵심으로 선정했습니다. 미국 주가·실적의 하루 반응은 한국 종목의 상승·하락을 보장하지 않습니다.",
+        "rows": [
+          {
+            "label": "SK하이닉스 000660",
+            "value": "긍정/혼재",
+            "note": "HBM·DRAM 실적 연결. Micron 가격·가이던스는 업황 검증에 긍정적이나 10년물 5.29%는 할인율 부담. 9/30 1,776,000원(+0.62%); 실제 출하·ASP·고객 CAPEX 확인 전 선반영 단정 유보."
+          },
+          {
+            "label": "삼성전자 005930",
+            "value": "혼재",
+            "note": "메모리·파운드리·모바일 복합 노출. 메모리 가격은 우호적이나 HBM 인증·파운드리 가동률이 조건. 9/30 268,500원(-1.47%); 일관된 최신 선행 PER 자료 부족으로 밸류 판단 유보."
+          },
+          {
+            "label": "한미반도체 042700",
+            "value": "긍정 가능/확인 필요",
+            "note": "HBM 제조용 TC 본더 노출은 확인되지만 Micron 직접 납품은 전제하지 않음. 메모리 업체 FY27 CAPEX가 실제 장비 발주·매출로 이어지는지 확인."
+          },
+          {
+            "label": "S-Oil 010950",
+            "value": "긍정/혼재",
+            "note": "유가 반등은 단기 재고효과에 우호 가능하지만 원료비·운전자본 부담도 확대. 9/30 161,700원(+2.47%); 제품 스프레드·정제마진이 핵심 반대 변수."
+          },
+          {
+            "label": "대한항공 003490",
+            "value": "부정/혼재",
+            "note": "유가 반등은 연료비 부담, 원화 강세는 달러 비용을 일부 상쇄. 9/30 32,000원(+1.91%); 유류할증료·헤지·화물수요 확인."
+          }
+        ],
+        "bullets": [
+          "추가 관찰 — 현대차 005380: ADP 고용·ISM·비농업고용이 미국 자동차 수요와 인센티브, 금융비용에 미치는 영향.",
+          "추가 관찰 — 삼성전기 009150: 미국 대형 기술주의 AI 서버·네트워크 CAPEX가 고부가 MLCC·기판 주문으로 이어지는지 확인."
+        ],
+        "links": [
+          {
+            "label": "SK하이닉스 IR",
+            "url": "https://www.skhynix.com/ir/UI-FR-IR01/"
+          },
+          {
+            "label": "삼성전자 IR",
+            "url": "https://www.samsung.com/global/ir/"
+          },
+          {
+            "label": "한미반도체 IR",
+            "url": "https://www.hanmisemi.com/ir/"
+          },
+          {
+            "label": "S-Oil IR",
+            "url": "https://www.s-oil.com/ir/"
+          },
+          {
+            "label": "대한항공 IR",
+            "url": "https://ir.koreanair.com/"
+          }
+        ]
+      },
+      {
+        "title": "직전 보고서 핵심 종목 점검",
+        "body": "2026-09-30 보고서 핵심 4종목 전체의 선정 후 첫 한국 정규장 종가입니다. KOSPI는 6,838.04(-0.48%). 가격변동은 추천 성과나 원인 입증이 아닙니다.",
+        "rows": [
+          {
+            "label": "SK하이닉스 000660",
+            "value": "1,776,000원 · +11,000원 / +0.62%",
+            "note": "KOSPI 대비 +1.10%p. Micron 기대와 메모리 강세가 병존했으나 하루 수익률로 인과 확정 불가."
+          },
+          {
+            "label": "삼성전자 005930",
+            "value": "268,500원 · -4,000원 / -1.47%",
+            "note": "KOSPI 대비 -0.99%p. 메모리 업황 기대와 종목별 수급·실행 차이 구분 필요."
+          },
+          {
+            "label": "S-Oil 010950",
+            "value": "161,700원 · +3,900원 / +2.47%",
+            "note": "KOSPI 대비 +2.95%p. 유가 반등과 부합했지만 정제마진·재고효과 확인 필요."
+          },
+          {
+            "label": "대한항공 003490",
+            "value": "32,000원 · +600원 / +1.91%",
+            "note": "KOSPI 대비 +2.39%p. 유가 반등의 비용 부담과 반대 움직임; 환율·수급·할증료 영향 분리 필요."
+          }
+        ]
+      },
+      {
+        "title": "다음 일정과 체크포인트",
+        "rows": [
+          {
+            "label": "10/1 21:30 KST · 신규 실업수당",
+            "value": "예상 19.9만 · 이전 19.7만",
+            "note": "상회하면 고용 둔화로 단기금리는 낮아질 수 있으나 성장 우려가 커질 수 있음. 하회하면 경기에는 긍정적이나 금리·달러 상승이 성장주를 압박할 수 있음."
+          },
+          {
+            "label": "10/1 23:00 KST · ISM 제조업",
+            "value": "예상 55.0 · 이전 54.6 / 가격 75.0 · 이전 71.1",
+            "note": "성장과 가격을 함께 봐야 함. 강한 헤드라인과 높은 가격지수는 장기금리·달러를 올려 반도체 밸류 부담으로 전환될 수 있음."
+          },
+          {
+            "label": "10/2 21:30 KST · 비농업고용",
+            "value": "예상 +9.0만 · 이전 +16.2만 / 실업률 4.1% · 이전 4.1%",
+            "note": "기본 전망은 고용 냉각이지만 급격한 악화는 경기우려, 상회는 금리인상 위험을 재점화. 임금·참가율까지 확인."
+          }
+        ],
+        "bullets": [
+          "[전망] PCE 둔화로 정책 기대는 완화됐지만 10년물이 5.3% 부근인 만큼 '좋은 지표=주가 상승' 공식은 약합니다.",
+          "[반대 가능성] 강한 지표가 이익 전망을 더 크게 높이면 금리 상승을 상쇄할 수 있고, 약한 지표도 연착륙 범위라면 성장주에 우호적일 수 있습니다."
+        ],
+        "links": [
+          {
+            "label": "미 노동부 일정",
+            "url": "https://www.bls.gov/schedule/news_release/empsit.htm"
+          },
+          {
+            "label": "ISM 제조업",
+            "url": "https://www.ismworld.org/supply-management-news-and-reports/reports/ism-report-on-business/pmi/"
+          }
+        ]
+      },
+      {
+        "title": "판단을 바꿀 조건 3가지",
+        "bullets": [
+          "10년물 금리가 5.3% 위에서 추가 상승하고 실질금리도 동반 상승하면, AI 메모리의 실적 개선에도 밸류에이션 부담을 더 크게 반영합니다.",
+          "Micron의 높은 선수금·매출채권·재고가 다음 분기에도 현금흐름과 출하로 정상 전환되면 메모리 업황 긍정 판단을 강화하고, 재고·채권만 늘면 낮춥니다.",
+          "ISM 가격지수와 고용지표가 동시에 둔화하고 달러·유가도 안정되면 반도체 할인율과 항공 비용 전망을 개선하되, 성장 급락 신호면 경기민감주 판단은 보수적으로 수정합니다."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "2026-09-30-morning",
+    "type": "morning",
+    "publishedAt": "2026-09-30T08:00:00+09:00",
+    "title": "미국 증시 아침 브리핑: 고용 둔화에도 장기금리 상승, 종목 장세 지속",
+    "summary": "9월 29일 미국 증시는 S&P 500 -0.17%, Nasdaq -0.08%, Dow -0.26%, Russell 2000 -0.35%로 소폭 하락했습니다. JOLTS와 소비자신뢰가 예상보다 약했고 2년물은 3bp 내렸지만 10년물은 2bp 올라 성장 둔화와 장기 할인율 부담이 엇갈렸습니다. 유가 급락은 항공 비용에는 우호적일 수 있으나 정유 재고효과에는 반대이며, PCE와 Micron 실적이 다음 검증 지점입니다.",
+    "marketSummary": "약한 고용수요와 소비심리가 확인됐지만 장기금리는 올랐습니다. 4대 지수와 시장 내부 폭이 모두 약했고 NYSE·Nasdaq 하락 종목이 우세했습니다. 에너지 가격 급락과 Meta·Broadcom 강세에도 Apple·FICO 약세가 확산을 제한했습니다.",
+    "highlights": [
+      "JOLTS 707.9만건으로 예상 722.5만건 하회, 소비자신뢰 81.9로 예상 89.0 하회",
+      "미 2년물 4.89%(-3bp), 10년물 5.26%(+2bp)",
+      "WTI -3.5%, Brent -2.6%: 정유·항공 손익 경로를 분리해 확인",
+      "PCE와 Micron 실적에서 물가·HBM·DRAM 가격·CAPEX·현금흐름 확인"
+    ],
+    "tickers": [
+      "SK하이닉스",
+      "삼성전자",
+      "S-Oil",
+      "대한항공",
+      "한미반도체",
+      "현대차",
+      "META",
+      "NVDA",
+      "AVGO",
+      "CCL",
+      "KMX",
+      "FICO",
+      "MU"
+    ],
+    "pdfBase64Parts": [
+      "auto-reports/pdfs/2026-09-30-morning.part001.b64"
+    ],
+    "pdfSourceVersion": "2026-09-29T23:09:49.158722Z",
+    "sections": [
+      {
+        "title": "오늘 시장의 핵심 판단",
+        "body": "약한 고용수요와 소비심리가 확인됐지만 시장은 성장 둔화보다 장기금리에 더 민감했습니다. 2년물은 -3bp 내렸으나 10년물은 +2bp 올라 커브가 가팔라졌고, 4대 지수와 시장 내부 폭은 모두 약했습니다. 유가 급락은 인플레이션에는 우호적이지만 정유와 항공에는 서로 반대 방향으로 전달됩니다.",
+        "bullets": [
+          "S&P 500 -0.17%, Nasdaq -0.08%, Dow -0.26%, Russell 2000 -0.35%",
+          "NYSE 하락/상승 1.66배, Nasdaq 1.47배",
+          "PCE와 Micron이 금리·AI 이익의 핵심 검증점"
+        ]
+      },
+      {
+        "title": "시장 스냅샷",
+        "rows": [
+          {
+            "label": "S&P 500",
+            "value": "7,670.84 · -0.17%",
+            "note": "9/29 미국 정규장"
+          },
+          {
+            "label": "Nasdaq",
+            "value": "26,797.54 · -0.08%",
+            "note": "9/29 미국 정규장"
+          },
+          {
+            "label": "Dow",
+            "value": "51,349.92 · -0.26%",
+            "note": "9/29 미국 정규장"
+          },
+          {
+            "label": "Russell 2000",
+            "value": "2,807.92 · -0.35%",
+            "note": "9/29 미국 정규장"
+          },
+          {
+            "label": "미 국채 2년 / 10년",
+            "value": "4.89%(-3bp) / 5.26%(+2bp)",
+            "note": "미 재무부 CMT"
+          },
+          {
+            "label": "DXY / VIX",
+            "value": "101.38(+0.18%) / 16.04(-0.19%)",
+            "note": "9/29 종가"
+          },
+          {
+            "label": "USD/KRW",
+            "value": "1,356.7원 · -8.4원",
+            "note": "9/29 서울 종가"
+          },
+          {
+            "label": "WTI / Brent",
+            "value": "$89.38(-3.5%) / $102.59(-2.6%)",
+            "note": "11월물 정산"
+          }
+        ],
+        "links": [
+          {
+            "label": "미 재무부 금리",
+            "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?field_tdr_date_value=2026&type=daily_treasury_yield_curve"
+          },
+          {
+            "label": "Cboe VIX",
+            "url": "https://www.cboe.com/tradable-products/vix/"
+          }
+        ]
+      },
+      {
+        "title": "시장을 움직인 원인",
+        "bullets": [
+          "[사실] 8월 JOLTS 구인 707.9만건(예상 722.5만, 7월 수정 733.5만), 해고 164.1만건, 채용률 3.3%.",
+          "[사실] 9월 소비자신뢰 81.9(예상 89.0, 이전 88.6).",
+          "[사실] Williams 총재는 인내를 강조했고 10월 인상 확률은 약 70%에서 51.5%로 낮아졌습니다. Barr·Goolsbee는 상대적으로 매파적이었습니다.",
+          "[해석] 단기 정책금리 기대는 완화됐지만 장기물 공급·물가 위험 프리미엄이 남아 장기 할인율 부담이 지수 상단을 제한했습니다."
+        ],
+        "links": [
+          {
+            "label": "BLS JOLTS",
+            "url": "https://www.bls.gov/jlt/"
+          },
+          {
+            "label": "Conference Board",
+            "url": "https://www.conference-board.org/topics/consumer-confidence"
+          }
+        ]
+      },
+      {
+        "title": "업종과 시장 확산",
+        "body": "NYSE 하락 종목은 상승의 1.66배, Nasdaq은 1.47배였습니다. Nasdaq 신저가 244개가 신고가 34개를 크게 웃돌아 지수 하락폭보다 내부 확산이 약했습니다.",
+        "rows": [
+          {
+            "label": "AI 대형주",
+            "value": "Meta +3.3%, Nvidia -0.7%, Broadcom +1.6%",
+            "note": "AI 내 종목 차별화"
+          },
+          {
+            "label": "Apple / FICO",
+            "value": "-2.7% / -26.5%",
+            "note": "개별·규제 이슈가 확산 제한"
+          },
+          {
+            "label": "유가",
+            "value": "WTI -3.5%, Brent -2.6%",
+            "note": "정유 재고효과 부정, 항공 비용 잠재적 우호"
+          }
+        ]
+      },
+      {
+        "title": "미국 기업·공시 관찰",
+        "rows": [
+          {
+            "label": "Carnival",
+            "value": "+13.0% · 조정 EPS $1.43, 매출 $84.4억",
+            "note": "FY26 순수익률 +3.8%, 2027 예약·가격 기록. 현금흐름·선수금·선박 CAPEX 확인."
+          },
+          {
+            "label": "CarMax",
+            "value": "+4.7% · EPS $1.16, 매출 $78.8억",
+            "note": "판매대수 +15%, 대당 총이익 $111 감소. 재고회전·대손·금융 매출채권 확인."
+          },
+          {
+            "label": "FICO",
+            "value": "-26.5%",
+            "note": "FHFA 가격표 규제 이슈. 실적이 아닌 정책 충격이며 시행범위 확인."
+          },
+          {
+            "label": "Meta / Nvidia / Broadcom",
+            "value": "+3.3% / -0.7% / +1.6%",
+            "note": "신규 GAAP 실적 발표에 따른 반응은 아님."
+          },
+          {
+            "label": "Apple",
+            "value": "-2.7%",
+            "note": "하루 등락만으로 수요·마진 추세를 확정하지 않음."
+          }
+        ]
+      },
+      {
+        "title": "한국 연관 종목 — 9월 30일 핵심",
+        "body": "확인된 사업 노출과 업종 전달 경로가 뚜렷한 4개만 핵심으로 선정했습니다. 미국 주가 반응은 한국 종목의 방향을 보장하지 않습니다.",
+        "rows": [
+          {
+            "label": "SK하이닉스 000660",
+            "value": "혼재",
+            "note": "HBM·DRAM 실적 연결. Micron HBM·가격·FY27 CAPEX는 업황 검증점, 10년물 5.26%는 할인율 부담. 9/29 1,765,000원(-0.17%); 일관된 최신 선행 PER 부족으로 선반영 판단 유보."
+          },
+          {
+            "label": "삼성전자 005930",
+            "value": "혼재",
+            "note": "메모리·파운드리·모바일 복합 노출. 원화 강세와 Micron 메모리 신호가 혼재. 9/29 272,500원(+0.93%); HBM 인증·파운드리 가동률 확인 전 선반영 단정 불가."
+          },
+          {
+            "label": "S-Oil 010950",
+            "value": "부정/혼재",
+            "note": "유가 급락은 재고평가에 불리할 수 있으나 원료·운전자본 부담 완화. 9/29 157,800원(-2.71%); 제품 스프레드·정제마진이 반대 요인."
+          },
+          {
+            "label": "대한항공 003490",
+            "value": "긍정/혼재",
+            "note": "유가·원달러 하락은 비용에 우호적일 수 있으나 할증료·헤지·수요가 상쇄. 9/29 31,400원(-0.95%); 실제 반영 시차 확인."
+          }
+        ],
+        "bullets": [
+          "추가 관찰 — 한미반도체 042700: Micron FY27 CAPEX가 HBM 장비 발주·매출 인식으로 이어지는지 확인. 특정 미국 고객 납품은 전제하지 않음.",
+          "추가 관찰 — 현대차 005380: 미국 소비심리 둔화와 자동차금융 비용이 수요·인센티브에 미치는 영향."
+        ],
+        "links": [
+          {
+            "label": "SK하이닉스 IR",
+            "url": "https://www.skhynix.com/ir/UI-FR-IR01/"
+          },
+          {
+            "label": "삼성전자 IR",
+            "url": "https://www.samsung.com/global/ir/"
+          },
+          {
+            "label": "S-Oil IR",
+            "url": "https://www.s-oil.com/ir/"
+          },
+          {
+            "label": "대한항공 IR",
+            "url": "https://ir.koreanair.com/"
+          }
+        ]
+      },
+      {
+        "title": "직전 보고서 핵심 종목 점검",
+        "body": "2026-09-29 보고서 핵심 4종목 전체의 선정 후 첫 한국 정규장 종가입니다. KOSPI 6,870.81(-0.27%). 가격변동은 추천 성과나 원인 입증이 아닙니다.",
+        "rows": [
+          {
+            "label": "SK하이닉스 000660",
+            "value": "1,765,000원 · -3,000원 / -0.17%",
+            "note": "KOSPI 대비 +0.10%p"
+          },
+          {
+            "label": "삼성전자 005930",
+            "value": "272,500원 · +2,500원 / +0.93%",
+            "note": "KOSPI 대비 +1.20%p"
+          },
+          {
+            "label": "S-Oil 010950",
+            "value": "157,800원 · -4,400원 / -2.71%",
+            "note": "KOSPI 대비 -2.44%p"
+          },
+          {
+            "label": "대한항공 003490",
+            "value": "31,400원 · -300원 / -0.95%",
+            "note": "KOSPI 대비 -0.68%p"
+          }
+        ],
+        "bullets": [
+          "배당 제외, 확인된 분할·권리락 없음. 실제 매수가가 아닌 관찰 기준."
+        ]
+      },
+      {
+        "title": "다음 일정과 체크포인트",
+        "rows": [
+          {
+            "label": "9/30 21:30 KST · PCE",
+            "value": "헤드라인 +0.3% m/m 예상 / +0.2% 이전; 근원 +0.3% / +0.2%",
+            "note": "상회 시 금리·달러·성장주 부담. 하회 시 금리 우호적이나 소비 둔화 동반 여부 확인."
+          },
+          {
+            "label": "9/30 미국 장후 · Micron",
+            "value": "조정 EPS 약 $31.5, 매출 약 $510억 예상",
+            "note": "HBM·DRAM 가격·총마진·FY27 CAPEX·재고·매출채권·영업현금흐름·SBC 조정 확인."
+          },
+          {
+            "label": "10/2 21:30 KST · 미국 고용",
+            "value": "비농업 +9만명 예상 / +16.2만명 이전; 실업률 4.1% / 4.1%",
+            "note": "상회면 금리·달러 상승, 큰 하회면 금리 하락과 이익 둔화 우려 공존."
+          }
+        ],
+        "links": [
+          {
+            "label": "BEA 일정",
+            "url": "https://www.bea.gov/news/schedule"
+          },
+          {
+            "label": "BLS 고용",
+            "url": "https://www.bls.gov/schedule/news_release/empsit.htm"
+          },
+          {
+            "label": "Micron IR",
+            "url": "https://investors.micron.com/"
+          }
+        ]
+      },
+      {
+        "title": "판단을 바꿀 조건 3가지",
+        "rows": [
+          {
+            "label": "물가·금리",
+            "value": "근원 PCE 예상 하회 + 10년물 5.10% 하회",
+            "note": "성장주·한국 반도체 할인율 부담을 낮춤."
+          },
+          {
+            "label": "AI 이익",
+            "value": "Micron HBM·DRAM 가격, 총마진, 현금흐름 기대 충족",
+            "note": "AI 수요를 기대에서 실적으로 격상; CAPEX만 늘면 보수적으로 수정."
+          },
+          {
+            "label": "성장·유가",
+            "value": "고용 급랭 또는 Brent $100 하회 지속",
+            "note": "고용 급랭은 이익 둔화 우려, 유가 하락은 정유 기대 하향·항공 비용 개선."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "2026-09-29-morning",
+    "title": "미국 증시 아침 브리핑: 금리·유가 재상승과 한국 연관 종목",
+    "publishedAt": "2026-09-29T08:00:00+09:00",
+    "type": "morning",
+    "summary": "9월 28일 미국 증시는 S&P 500 -0.77%, Nasdaq -0.92%, Dow -0.67%, Russell 2000 -0.69%로 동반 하락했습니다. 미 국채 2년물은 4.92%(+11bp), 10년물은 5.24%(+7bp)로 뛰었고 유가도 올라 할인율과 비용 부담이 함께 커졌습니다. 한국 연결에서는 반도체의 금리·Micron 실적, 정유의 재고·마진, 항공의 연료·환율을 분리해 확인해야 합니다.",
+    "marketSummary": "시장은 성장보다 금리와 물가에 다시 민감해졌습니다. 주요 연방 지표 발표가 없었지만 연준 Lisa Cook 이사의 매파적 발언과 호르무즈 불확실성 속 국채금리·유가가 동반 상승했고 S&P 500 11개 업종 중 3개만 올라 약세가 광범위했습니다. Nvidia +2.1%에도 기술은 -0.70%였고 금융·경기소비재·커뮤니케이션이 더 약했습니다. 다음 판단은 PCE와 Micron 실적, ISM, 고용에서 물가·성장·AI 이익의 조합이 확인되는지에 달렸습니다.",
+    "highlights": [
+      "미 2년물 +11bp·10년물 +7bp, DXY +0.22%로 할인율 부담 재확대",
+      "S&P 11개 업종 중 필수소비재·헬스케어·에너지만 상승해 광범위한 약세",
+      "Micron 실적에서 HBM 매출·DRAM 가격·FY27 CAPEX·현금흐름 확인",
+      "호르무즈 통행·보험료와 Brent 계약 기준을 함께 확인"
+    ],
+    "tickers": [
+      "SK하이닉스",
+      "삼성전자",
+      "S-Oil",
+      "대한항공",
+      "한미반도체",
+      "NVDA",
+      "MU",
+      "MDB",
+      "AAL",
+      "UAL"
+    ],
+    "pdfBase64Parts": [
+      "auto-reports/pdfs/2026-09-29-morning.part001.b64"
+    ],
+    "pdfSourceVersion": "2026-09-28T23:10:38.937891Z",
+    "sections": [
+      {
+        "title": "오늘 시장의 핵심 판단",
+        "body": "시장은 다시 성장보다 금리와 물가에 민감해졌습니다. 전 거래일의 유가 하락과 AI 기대와 달리, 9월 28일에는 호르무즈 불확실성과 매파적 연준 발언이 겹쳐 2년물은 +11bp, 10년물은 +7bp 상승했습니다. S&P 500의 11개 업종 중 3개만 올라 약세가 대형 기술주에 국한되지 않았고 Nvidia의 +2.1%도 지수 하락을 막지 못했습니다.",
+        "bullets": [
+          "S&P 500 -0.77%, Nasdaq -0.92%, Dow -0.67%, Russell 2000 -0.69%",
+          "10년물 5.24%로 높은 할인율 환경, 금융·경기소비재·커뮤니케이션 약세",
+          "한국 반도체의 할인율 부담, 정유의 재고·마진 효과, 항공의 연료·환율 부담을 분리해 관찰"
+        ]
+      },
+      {
+        "title": "시장 스냅샷",
+        "rows": [
+          {
+            "label": "S&P 500",
+            "value": "7,683.93 · -0.77%",
+            "note": "9/28 미국 정규장"
+          },
+          {
+            "label": "Nasdaq Composite",
+            "value": "26,820.38 · -0.92%",
+            "note": "9/28 미국 정규장"
+          },
+          {
+            "label": "Dow",
+            "value": "51,481.51 · -0.67%",
+            "note": "9/28 미국 정규장"
+          },
+          {
+            "label": "Russell 2000",
+            "value": "2,817.91 · -0.69%",
+            "note": "제공처 반올림 차이 있음"
+          },
+          {
+            "label": "미 국채 2년",
+            "value": "4.92% · +11bp",
+            "note": "미 재무부 CMT"
+          },
+          {
+            "label": "미 국채 10년",
+            "value": "5.24% · +7bp",
+            "note": "미 재무부 CMT"
+          },
+          {
+            "label": "DXY / VIX",
+            "value": "101.197 / 16.07",
+            "note": "+0.22% / +8.07%"
+          },
+          {
+            "label": "USD/KRW",
+            "value": "1,365.1원 · +7.6원",
+            "note": "9/28 서울 15:30"
+          },
+          {
+            "label": "WTI / Brent",
+            "value": "$92.60 / $105.28",
+            "note": "+0.2% / +0.9%, 11월물 정산"
+          }
+        ],
+        "links": [
+          {
+            "label": "미 재무부 금리",
+            "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?field_tdr_date_value=2026&type=daily_treasury_yield_curve"
+          },
+          {
+            "label": "Investing 지수 데이터",
+            "url": "https://www.investing.com/indices/us-spx-500-historical-data"
+          }
+        ]
+      },
+      {
+        "title": "시장을 움직인 원인",
+        "bullets": [
+          "[사실] 시장 방향을 바꿀 만한 주요 연방 경제지표 발표는 없었습니다.",
+          "[사실] 연준 Lisa Cook 이사는 최근 25bp 인상을 지지했고 유가와 AI CAPEX가 물가압력을 지속시킬 수 있다고 밝혔습니다.",
+          "[사실] 미국이 이란의 호르무즈 재개방 조건을 거부했다는 보도로 유가가 상승했습니다.",
+          "[해석] 단일 기업 악재보다 금리 재상승이 장기 현금흐름의 현재가치를 낮추고 유가가 비용·기대인플레이션을 동시에 자극한 것이 광범위한 하락의 배경입니다."
+        ],
+        "links": [
+          {
+            "label": "Federal Reserve - Lisa Cook 연설",
+            "url": "https://www.federalreserve.gov/newsevents/speech/cook20260928a.htm"
+          },
+          {
+            "label": "AP 미국 시장",
+            "url": "https://apnews.com/hub/financial-markets"
+          }
+        ]
+      },
+      {
+        "title": "업종과 시장 확산",
+        "rows": [
+          {
+            "label": "방어·원자재",
+            "value": "필수소비재 +0.40%, 헬스케어 +0.29%, 에너지 +0.22%",
+            "note": "11개 업종 중 3개만 상승"
+          },
+          {
+            "label": "금리 민감",
+            "value": "금융 -1.14%, 경기소비재 -1.58%",
+            "note": "금리·유가가 대출·소비비용 압박"
+          },
+          {
+            "label": "성장·광고",
+            "value": "커뮤니케이션 -1.67%, 기술 -0.70%",
+            "note": "Nvidia 상승에도 섹터 전체는 약세"
+          },
+          {
+            "label": "시장 폭",
+            "value": "4대 지수 모두 하락",
+            "note": "대형주만의 조정이 아닌 광범위한 약세"
+          }
+        ]
+      },
+      {
+        "title": "미국 기업·공시 관찰",
+        "body": "월요일에는 대형 실적 공시가 제한적이었습니다. 따라서 하루 주가반응을 GAAP 이익 변화로 해석하지 않았고, 다음 공시에서 현금흐름·재고·매출채권·CAPEX·주식보상과 조정이익의 차이를 확인할 항목으로 분리했습니다.",
+        "rows": [
+          {
+            "label": "Nvidia",
+            "value": "+2.1%",
+            "note": "추가 $150bn 자사주 승인 포함 잔여 한도 $235bn. 실제 집행·AI CAPEX 기회비용 확인."
+          },
+          {
+            "label": "MongoDB",
+            "value": "-16.9%",
+            "note": "CEO CJ Desai 즉시 사임. 실적 발표가 아닌 경영 안정성·가이던스 변수."
+          },
+          {
+            "label": "American Airlines",
+            "value": "-2.1%",
+            "note": "유가 상승에 비용 민감도 재부각. 유류할증료·헤지·단위매출 확인."
+          },
+          {
+            "label": "United Airlines",
+            "value": "-1.6%",
+            "note": "항공유 부담 반영. 수요·운임이 비용을 상쇄하는지 확인."
+          },
+          {
+            "label": "Newmont",
+            "value": "-4.1%",
+            "note": "금 -3.5%와 실질금리 상승 영향. 생산량·원가가 반대 변수."
+          }
+        ]
+      },
+      {
+        "title": "한국 연관 종목 - 9월 29일 핵심",
+        "rows": [
+          {
+            "label": "SK하이닉스 000660",
+            "value": "부정/혼재",
+            "note": "HBM·DRAM 노출. 10년물 5.24%는 할인율 부담, Micron은 HBM 매출·DRAM 가격·FY27 CAPEX 검증 지점. 9/28 1,768,000원(-5.05%). 하루 등락으로 인과 확정 불가."
+          },
+          {
+            "label": "삼성전자 005930",
+            "value": "부정/혼재",
+            "note": "메모리·파운드리·모바일 복합 노출. 높은 금리 부담과 원화 약세의 수출환산 효과가 혼재. 9/28 270,000원(-5.43%). HBM 인증·파운드리 가동률·DRAM 가격 확인."
+          },
+          {
+            "label": "S-Oil 010950",
+            "value": "긍정/혼재",
+            "note": "유가 상승의 단기 재고평가 이익 가능성과 원료·운전자본 부담 공존. 9/28 162,200원(+4.24%). 제품 스프레드·정제마진·호르무즈 정상화 확인."
+          },
+          {
+            "label": "대한항공 003490",
+            "value": "부정/혼재",
+            "note": "Brent·원달러 상승은 연료·리스·정비비 부담. 9/28 31,700원(+0.63%)의 상대강세는 비용 우려 해소를 뜻하지 않음. 할증료·헤지·운임 확인."
+          }
+        ],
+        "bullets": [
+          "실적 연결·선반영: SK하이닉스·삼성전자는 Micron 가이던스와 실제 HBM·DRAM 매출 전환 전까지 기대와 실적을 구분하며 밸류에이션 판단 유보.",
+          "S-Oil은 정제마진·재고평가·운전자본, 대한항공은 유가·환율과 할증료·헤지의 순효과 확인.",
+          "추가 관찰: 한미반도체 042700 — Micron FY27 CAPEX가 실제 HBM 장비 발주·매출 인식으로 이어지는지 확인. 특정 미국 고객 직접 납품은 전제하지 않음."
+        ],
+        "links": [
+          {
+            "label": "SK하이닉스 IR",
+            "url": "https://www.skhynix.com/ir/UI-FR-IR01/"
+          },
+          {
+            "label": "삼성전자 IR",
+            "url": "https://www.samsung.com/global/ir/"
+          },
+          {
+            "label": "S-Oil IR",
+            "url": "https://www.s-oil.com/ir/"
+          },
+          {
+            "label": "대한항공 IR",
+            "url": "https://ir.koreanair.com/"
+          }
+        ]
+      },
+      {
+        "title": "직전 보고서 핵심 종목 점검",
+        "body": "선정 보고서는 2026년 9월 28일 아침 보고서이며 당시 핵심 4종목 전체를 그대로 추적했습니다. 선정 후 첫 한국 정규장인 9월 28일 종가를 사용했고 선정 전 움직임은 제외했습니다.",
+        "rows": [
+          {
+            "label": "SK하이닉스 000660",
+            "value": "1,768,000원 · -94,000원 / -5.05%",
+            "note": "KOSPI 대비 -2.35%p. 금리·수급 부담 우세, 원인 확정 불가."
+          },
+          {
+            "label": "삼성전자 005930",
+            "value": "270,000원 · -15,500원 / -5.43%",
+            "note": "KOSPI 대비 -2.73%p. 반도체 차익실현·수급 부담 우세."
+          },
+          {
+            "label": "S-Oil 010950",
+            "value": "162,200원 · +6,600원 / +4.24%",
+            "note": "KOSPI 대비 +6.94%p. 유가·공급위험이 우호적으로 반영; 마진 확인 전."
+          },
+          {
+            "label": "대한항공 003490",
+            "value": "31,700원 · +200원 / +0.63%",
+            "note": "KOSPI 대비 +3.33%p. 상대강세이나 수요·헤지·수급이 반대 변수."
+          }
+        ],
+        "bullets": [
+          "KOSPI 9/28 6,889.74, -2.70%. 배당 제외, 확인된 분할·권리락 없음. 실제 매수가나 추천 성과가 아님."
+        ]
+      },
+      {
+        "title": "다음 일정과 체크포인트",
+        "rows": [
+          {
+            "label": "9/30 21:30 KST",
+            "value": "8월 PCE: 헤드라인 +0.3% m/m 예상 / +0.2% 이전, 근원 +0.3% / +0.2%",
+            "note": "상회하면 2년물·달러 상승과 성장주 부담, 하회하면 금리 우호적이나 소비 둔화 여부 확인."
+          },
+          {
+            "label": "9/30 미국 장후",
+            "value": "Micron: 조정 EPS 약 $31.1, 매출 약 $50.8bn 예상",
+            "note": "HBM 매출·DRAM 가격·FY27 CAPEX·장기계약·재고·매출채권·영업현금흐름·주식보상 조정 확인."
+          },
+          {
+            "label": "10/1 23:00 KST",
+            "value": "9월 ISM 제조업 55.0 예상 / 54.6 이전",
+            "note": "신규주문과 가격지수 동반 상승이면 수요에는 긍정적이나 금리·달러에는 부담."
+          },
+          {
+            "label": "10/2 21:30 KST",
+            "value": "9월 고용 +100k 예상 / +162k 이전, 실업률 4.2% / 4.1%",
+            "note": "상회하면 추가 인상 기대, 큰 하회면 금리 하락과 이익 둔화 우려 공존. 임금·참가율 확인."
+          }
+        ]
+      },
+      {
+        "title": "판단을 바꿀 조건 3가지",
+        "rows": [
+          {
+            "label": "중동·유가",
+            "value": "호르무즈 통행량·보험료 정상화, Brent $100 하회 안착",
+            "note": "정유 위험 프리미엄 기대를 낮추고 항공 비용 전망 개선."
+          },
+          {
+            "label": "금리·물가",
+            "value": "근원 PCE 둔화와 10년물 5.10% 하회 동반",
+            "note": "성장주·한국 반도체 할인율 부담 완화."
+          },
+          {
+            "label": "AI 이익",
+            "value": "Micron 가이던스에서 HBM·DRAM 가격과 현금흐름 기대 충족",
+            "note": "AI 수요를 기대에서 실적 근거로 격상; 반대면 장비·메모리 기대 조정."
+          }
+        ],
+        "links": [
+          {
+            "label": "BEA 발표 일정",
+            "url": "https://www.bea.gov/news/schedule"
+          },
+          {
+            "label": "ISM 제조업",
+            "url": "https://www.ismworld.org/supply-management-news-and-reports/reports/ism-report-on-business/pmi/september/"
+          },
+          {
+            "label": "BLS 고용 일정",
+            "url": "https://www.bls.gov/schedule/news_release/empsit.htm"
+          },
+          {
+            "label": "Micron IR",
+            "url": "https://investors.micron.com/"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "2026-09-28-morning",
+    "title": "미국 증시 마감·한국장 체크포인트",
+    "publishedAt": "2026-09-28T08:00:00+09:00",
+    "type": "morning",
+    "summary": "미국 증시는 9월 25일 S&P 500 +0.51%, 나스닥 +0.48%, 다우 +0.93%로 상승했습니다. 금리는 여전히 높은 수준이고 주말 중동 변수로 유가 하락 전제가 약해져, 한국 개장에서는 금리·유가·AI 이익 가시성을 함께 확인할 필요가 있습니다.",
+    "marketSummary": "금요일 미국 시장은 AI 대형주와 유가 하락에 힘입어 반등했고 11개 업종 중 8개가 상승했습니다. 다만 러셀 2000은 +0.07%에 그쳐 대형 성장주 우위가 이어졌고, 10년물 금리는 5.17%로 높은 수준을 유지했습니다. 내구재 주문은 헤드라인 0.0%였지만 핵심 자본재 주문이 +1.6%로 강해 설비투자 흐름은 견조했고, 미시간대 소비심리는 48.1로 낮았습니다. 한국 연관 종목은 SK하이닉스·삼성전자 등 반도체와 S-Oil·대한항공을 중심으로, 이번 주 PCE·ISM·고용과 Micron 실적에서 금리·AI 수요·유가 영향이 실제 실적과 현금흐름으로 이어지는지 확인하는 것이 핵심입니다.",
+    "highlights": [
+      "PCE·ISM·고용 발표가 금리와 달러, 성장주 밸류에이션의 핵심 변수",
+      "Micron 실적에서 HBM 매출·DRAM 가격·CAPEX·현금흐름 가이던스 확인",
+      "주말 중동 뉴스로 금요일 유가 하락 전제가 약해졌는지 한국 개장 후 확인",
+      "한국 휴장 뒤 첫 개장이라 미국 누적 변화와 주말 이슈가 시초가에 한꺼번에 반영될 수 있음"
+    ],
+    "tickers": [
+      "SK하이닉스",
+      "삼성전자",
+      "S-Oil",
+      "대한항공",
+      "한미반도체",
+      "LG이노텍",
+      "HD현대일렉트릭",
+      "NVDA",
+      "MU"
+    ],
+    "pdfBase64Parts": [
+      "auto-reports/pdfs/2026-09-28-morning.part001.b64"
+    ],
+    "pdfSourceVersion": "2026-09-28T12:58:21.660Z",
+    "sections": [
+      {
+        "title": "오늘 시장의 핵심 판단",
+        "body": "금요일에는 AI 대형주와 유가 하락이 위험선호를 되살렸지만, 주말 미국이 이란의 호르무즈 재개방 제안을 거부해 금요일 유가 하락의 전제가 약해졌습니다. 2년물은 6bp 내렸어도 10년물은 5.17%로 높습니다. 8개 업종이 올랐지만 Russell 2000은 +0.07%에 그쳐 지수 반등의 폭보다 금리·유가·AI 이익 가시성을 우선 확인할 장세입니다.",
+        "bullets": [
+          "S&P 500 +0.51%, Nasdaq +0.48%, Dow +0.93%",
+          "8월 내구재 주문 0.0%, 핵심 자본재 주문 +1.6%",
+          "이번 주 PCE·ISM·고용과 Micron 실적이 금리와 한국 반도체 판단의 핵심"
+        ]
+      },
+      {
+        "title": "시장 스냅샷",
+        "rows": [
+          {
+            "label": "S&P 500",
+            "value": "7,743.41 · +0.51%",
+            "note": "9/25 미국 정규장"
+          },
+          {
+            "label": "Nasdaq",
+            "value": "27,068.72 · +0.48%",
+            "note": "9/25 미국 정규장"
+          },
+          {
+            "label": "Dow",
+            "value": "51,828.62 · +0.93%",
+            "note": "9/25 미국 정규장"
+          },
+          {
+            "label": "Russell 2000",
+            "value": "2,837.55 · +0.07%",
+            "note": "9/25 미국 정규장"
+          },
+          {
+            "label": "미 국채 2년",
+            "value": "4.81% · -6bp",
+            "note": "미 재무부 CMT"
+          },
+          {
+            "label": "미 국채 10년",
+            "value": "5.17% · -1bp",
+            "note": "미 재무부 CMT"
+          },
+          {
+            "label": "DXY / VIX",
+            "value": "101.04 / 14.87",
+            "note": "DXY -0.20%, VIX -5.11%"
+          },
+          {
+            "label": "WTI / Brent",
+            "value": "$92.41 / $104.32",
+            "note": "-2.33% / -2.14%, 9/25 선물 정산"
+          }
+        ]
+      },
+      {
+        "title": "시장을 움직인 원인",
+        "bullets": [
+          "[사실] 내구재 주문은 예상보다 강했고 핵심 자본재 주문은 +1.6%로 설비투자 흐름이 견조했습니다.",
+          "[사실] 미시간대 소비심리 확정치는 48.1로 낮았고 1년 기대인플레이션은 4.6%로 높았습니다.",
+          "[해석] 설비투자·AI 수요는 이익 기대를 지지하지만 5%대 10년물과 높은 기대인플레이션은 성장주 밸류에이션 상단을 제약합니다.",
+          "[주말 변화] 중동 외교 불확실성이 다시 커져 금요일 유가 하락이 그대로 이어질지는 재확인이 필요합니다."
+        ]
+      },
+      {
+        "title": "업종과 미국 기업",
+        "bullets": [
+          "기술 +0.99%, 산업재 +0.94%, 금융 +0.53%로 AI와 경기민감주가 함께 반등했습니다.",
+          "에너지 -0.87%, 커뮤니케이션 -0.65%, 부동산 -0.35%. Russell은 주간 -0.80%로 대형 성장주 대비 열위였습니다.",
+          "Microsoft +3.7%: AI 에이전트 기대. 유료전환·Azure 소비·AI CAPEX 대비 마진 확인 필요.",
+          "Dell +5.0%: AI 인프라 수요 기대. 서버 주문잔고·현금전환·재고 개선 여부는 별도 확인.",
+          "Qualcomm +4.0%: Apple 관련 로열티 가시성 기대. 라이선스 지속기간과 단말 출하량이 변수."
+        ]
+      },
+      {
+        "title": "한국 연관 종목",
+        "rows": [
+          {
+            "label": "SK하이닉스 000660",
+            "value": "긍정/혼재",
+            "note": "AI 신호와 Micron 실적이 HBM·DRAM 업황에 연결. HBM 출하·가격, 고객 CAPEX, 장기계약 확인."
+          },
+          {
+            "label": "삼성전자 005930",
+            "value": "긍정/혼재",
+            "note": "AI CAPEX는 우호적이나 수출통제 완화는 미확인. HBM 인증·출하, DRAM 가격, 파운드리 가동률 확인."
+          },
+          {
+            "label": "S-Oil 010950",
+            "value": "혼재",
+            "note": "금요일 유가 하락은 원가에 우호적이지만 중동 위험 재확대 가능. 정제마진·재고평가·조달비 확인."
+          },
+          {
+            "label": "대한항공 003490",
+            "value": "긍정/혼재",
+            "note": "금요일 유가·원달러 하락은 비용 완화 요인이지만 주말 중동 뉴스는 반대 변수."
+          },
+          {
+            "label": "한미반도체 042700",
+            "value": "관찰",
+            "note": "Micron CAPEX·고객 장비 발주·매출 인식 확인."
+          },
+          {
+            "label": "LG이노텍 011070",
+            "value": "관찰",
+            "note": "스마트폰 부품 수요와 고객별 실제 거래관계 확인."
+          },
+          {
+            "label": "HD현대일렉트릭 267260",
+            "value": "관찰",
+            "note": "AI 데이터센터 전력수요의 업종 연결. 미국 수주잔고·납기 확인."
+          }
+        ]
+      },
+      {
+        "title": "다음 일정과 시나리오",
+        "rows": [
+          {
+            "label": "9/30 21:30 KST",
+            "value": "PCE",
+            "note": "헤드라인·근원 물가가 예상보다 높으면 금리·달러 상승과 성장주 부담, 낮으면 금리에는 우호적이나 소비 약화 여부 확인."
+          },
+          {
+            "label": "10/1 23:00 KST",
+            "value": "ISM 제조업",
+            "note": "성장과 가격지수를 함께 확인. 강한 성장과 가격 상승이 겹치면 금리 부담 가능."
+          },
+          {
+            "label": "10/2 21:30 KST",
+            "value": "미국 고용보고서",
+            "note": "고용·실업률·임금이 금리 경로와 달러에 미치는 영향을 함께 확인."
+          },
+          {
+            "label": "9/30 미국 장후",
+            "value": "Micron 실적",
+            "note": "HBM 매출·DRAM 가격·FY27 CAPEX·장기계약·현금흐름 가이던스가 한국 반도체에 중요."
+          }
+        ],
+        "bullets": [
+          "호르무즈 통행 정상화와 Brent $100 하회가 확인되면 정유 위험 프리미엄 기대를 낮추고 항공 비용 전망을 개선합니다.",
+          "근원 PCE 둔화와 10년물 5.10% 하회가 동반되면 성장주·한국 반도체 할인율 부담을 낮춥니다.",
+          "Micron 가이던스가 HBM 출하·현금흐름으로 확인되면 AI 수요를 기대에서 실적 근거로 격상합니다."
+        ]
+      },
+      {
+        "title": "주요 원문",
+        "links": [
+          {
+            "label": "미 재무부 금리",
+            "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?field_tdr_date_value=2026&type=daily_treasury_yield_curve"
+          },
+          {
+            "label": "미 Census 내구재",
+            "url": "https://www.census.gov/manufacturing/m3/adv/pdf/durgd.pdf"
+          },
+          {
+            "label": "미시간대 소비심리",
+            "url": "https://data.sca.isr.umich.edu/"
+          },
+          {
+            "label": "Micron IR",
+            "url": "https://investors.micron.com/"
+          },
+          {
+            "label": "Reuters Markets",
+            "url": "https://www.reuters.com/markets/"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "2026-09-27-morning",
+    "title": "[복원] 일요일 주간 준비 브리핑",
+    "publishedAt": "2026-09-27T08:00:00+09:00",
+    "type": "morning",
+    "reconstructed": true,
+    "summary": "미국 현물시장은 주말로 닫혀 있어 새 종가가 없었습니다. 금요일 S&P 500 7,743.41, 미 10년물 5.17%를 출발점으로 다음 주 PCE·고용·ISM과 Micron 실적, 중동 공급 리스크가 한국 연휴 후 첫 개장에 어떤 조합으로 반영될지 준비하는 구간입니다.",
+    "marketSummary": "일요일 복원본은 새 정규장 가격을 만들지 않고 금요일 확정 종가를 기준점으로 유지했습니다. 다음 주에는 인플레이션과 고용이 Fed 경로를 다시 가격화할 수 있고, Micron 실적은 HBM·DRAM 수요를 확인할 핵심 기업 이벤트입니다. 한국은 연휴 뒤 9월 28일 개장 예정이므로 미국 여러 거래일의 누적 변화가 시초가에 한꺼번에 반영될 수 있습니다.",
+    "highlights": [
+      "주말이라 새 미국 정규장 가격 없음",
+      "PCE·고용·ISM이 금리 경로의 핵심",
+      "Micron 실적과 중동 유가가 한국 반도체·정유·항공의 주요 변수"
+    ],
+    "tickers": [
+      "SK하이닉스",
+      "삼성전자",
+      "S-Oil",
+      "대한항공",
+      "한미반도체",
+      "MU"
+    ],
+    "sections": [
+      {
+        "title": "복원본 안내",
+        "body": "일요일에는 미국 정규장이 열리지 않으므로 금요일 종가를 새 일요일 시세처럼 반복하지 않습니다. 이 카드는 금요일 확정치와 당시 알려진 다음 주 일정만으로 구성했습니다."
+      },
+      {
+        "title": "기준점",
+        "rows": [
+          {
+            "label": "S&P 500",
+            "value": "7,743.41",
+            "note": "9/25 종가"
+          },
+          {
+            "label": "Nasdaq",
+            "value": "27,068.72",
+            "note": "9/25 종가"
+          },
+          {
+            "label": "미 국채 10년",
+            "value": "5.17%",
+            "note": "9/25 기준"
+          },
+          {
+            "label": "VIX",
+            "value": "14.87",
+            "note": "9/25 기준"
+          }
+        ]
+      },
+      {
+        "title": "다음 주 핵심 이벤트",
+        "rows": [
+          {
+            "label": "9/29",
+            "value": "JOLTS·소비자신뢰",
+            "note": "노동수요와 소비심리 확인"
+          },
+          {
+            "label": "9/30",
+            "value": "ADP·PCE·GDP",
+            "note": "물가·고용·성장 조합이 금리 경로를 재평가할 수 있음"
+          },
+          {
+            "label": "10/1",
+            "value": "ISM 제조업",
+            "note": "수요와 가격지수 동반 확인"
+          },
+          {
+            "label": "10/2",
+            "value": "미국 고용보고서",
+            "note": "고용·실업률·임금이 핵심"
+          },
+          {
+            "label": "Micron",
+            "value": "주중 실적",
+            "note": "HBM·DRAM·CAPEX·장기계약·현금흐름 가이던스 확인"
+          }
+        ]
+      },
+      {
+        "title": "한국 개장 준비",
+        "bullets": [
+          "반도체: 미국 AI 대형주와 금리의 누적 변화가 HBM 기대와 할인율에 어떻게 반영되는지 확인",
+          "정유: 중동 공급 위험과 정제마진·재고효과를 분리",
+          "항공: 유가·환율·유류할증료·환헤지를 함께 확인",
+          "연휴 후 첫 개장이라 시초가 갭보다 개장 후 거래대금과 외국인 수급을 더 중요하게 확인"
+        ]
+      },
+      {
+        "title": "복원 근거",
+        "links": [
+          {
+            "label": "Reuters 기반 주간전망",
+            "url": "https://www.investing.com/news/economy-news/jobs-report-inflation-data-to-test-us-rate-path-economic-strength-4918909"
+          },
+          {
+            "label": "9/25 지수 종가 데이터",
+            "url": "https://portfolio-terminal.com/markets/stock-market-close"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "2026-09-26-morning",
+    "title": "[복원] 주말 미국 시장 체크",
+    "publishedAt": "2026-09-26T08:00:00+09:00",
+    "type": "morning",
+    "reconstructed": true,
+    "summary": "금요일 미국장은 S&P 500 +0.51%, Nasdaq +0.48%, Dow +0.93%로 반등했고 10년물은 5.17%로 높은 수준을 유지했습니다. 한국은 주말·연휴 구간이라 새 국내 가격은 없으며, 다음 주 PCE·고용·ISM과 Micron 실적이 금리와 AI 수요의 핵심 확인 지점입니다.",
+    "marketSummary": "주말 복원본은 9월 25일 미국 정규장 마감과 당시 발표된 다음 주 일정까지만 사용했습니다. 금요일 반등은 AI·대형주 중심으로 나타났고 Russell 2000은 +0.07%에 그쳐 대형 성장주 우위가 남았습니다. 유가는 금요일 하락했지만 중동 외교가 실제 공급 정상화로 이어지는지는 확인이 필요했습니다.",
+    "highlights": [
+      "9/25 S&P 500 +0.51%, Nasdaq +0.48%, Dow +0.93%, Russell +0.07%",
+      "미 10년물 5.17%로 높은 할인율 환경 유지",
+      "다음 주 PCE·고용·ISM·Micron 실적이 핵심"
+    ],
+    "tickers": [
+      "SK하이닉스",
+      "삼성전자",
+      "S-Oil",
+      "대한항공",
+      "MU",
+      "NVDA"
+    ],
+    "sections": [
+      {
+        "title": "복원본 안내",
+        "body": "토요일 아침 시점에는 미국 금요일 정규장이 끝났고 한국 시장은 열리지 않습니다. 이 보고서는 9/25 미국 마감과 그 시점까지 공개된 다음 주 일정만으로 재구성했습니다."
+      },
+      {
+        "title": "금요일 마감",
+        "rows": [
+          {
+            "label": "S&P 500",
+            "value": "7,743.41 · +0.51%"
+          },
+          {
+            "label": "Nasdaq",
+            "value": "27,068.72 · +0.48%"
+          },
+          {
+            "label": "Dow",
+            "value": "51,828.62 · +0.93%"
+          },
+          {
+            "label": "Russell 2000",
+            "value": "2,837.55 · +0.07%"
+          },
+          {
+            "label": "미 국채 10년",
+            "value": "5.17%",
+            "note": "높은 할인율 환경 지속"
+          },
+          {
+            "label": "WTI / Brent",
+            "value": "$92.41 / $104.32",
+            "note": "금요일 정산가"
+          }
+        ]
+      },
+      {
+        "title": "주말에 볼 변수",
+        "bullets": [
+          "대형 성장주 반등과 중소형주 부진이 계속되는지",
+          "중동 외교가 실제 호르무즈 통행·보험료·공급 정상화로 이어지는지",
+          "다음 주 PCE·고용·ISM이 Fed의 추가 인상 경로를 강화하는지"
+        ]
+      },
+      {
+        "title": "한국 연결",
+        "rows": [
+          {
+            "label": "SK하이닉스·삼성전자",
+            "value": "AI 수요 vs 금리",
+            "note": "Micron 실적과 HBM·DRAM 가격, 10년물 방향 확인."
+          },
+          {
+            "label": "S-Oil",
+            "value": "유가·정제마진",
+            "note": "금요일 유가 하락과 주말 공급위험의 균형 확인."
+          },
+          {
+            "label": "대한항공",
+            "value": "항공유·환율",
+            "note": "유가 하락이 비용에 우호적이지만 중동 위험 재확대 가능성 확인."
+          }
+        ]
+      },
+      {
+        "title": "다음 주 일정",
+        "bullets": [
+          "9/30 PCE와 GDP",
+          "10/1 ISM 제조업",
+          "10/2 미국 고용보고서",
+          "Micron 실적: HBM 매출·DRAM 가격·CAPEX·현금흐름 가이던스"
+        ]
+      },
+      {
+        "title": "복원 근거",
+        "links": [
+          {
+            "label": "9/25 지수 종가 데이터",
+            "url": "https://portfolio-terminal.com/markets/stock-market-close"
+          },
+          {
+            "label": "Reuters 기반 주간전망",
+            "url": "https://www.investing.com/news/economy-news/jobs-report-inflation-data-to-test-us-rate-path-economic-strength-4918909"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "2026-09-25-premarket",
+    "title": "한국 프리마켓 08:50 브리핑",
+    "publishedAt": "2026-09-25T08:50:00+09:00",
+    "type": "premarket",
+    "summary": "한국거래소와 NXT가 추석 휴장으로 거래되지 않아 프리마켓 가격 신호는 없었습니다. 오전 8시 보고서의 반도체 할인율 부담, 정유의 혼재 효과, 항공의 비용 부담은 국내 가격으로 확인되지 않았고, 다음 개장일인 9월 28일에 연휴 중 금리·유가·환율 변화가 한꺼번에 반영될 수 있습니다.",
+    "marketSummary": "NXT 공식 화면의 거래종목·거래량·거래대금 0은 보합이 아니라 휴장 결과입니다. USD/KRW 은행 기준율은 1,369.30원이었고 WTI/Brent는 전일 미국 정산 기준 $94.61/$106.60이었습니다. SK하이닉스·삼성전자는 금리와 AI 데이터센터 우려, S-Oil은 유가의 재고효과와 원가 부담, 대한항공은 고유가·원화 약세의 비용 부담을 다음 개장일에 확인해야 합니다. 한미반도체는 HBM용 TC 본더 발주·매출 인식·경쟁구도를 추가 관찰합니다.",
+    "highlights": [
+      "추석 휴장으로 NXT/KRX 거래 신호 없음",
+      "9월 28일 미 10년물·Brent·원/달러 누적 변화 확인",
+      "삼성전자·SK하이닉스 개장 후 30분 거래대금과 외국인 수급 확인"
+    ],
+    "tickers": [
+      "SK하이닉스",
+      "삼성전자",
+      "S-Oil",
+      "대한항공",
+      "한미반도체"
+    ],
+    "sections": [
+      {
+        "title": "60초 결론",
+        "body": "한국거래소와 NXT가 추석 휴장으로 거래되지 않았습니다. 오전 8시 보고서의 반도체 할인율 부담, 정유의 혼재 효과, 항공의 비용 부담은 국내 가격으로 확인되지 않았고, 다음 정규장인 9월 28일에 연휴 중 금리·유가·환율 누적 변화가 반영될 수 있습니다."
+      },
+      {
+        "title": "프리마켓 대시보드",
+        "rows": [
+          {
+            "label": "NXT 거래",
+            "value": "휴장",
+            "note": "거래종목 0 / 거래량 0 / 거래대금 0은 보합이 아니라 시장 미개장"
+          },
+          {
+            "label": "USD/KRW",
+            "value": "1,369.30원",
+            "note": "Citi 은행 기준율, 역외 현물과 다름"
+          },
+          {
+            "label": "WTI / Brent",
+            "value": "$94.61 / $106.60",
+            "note": "9/24 미국 정산, 08:50 실시간값 아님"
+          }
+        ]
+      },
+      {
+        "title": "오전 8시 핵심 종목 점검",
+        "rows": [
+          {
+            "label": "SK하이닉스",
+            "value": "가격 확인 불가",
+            "note": "Oracle 일정 위험과 SOX 약세. 9/28 금리·SOX·HBM 주문·거래대금 확인."
+          },
+          {
+            "label": "삼성전자",
+            "value": "가격 확인 불가",
+            "note": "AI 데이터센터 우려와 제품 기대 혼재. HBM·DRAM·외국인 수급 확인."
+          },
+          {
+            "label": "S-Oil",
+            "value": "가격 확인 불가",
+            "note": "Brent 고가의 재고효과와 원가·운전자본 부담 확인."
+          },
+          {
+            "label": "대한항공",
+            "value": "가격 확인 불가",
+            "note": "고유가·원화 약세의 비용 영향과 할증료·헤지 확인."
+          }
+        ]
+      },
+      {
+        "title": "다음 개장 확인사항",
+        "bullets": [
+          "미 10년물 5.10%·5.20%와 Brent $100을 기준으로 반도체·항공·정유 시나리오 재평가",
+          "원/달러가 1,370원 위로 확대되는지 확인",
+          "삼성전자·SK하이닉스 개장 후 30분 거래대금과 외국인 수급 확인"
+        ]
+      },
+      {
+        "title": "출처",
+        "links": [
+          {
+            "label": "NXT 공식 시장정보",
+            "url": "https://nextrade.co.kr/main.do"
+          },
+          {
+            "label": "Citi 환율",
+            "url": "https://www.citibank.co.kr/FxdExrt0100.act"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "2026-09-25-morning",
+    "title": "미국 증시 아침 브리핑",
+    "publishedAt": "2026-09-25T08:00:00+09:00",
+    "type": "morning",
+    "summary": "미국 증시는 S&P 500 -0.02%, 나스닥 +0.01%로 보합권까지 회복했지만 10년물 금리는 5.18%, Brent는 $106.60으로 상승했습니다. 미·이란 단계적 긴장 완화 논의가 장 후반 위험회피를 줄였지만 높은 할인율과 취약한 시장 확산은 유지됐습니다.",
+    "marketSummary": "신규 실업수당 청구와 신규주택판매가 견조해 추가 인상 위험을 낮추지 못했고 유가 상승도 기대인플레이션 부담을 키웠습니다. SOX는 -0.33%, Arm -7.9%, Broadcom -1.3%, Nvidia -0.4%로 약했고 Meta와 Alphabet은 상대 강세였습니다. 한국은 추석 휴장으로 가격 확인이 불가능해 SK하이닉스·삼성전자는 AI 데이터센터 투자와 금리, S-Oil은 유가·정제마진, 대한항공은 항공유·환율을 9월 28일 개장 시 확인해야 합니다.",
+    "highlights": [
+      "미 10년물 5.18%와 Brent $106.60로 금리·유가 부담 지속",
+      "Oracle 프로젝트 일정 위험이 AI 인프라 투자심리에 미치는 확산 여부 확인",
+      "9월 28일 한국 개장 시 환율·외국인 수급·거래대금 함께 확인"
+    ],
+    "tickers": [
+      "SK하이닉스",
+      "삼성전자",
+      "S-Oil",
+      "대한항공",
+      "한미반도체",
+      "ORCL",
+      "META",
+      "ARM"
+    ],
+    "sections": [
+      {
+        "title": "오늘 시장의 핵심 판단",
+        "body": "주가는 보합권까지 회복했지만 금리·유가 부담은 남았습니다. 미 10년물은 5.18%로 7bp 올랐고 Brent는 $106.60으로 상승했습니다. 미·이란 단계적 긴장 완화 논의가 장 후반 위험회피를 줄였지만 높은 할인율과 취약한 시장 확산은 유지됐습니다."
+      },
+      {
+        "title": "시장 스냅샷",
+        "rows": [
+          {
+            "label": "S&P 500",
+            "value": "7,704.23 · -0.02%"
+          },
+          {
+            "label": "Nasdaq",
+            "value": "26,939.37 · +0.01%"
+          },
+          {
+            "label": "Dow",
+            "value": "51,349.98 · -0.31%"
+          },
+          {
+            "label": "Russell 2000",
+            "value": "2,835.57 · -0.11%"
+          },
+          {
+            "label": "미 국채 2년 / 10년",
+            "value": "4.87% / 5.18%",
+            "note": "+2bp / +7bp"
+          },
+          {
+            "label": "DXY / VIX",
+            "value": "101.258 / 15.67",
+            "note": "+0.16% / +3.23%"
+          },
+          {
+            "label": "WTI / Brent",
+            "value": "$94.61 / $106.60",
+            "note": "+2.7% / +3.4%"
+          }
+        ]
+      },
+      {
+        "title": "시장 원인과 확산",
+        "bullets": [
+          "신규 실업수당 청구는 19.7만 건으로 견조했고 8월 신규주택판매는 연율 68.4만 채로 예상 62만 채를 웃돌았습니다.",
+          "견조한 경기와 유가 상승이 추가 금리인상 위험을 낮추지 못했습니다.",
+          "SOX -0.33%, Arm -7.9%, Broadcom -1.3%, Nvidia -0.4%. Meta +4.5%, Alphabet +1.3%로 AI 내부 종목 선택이 강했습니다.",
+          "장 후반 지수 회복이 광범위한 상승을 의미하지는 않았습니다."
+        ]
+      },
+      {
+        "title": "미국 기업·재무 관찰",
+        "rows": [
+          {
+            "label": "Oracle",
+            "value": "-3.5%",
+            "note": "데이터센터 일정 위험. 건설 일정·프로젝트 금융·수익인식 확인."
+          },
+          {
+            "label": "Meta",
+            "value": "+4.5%",
+            "note": "Muse 제품 기대. 실제 매출·마진 기여는 확인 전."
+          },
+          {
+            "label": "Arm",
+            "value": "-7.9%",
+            "note": "AI 설비투자 우려와 높은 밸류에이션 민감도."
+          },
+          {
+            "label": "Costco",
+            "value": "시간외 +0.22%",
+            "note": "매출·EPS 상회. 관세 환급 EPS $0.15를 분리하고 CFO·CAPEX·재고·SBC 확인."
+          }
+        ]
+      },
+      {
+        "title": "한국 연관 종목",
+        "rows": [
+          {
+            "label": "SK하이닉스",
+            "value": "핵심",
+            "note": "AI 프로젝트 일정 위험과 SOX 약세 부담. 고객 발주·HBM 출하·가격 확인."
+          },
+          {
+            "label": "삼성전자",
+            "value": "핵심",
+            "note": "AI 데이터센터 금융 우려와 견조한 미국 수요가 혼재. HBM·DRAM·파운드리 확인."
+          },
+          {
+            "label": "S-Oil",
+            "value": "핵심",
+            "note": "유가 상승의 재고효과와 원료비·운전자본 부담이 혼재."
+          },
+          {
+            "label": "대한항공",
+            "value": "핵심",
+            "note": "고유가·원화 약세는 비용 부담. 항공유·유류할증료·환헤지 확인."
+          },
+          {
+            "label": "한미반도체",
+            "value": "관찰",
+            "note": "HBM용 TC 본더 노출. 고객 발주·매출 인식·경쟁구도 확인."
+          }
+        ]
+      },
+      {
+        "title": "다음 일정과 판단 조건",
+        "bullets": [
+          "9/25 21:30 KST 내구재 주문: 산업재 수요와 금리 반응을 함께 확인.",
+          "9/25 23:00 KST 미시간대 소비심리: 숫자보다 기대인플레이션 수정 방향이 중요.",
+          "호르무즈 통행과 미 10년물 5.10% 하회 여부가 정유·항공·반도체 판단을 바꿀 조건입니다."
+        ]
+      },
+      {
+        "title": "주요 원문",
+        "links": [
+          {
+            "label": "미 재무부 국채금리",
+            "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?field_tdr_date_value=2026&type=daily_treasury_yield_curve"
+          },
+          {
+            "label": "미 노동부 실업수당",
+            "url": "https://www.dol.gov/ui/data.pdf"
+          },
+          {
+            "label": "미 Census 신규주택",
+            "url": "https://www.census.gov/construction/nrs/current/index.html"
+          },
+          {
+            "label": "Costco IR",
+            "url": "https://investor.costco.com/"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "2026-09-24-premarket",
+    "title": "한국 프리마켓 08:50 브리핑",
+    "publishedAt": "2026-09-24T08:50:00+09:00",
+    "type": "premarket",
+    "summary": "한국과 NXT가 추석 휴장으로 프리마켓 거래가 없었습니다. 오전 8시 보고서의 반도체 할인율 부담, 정유의 혼재 효과, 항공의 비용 부담은 가격으로 검증되지 않았고, 다음 정규장인 9월 28일에 연휴 중 미국 금리·유가·환율 변화가 반영될 수 있습니다.",
+    "marketSummary": "NXT 08:35 공식 화면의 거래종목·거래량·거래대금 0은 보합이 아니라 휴장 결과입니다. USD/KRW 은행 기준율은 1,367.40원이었습니다. SK하이닉스와 삼성전자는 미 금리 급등과 반도체 약세의 할인율 부담, S-Oil은 Brent 상승의 재고효과와 원가 부담, 대한항공은 고유가와 원화 약세의 비용 영향을 확인해야 합니다. 한미반도체는 HBM 장비 발주와 수주 공시를 관찰합니다.",
+    "highlights": [
+      "휴장일 0.00% 표시는 보합 수익률이 아님",
+      "9월 28일 미 10년물 5.10%와 Brent $100 부근 여부 확인",
+      "삼성전자·SK하이닉스 초기 거래대금과 외국인 수급 확인"
+    ],
+    "tickers": [
+      "SK하이닉스",
+      "삼성전자",
+      "S-Oil",
+      "대한항공",
+      "한미반도체"
+    ],
+    "sections": [
+      {
+        "title": "60초 결론",
+        "body": "한국과 NXT가 추석 휴장으로 프리마켓 거래가 없었습니다. 오전 8시 보고서의 반도체 할인율 부담, 정유의 혼재 효과, 항공의 비용 부담은 가격으로 확인되지 않았습니다."
+      },
+      {
+        "title": "프리마켓 대시보드",
+        "rows": [
+          {
+            "label": "NXT",
+            "value": "휴장",
+            "note": "거래종목·거래량·거래대금 0은 보합이 아니라 시장 미개장"
+          },
+          {
+            "label": "USD/KRW",
+            "value": "1,367.40원",
+            "note": "08:31 Citi 은행 기준율"
+          }
+        ]
+      },
+      {
+        "title": "핵심 종목 점검",
+        "rows": [
+          {
+            "label": "SK하이닉스",
+            "value": "미확인",
+            "note": "미 금리 급등·반도체 약세의 할인율 부담. 9/28 미국 반도체 누적수익률·거래대금 확인."
+          },
+          {
+            "label": "삼성전자",
+            "value": "미확인",
+            "note": "AI 메모리 수요와 금리·경쟁 위험이 혼재. HBM·DRAM·외국인 수급 확인."
+          },
+          {
+            "label": "S-Oil",
+            "value": "미확인",
+            "note": "Brent 상승의 재고효과와 원가·운전자본 부담 확인."
+          },
+          {
+            "label": "대한항공",
+            "value": "미확인",
+            "note": "고유가·원화 약세의 비용 부담과 할증료·헤지 확인."
+          }
+        ]
+      },
+      {
+        "title": "9월 28일 확인할 3가지",
+        "bullets": [
+          "미 10년물 5.10%와 Brent $100 수준",
+          "원/달러 1,370원 상회 여부",
+          "삼성전자·SK하이닉스 초기 30분 거래대금과 외국인 수급"
+        ]
+      },
+      {
+        "title": "출처",
+        "links": [
+          {
+            "label": "NXT 공식 시장정보",
+            "url": "https://nextrade.co.kr/main.do"
+          },
+          {
+            "label": "Citi 환율",
+            "url": "https://www.citibank.co.kr/FxdExrt0100.act"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "2026-09-24-morning",
+    "title": "미국 증시 아침 브리핑",
+    "publishedAt": "2026-09-24T08:00:00+09:00",
+    "type": "morning",
+    "summary": "미국 증시는 강한 9월 PMI와 물가 압력 재가속으로 S&P 500 -0.75%, 나스닥 -1.13%, 다우 -0.68%, 러셀 2000 -1.77% 하락했습니다. 2년·10년 금리가 각각 14bp·15bp 상승하며 성장주와 중소형주 부담이 확대됐습니다.",
+    "marketSummary": "9월 미국 종합 PMI 잠정치가 58.4, 투입가격이 66.4로 상승하면서 추가 금리인상 위험이 재평가됐습니다. S&P 11개 업종 중 9개가 하락했고 Nasdaq 신저가가 신고가를 크게 웃돌아 하락이 광범위했습니다. 한국은 추석 휴장으로 새 가격 확인이 불가능해 SK하이닉스·삼성전자는 반도체 할인율과 HBM 수요, S-Oil은 유가·정제마진, 대한항공은 항공유·환율, 한미반도체는 장비 발주를 다음 개장일에 확인해야 합니다.",
+    "highlights": [
+      "9월 PMI 58.4와 투입가격 66.4로 성장·물가 동반 강세",
+      "미 2년 4.85%, 10년 5.11%로 금리 부담 확대",
+      "9월 28일 한국 개장 시 연휴 누적 미국 변수의 일괄 반영 가능"
+    ],
+    "tickers": [
+      "SK하이닉스",
+      "삼성전자",
+      "S-Oil",
+      "대한항공",
+      "한미반도체"
+    ],
+    "sections": [
+      {
+        "title": "오늘 시장의 핵심 판단",
+        "body": "강한 성장 자체보다 금리·물가 재가속이 가격을 지배했습니다. 9월 종합 PMI가 58.4로 뛰고 투입가격이 66.4로 급등하자 2년·10년 금리가 각각 14bp·15bp 상승했고 성장주와 중소형주가 동반 하락했습니다."
+      },
+      {
+        "title": "시장 스냅샷",
+        "rows": [
+          {
+            "label": "S&P 500",
+            "value": "7,706.05 · -0.75%"
+          },
+          {
+            "label": "Nasdaq",
+            "value": "26,936.04 · -1.13%"
+          },
+          {
+            "label": "Dow",
+            "value": "51,511.59 · -0.68%"
+          },
+          {
+            "label": "Russell 2000",
+            "value": "2,838.66 · -1.77%"
+          },
+          {
+            "label": "미 국채 2년 / 10년",
+            "value": "4.85% / 5.11%",
+            "note": "+14bp / +15bp"
+          },
+          {
+            "label": "DXY / VIX",
+            "value": "100.85 / 15.18",
+            "note": "+0.53% / +6.83%"
+          },
+          {
+            "label": "WTI / Brent",
+            "value": "$92.26 / $103.08",
+            "note": "+1.93% / +3.86%, 시장참조값"
+          }
+        ]
+      },
+      {
+        "title": "시장 원인·업종 확산",
+        "bullets": [
+          "9월 종합 PMI 잠정치 58.4, 신규주문 58.2, 투입가격 66.4로 성장과 비용 압력이 함께 확인됐습니다.",
+          "추가 인상 위험이 재평가되면서 기술주와 중소형주가 더 크게 밀렸습니다.",
+          "S&P 11개 업종 중 9개가 하락했고 Nasdaq 신저가가 신고가를 크게 웃돌았습니다."
+        ]
+      },
+      {
+        "title": "미국 기업·재무 관찰",
+        "rows": [
+          {
+            "label": "Paychex",
+            "value": "-8.8%",
+            "note": "EPS 소폭 상회보다 성장률 둔화가 부각."
+          },
+          {
+            "label": "McDonald's",
+            "value": "약 -5%",
+            "note": "가맹점 지원의 단기 현금유출·마진 부담과 장기 개선 목표를 구분."
+          },
+          {
+            "label": "Cracker Barrel",
+            "value": "+4.5%",
+            "note": "EPS·매출·EBITDA 가이던스 상회."
+          },
+          {
+            "label": "Alphabet / Amazon",
+            "value": "-3.8% / -2.2%",
+            "note": "AI 경쟁 뉴스 속 약세. 신규 실적 발표에 따른 움직임은 아님."
+          }
+        ]
+      },
+      {
+        "title": "한국 상장사 연결",
+        "rows": [
+          {
+            "label": "SK하이닉스",
+            "value": "혼재",
+            "note": "미 반도체 약세·금리 상승은 단기 부담. HBM 출하·가격·고객 CAPEX 확인."
+          },
+          {
+            "label": "삼성전자",
+            "value": "혼재",
+            "note": "AI 수요는 긍정적이나 금리·CXMT 증산 부담. HBM·파운드리·DRAM 확인."
+          },
+          {
+            "label": "S-Oil",
+            "value": "긍정/혼재",
+            "note": "유가 상승의 재고효과와 원료비·운전자본 부담을 함께 확인."
+          },
+          {
+            "label": "대한항공",
+            "value": "부정/혼재",
+            "note": "Brent 반등·원화 약세는 비용 부담. 할증료·화물운임·헤지가 상쇄 변수."
+          },
+          {
+            "label": "한미반도체",
+            "value": "관찰",
+            "note": "HBM 제조용 TC 본더 노출. 실제 장비 발주·매출 인식·경쟁구도 확인."
+          }
+        ]
+      },
+      {
+        "title": "다음 일정과 판단 조건",
+        "bullets": [
+          "신규 실업수당·신규주택판매·내구재 주문에서 경기 강도와 금리 반응을 함께 확인.",
+          "10년물 5.10% 아래 안착 시 성장주·한국 반도체 부담을 낮춰 볼 수 있음.",
+          "Brent $100 하회 및 공급 정상화 확인 시 정유 기대는 낮추고 항공 비용 전망은 개선."
+        ]
+      },
+      {
+        "title": "주요 원문",
+        "links": [
+          {
+            "label": "미 재무부 금리",
+            "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?field_tdr_date_value=2026&type=daily_treasury_yield_curve"
+          },
+          {
+            "label": "미 노동부",
+            "url": "https://www.dol.gov/ui/data.pdf"
+          },
+          {
+            "label": "미 Census 내구재",
+            "url": "https://www.census.gov/manufacturing/m3/adv/pdf/durgd.pdf"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "2026-09-23-morning",
+    "title": "[복원] 미국 증시 아침 브리핑",
+    "publishedAt": "2026-09-23T08:00:00+09:00",
+    "type": "morning",
+    "reconstructed": true,
+    "summary": "9월 22일 미국장은 Nasdaq이 +0.45%로 사상 최고 종가를 다시 썼지만 S&P 500은 사실상 보합, Dow는 -0.36%로 혼조였습니다. AI 기대가 기술주를 지지한 반면 중동 외교와 유가, 주 후반 미·중 정상회담을 둘러싼 불확실성이 지수별 차이를 만들었습니다.",
+    "marketSummary": "이 복원본은 9월 23일 아침에 확인 가능했던 9월 22일 미국 정규장 종가와 당시 공개 뉴스만 사용했습니다. Nasdaq의 강세와 Meta의 AI 에이전트 기대가 기술주에 우호적이었지만 S&P 500이 보합이고 Dow가 하락해 전일의 강한 AI 랠리가 시장 전체로 확산되지는 않았습니다. 유가는 미·이란 외교 기대와 공급 경로 개선 가능성에 하락 압력을 받았습니다.",
+    "highlights": [
+      "Nasdaq +0.45% 사상 최고 종가, S&P 500 0.00%, Dow -0.36%",
+      "AI 수요 기대는 유지됐지만 시장 전체 확산은 제한적",
+      "중동 외교·유가와 주 후반 미·중 정상회담이 다음 핵심 변수"
+    ],
+    "tickers": [
+      "SK하이닉스",
+      "삼성전자",
+      "대한항공",
+      "META",
+      "AMD",
+      "INTC"
+    ],
+    "sections": [
+      {
+        "title": "복원본 안내",
+        "body": "당시 자동 발행 기록이 없어 2026-09-23 08:00 KST에 알 수 있었던 9/22 미국 정규장 종가와 당시 공개 기사만으로 재구성했습니다. 이후에 나온 9/23 이후 정보는 성과나 원인에 소급 반영하지 않았습니다."
+      },
+      {
+        "title": "시장 스냅샷",
+        "rows": [
+          {
+            "label": "S&P 500",
+            "value": "7,764.64 · 0.00%",
+            "note": "9/22 미국 정규장 종가"
+          },
+          {
+            "label": "Nasdaq",
+            "value": "27,244.28 · +0.45%",
+            "note": "사상 최고 종가"
+          },
+          {
+            "label": "Dow",
+            "value": "51,863.69 · -0.36%"
+          },
+          {
+            "label": "Russell 2000",
+            "value": "2,889.92 · +0.51%"
+          }
+        ]
+      },
+      {
+        "title": "무엇이 움직였나",
+        "bullets": [
+          "Meta의 Muse AI에 대한 기대가 이어지며 AI·기술주 심리를 지지했습니다.",
+          "Nasdaq은 강했지만 S&P 500은 보합, Dow는 하락해 지수 간 온도차가 뚜렷했습니다.",
+          "미·이란 외교 기대와 중동 공급 경로 개선 가능성은 유가에 하락 압력을 줬고 금리 부담 완화 기대를 일부 지원했습니다.",
+          "주 후반 미·중 정상회담에서 AI·무역 관련 발언이 기술주 변동성을 키울 수 있는 변수였습니다."
+        ]
+      },
+      {
+        "title": "한국 연결",
+        "rows": [
+          {
+            "label": "SK하이닉스",
+            "value": "긍정/혼재",
+            "note": "AI 수요 기대는 HBM 심리에 긍정적. 금리와 중국 메모리 경쟁은 반대 변수."
+          },
+          {
+            "label": "삼성전자",
+            "value": "긍정/혼재",
+            "note": "AI 메모리 수요 기대와 파운드리·모바일 DRAM 경쟁을 함께 확인."
+          },
+          {
+            "label": "대한항공",
+            "value": "비용 측면 우호 가능",
+            "note": "유가 약세는 항공유 비용에 우호적이나 환율과 유류할증료를 함께 봐야 함."
+          }
+        ]
+      },
+      {
+        "title": "다음 확인사항",
+        "bullets": [
+          "9월 미국 PMI 잠정치가 성장·물가 압력을 동시에 높이는지",
+          "10년물 금리가 다시 5%를 웃도는지",
+          "AI 랠리가 반도체 외 업종으로 확산되는지"
+        ]
+      },
+      {
+        "title": "복원 근거",
+        "links": [
+          {
+            "label": "Reuters 9/22 글로벌시장",
+            "url": "https://www.reuters.com/world/china/global-markets-wrapup-1-2026-09-22/"
+          },
+          {
+            "label": "Reuters Meta Muse",
+            "url": "https://www.reuters.com/business/wall-street-expects-metas-ai-agent-shape-into-new-revenue-engine-2026-09-22/"
+          },
+          {
+            "label": "9/22 지수 종가 데이터",
+            "url": "https://portfolio-terminal.com/markets/stock-market-close"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "2026-09-22-morning",
+    "title": "미국 증시 아침 브리핑",
+    "publishedAt": "2026-09-22T08:00:00+09:00",
+    "type": "morning",
+    "summary": "나스닥이 2.26% 급등해 사상 최고치로 마감했고 유가와 장기금리 하락이 AI·반도체 랠리를 뒷받침했습니다. 다만 VIX가 오르고 나스닥 신저가가 신고가보다 많아 지수 강세 이면의 쏠림은 남아 있었습니다.",
+    "marketSummary": "유가와 국채금리가 하락한 가운데 AI 관련주가 급등했습니다. 중동 외교 진전 가능성과 사우디 동서 파이프라인 복구 기대가 유가를 낮췄지만 공급 정상화가 확정된 것은 아니었습니다. S&P 500의 11개 업종 중 8개가 상승했지만 나스닥 내부에서는 신저가가 더 많아 시장 확산은 제한적이었습니다.",
+    "highlights": [
+      "10년물 금리가 5% 아래에서 안정되는지 확인",
+      "유가 하락이 실제 공급 정상화로 이어지는지 확인",
+      "AI 랠리가 반도체 외 업종으로 확산되는지 확인"
+    ],
+    "tickers": [
+      "SK하이닉스",
+      "삼성전자",
+      "대한항공",
+      "AMD",
+      "META",
+      "INTC",
+      "ARM"
+    ],
+    "sections": [
+      {
+        "title": "오늘의 결론",
+        "body": "나스닥이 2.26% 급등해 사상 최고치로 마감했습니다. 유가와 장기금리 하락이 AI·반도체 랠리를 뒷받침했지만 VIX와 시장 내부 신저가를 보면 쏠림은 남아 있었습니다."
+      },
+      {
+        "title": "시장 스냅샷",
+        "rows": [
+          {
+            "label": "S&P 500",
+            "value": "7,764.70 · +1.49%"
+          },
+          {
+            "label": "Nasdaq",
+            "value": "27,122.09 · +2.26%"
+          },
+          {
+            "label": "Dow",
+            "value": "52,048.83 · +0.71%"
+          },
+          {
+            "label": "Russell 2000",
+            "value": "2,875.36 · +0.52%"
+          },
+          {
+            "label": "미 국채 2년 / 10년",
+            "value": "4.735% / 4.966%",
+            "note": "-0.8bp / -2.9bp"
+          },
+          {
+            "label": "VIX",
+            "value": "14.87 · +0.41%"
+          },
+          {
+            "label": "WTI / Brent",
+            "value": "$95.78 / $100.34",
+            "note": "-4.5% / -3.4%"
+          }
+        ]
+      },
+      {
+        "title": "시장 해석",
+        "bullets": [
+          "유가 하락은 기대인플레이션 부담을 줄이고 장기금리 하락은 성장주 할인율 부담을 완화했습니다.",
+          "AI 투자 확대 기대가 반도체와 대형 플랫폼으로 집중됐습니다.",
+          "S&P 11개 업종 중 8개가 상승했지만 Nasdaq 신저가가 신고가보다 많아 지수 강세가 시장 전체의 균일한 개선을 뜻하지 않았습니다."
+        ]
+      },
+      {
+        "title": "기업·회계 관찰",
+        "rows": [
+          {
+            "label": "AMD",
+            "value": "약 +10%",
+            "note": "AI 시스템·추론 서버 수요 기대. 높은 성장 기대 대비 매출·마진·현금흐름 확인."
+          },
+          {
+            "label": "Meta",
+            "value": "+11.4%",
+            "note": "Muse AI 기대. 이용자 유지·수익화와 AI CAPEX·감가상각 증가 영향 확인."
+          },
+          {
+            "label": "Intel / Arm",
+            "value": "+12.2% / +17%",
+            "note": "신규 실적 발표에 따른 상승이 아니므로 펀더멘털 개선으로 단정하지 않음."
+          },
+          {
+            "label": "UPS",
+            "value": "약 -4.3%",
+            "note": "미국 배송량 둔화와 물량 믹스가 매출·마진에 미치는 영향 확인."
+          }
+        ]
+      },
+      {
+        "title": "한국 상장사 연결",
+        "rows": [
+          {
+            "label": "SK하이닉스 000660",
+            "value": "AI 심리 긍정",
+            "note": "HBM 출하·가격, 고객 CAPEX, CXMT 수율·고객 인증 확인."
+          },
+          {
+            "label": "삼성전자 005930",
+            "value": "혼재",
+            "note": "HBM·서버 메모리 수요와 파운드리·모바일 DRAM 경쟁을 함께 확인."
+          },
+          {
+            "label": "대한항공 003490",
+            "value": "비용 측면 긍정",
+            "note": "유가 하락은 우호적이나 원화 약세는 달러 표시 비용 부담을 일부 상쇄."
+          }
+        ]
+      },
+      {
+        "title": "다음 일정과 체크포인트",
+        "bullets": [
+          "9/23 미국 PMI 잠정치에서 성장과 물가 압력을 함께 확인",
+          "9/24 신규 실업수당 청구와 신규주택 판매",
+          "10년물 5% 아래 안정, 유가 공급 정상화, AI 랠리 확산 여부가 핵심"
+        ]
+      },
+      {
+        "title": "주요 원문",
+        "links": [
+          {
+            "label": "Reuters 미국 증시",
+            "url": "https://www.reuters.com/business/wall-st-futures-rise-ai-stocks-gain-oil-prices-slide-2026-09-21/"
+          },
+          {
+            "label": "Cboe VIX",
+            "url": "https://www.cboe.com/tradable-products/vix/"
+          }
+        ]
+      }
+    ]
+  }
+]

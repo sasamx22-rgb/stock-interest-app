@@ -1,0 +1,89 @@
+[
+  {
+    "stockExchangeType": {
+      "code": "NSQ",
+      "zoneId": "EST5EDT",
+      "nationType": "USA",
+      "delayTime": 0,
+      "startTime": "0930",
+      "endTime": "1600",
+      "closePriceSendTime": "2031",
+      "nameKor": "나스닥 증권거래소",
+      "nameEng": "NASDAQ Stock Exchange",
+      "name": "NASDAQ",
+      "nationCode": "USA",
+      "stockType": "worldstock",
+      "nationName": "미국"
+    },
+    "localTradedAt": "2026-09-22T16:00:00-04:00",
+    "closePrice": "228.87",
+    "compareToPreviousPrice": {
+      "code": "2",
+      "text": "상승",
+      "name": "RISING"
+    },
+    "compareToPreviousClosePrice": "1.49",
+    "fluctuationsRatio": "0.66",
+    "openPrice": "226.85",
+    "highPrice": "229.98",
+    "lowPrice": "226.50"
+  },
+  {
+    "stockExchangeType": {
+      "code": "NSQ",
+      "zoneId": "EST5EDT",
+      "nationType": "USA",
+      "delayTime": 0,
+      "startTime": "0930",
+      "endTime": "1600",
+      "closePriceSendTime": "2031",
+      "nameKor": "나스닥 증권거래소",
+      "nameEng": "NASDAQ Stock Exchange",
+      "name": "NASDAQ",
+      "nationCode": "USA",
+      "stockType": "worldstock",
+      "nationName": "미국"
+    },
+    "localTradedAt": "2026-09-21T16:00:00-04:00",
+    "closePrice": "227.38",
+    "compareToPreviousPrice": {
+      "code": "2",
+      "text": "상승",
+      "name": "RISING"
+    },
+    "compareToPreviousClosePrice": "5.11",
+    "fluctuationsRatio": "2.30",
+    "openPrice": "222.94",
+    "highPrice": "228.50",
+    "lowPrice": "221.56"
+  },
+  {
+    "stockExchangeType": {
+      "code": "NSQ",
+      "zoneId": "EST5EDT",
+      "nationType": "USA",
+      "delayTime": 0,
+      "startTime": "0930",
+      "endTime": "1600",
+      "closePriceSendTime": "2031",
+      "nameKor": "나스닥 증권거래소",
+      "nameEng": "NASDAQ Stock Exchange",
+      "name": "NASDAQ",
+      "nationCode": "USA",
+      "stockType": "worldstock",
+      "nationName": "미국"
+    },
+    "localTradedAt": "2026-09-18T16:00:00-04:00",
+    "closePrice": "222.27",
+    "compareToPreviousPrice": {
+      "code": "2",
+      "text": "상승",
+      "name": "RISING"
+    },
+    "compareToPreviousClosePrice": "2.93",
+    "fluctuationsRatio": "1.34",
+    "openPrice": "219.35",
+    "highPrice": "222.73",
+    "lowPrice": "218.03"
+  }
+]
